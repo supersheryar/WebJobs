@@ -1,0 +1,34 @@
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using UkrGuru.SqlJson;
+using UkrGuru.WebJobs.Models;
+
+namespace WebJobsDemo.Pages.Rules
+{
+    public class DeleteModel : PageModel
+    {
+        [BindProperty]
+        public Rule Rule { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(int? id)
+        {
+            if (id == null) return NotFound();
+
+            Rule = await DbHelper.FromProcAsync<Rule>("WJbRules_Item_Demo", id);
+
+            if (Rule.Id == 0) return NotFound();
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync(int? id)
+        {
+            if (id == null) return NotFound();
+
+            await DbHelper.FromProcAsync<Rule>("WJbRules_Del_Demo", id);
+
+            return RedirectToPage("./Index");
+        }
+    }
+}

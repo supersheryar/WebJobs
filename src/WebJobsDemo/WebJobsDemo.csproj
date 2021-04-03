@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
+    <UserSecretsId>12dd54be-cd4e-4f6a-9c0b-459b55357aa2</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\1.0.0.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\1.0.0.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UkrGuru.WebJobs\UkrGuru.WebJobs.csproj" />
+  </ItemGroup>
+
+</Project>

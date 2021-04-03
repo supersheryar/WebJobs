@@ -1,0 +1,62 @@
+﻿@page
+@model WebJobsDemo.Pages.Rules.IndexModel
+
+@{
+    ViewData["Title"] = "Rules";
+}
+
+<h1>Rules</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Rules[0].Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rules[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rules[0].Priority)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rules[0].ActionName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rules[0].MoreJson)
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Rules)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Priority)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActionName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MoreJson)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
