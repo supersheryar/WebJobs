@@ -10,10 +10,14 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageIcon>ukrguru-logo.jpg</PackageIcon>
     <RepositoryUrl>https://github.com/UkrGuru/WebJobs</RepositoryUrl>
-    <Description>UkrGuru.WebJobs is a starter library for running background tasks under your ASP.NET Core website.
-Supports cron and trigger Rules. Allows extensibility for any custom Action.</Description>
+    <Description>Starter library for running background tasks under your ASP.NET Core website. Supports cron and trigger Rules. Allows extensibility for any custom Action.</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
+    <Version>1.1.0</Version>
+    <PackageTags>worker aspnetcore scheduler sqlserver webjobs sql-server-procedures</PackageTags>
+    <PackageReleaseNotes>1. Added next_rule for Complex Rule
+2. Added LogHelper
+3. Added Demo Rules</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

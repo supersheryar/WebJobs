@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -23,6 +24,7 @@ namespace WebJobsDemo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddWebJobs(connString: Configuration.GetConnectionString("SqlJsonConnection"),
+                logLevel: Configuration.GetValue<LogLevel>("WJbSettings:LogLevel"),
                 nThreads: Configuration.GetValue<int>("WJbSettings:NThreads"));
 
             services.AddRazorPages();

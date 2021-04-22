@@ -1,29 +1,3 @@
-SET IDENTITY_INSERT [dbo].[WJbActions] ON 
-
-INSERT [dbo].[WJbActions] ([Id], [Name], [Disabled], [Type], [MoreJson]) VALUES (100, N'RunYourSqlProc', 0, N'WebJobsDemo.Actions.YourSqlProcAction, WebJobsDemo', N'{
-  "proc": null,
-  "data": null
-}')
-SET IDENTITY_INSERT [dbo].[WJbActions] OFF
-SET IDENTITY_INSERT [dbo].[WJbRules] ON 
-
-INSERT [dbo].[WJbRules] ([Id], [Name], [Disabled], [Priority], [ActionId], [MoreJson]) VALUES (100, N'Your Rule', 0, 2, 100, N'{
-  "proc": "Delay"
-}')
-SET IDENTITY_INSERT [dbo].[WJbRules] OFF
-EXEC dbo.sp_executesql @statement = N'
-CREATE OR ALTER PROCEDURE [dbo].[WJb_Create_TestJobs]
-AS
-INSERT INTO WJbQueue ( RuleId, Priority, MoreJson)
-SELECT Id, Priority, N''{ "data": "5" }''
-FROM WJbRules
-WHERE (Id = 2) AND (Disabled = 0)
-
-INSERT INTO WJbQueue ( RuleId, Priority, MoreJson)
-SELECT Id, Priority, N''{ "data": "7" }''
-FROM WJbRules
-WHERE (Id = 100) AND (Disabled = 0)
-';
 EXEC dbo.sp_executesql @statement = N'
 CREATE OR ALTER PROCEDURE [dbo].[WJbActions_Del_Demo]
     @Data varchar(10)

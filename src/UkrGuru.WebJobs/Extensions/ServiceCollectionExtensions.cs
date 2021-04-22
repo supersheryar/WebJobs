@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -13,9 +14,11 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class WebJobsServiceCollectionExtensions
     {
-        public static void AddWebJobs(this IServiceCollection services, string connString, int nThreads = 4)
+        public static void AddWebJobs(this IServiceCollection services, string connString, LogLevel logLevel = LogLevel.Debug, int nThreads = 4)
         {
             services.AddSqlJson(connString ?? throw new ArgumentNullException(nameof(connString)));
+
+            LogHelper.MinLogLevel = logLevel;
 
             InitDb();
 

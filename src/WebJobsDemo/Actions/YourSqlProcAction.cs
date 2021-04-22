@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UkrGuru.SqlJson;
@@ -11,9 +10,10 @@ namespace WebJobsDemo.Actions
 {
     public class YourSqlProcAction : BaseAction
     {
-        public override async Task ExecuteAsync(CancellationToken cancellationToken)
+        public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken)
         {
-            var proc = More.GetValue("proc") ?? throw new ArgumentNullException("proc");
+            var proc = More.GetValue("proc");
+            if (string.IsNullOrWhiteSpace(proc)) throw new (nameof(proc));
 
             var data = More.GetValue("data");
 
@@ -21,13 +21,13 @@ namespace WebJobsDemo.Actions
 
             var result_name = More.GetValue("result_name");
 
-            _logger.LogDebug("YourSqlProcAction prepared", new { jobId = JobId, proc, data = StrUtils.ShortStr(data, 100), result_name, timeout });
+            await LogHelper.LogDebugAsync("YourSqlProcAction", (jobId: JobId, proc, data: StrUtils.ShortStr(data, 100), result_name, timeout));
 
             if (string.IsNullOrEmpty(result_name))
             {
                 await DbHelper.ExecProcAsync($"Your_{proc}", data, timeout);
 
-                _logger.LogInformation("YourSqlProcAction done", new { jobId = JobId });
+                await LogHelper.LogInformationAsync("YourSqlProcAction done", new { jobId = JobId });
             }
             else
             {
@@ -35,8 +35,10 @@ namespace WebJobsDemo.Actions
 
                 More[result_name] = result;
 
-                _logger.LogInformation("YourSqlProcAction done", new { jobId = JobId, result = StrUtils.ShortStr(result, 100) });
+                await LogHelper.LogInformationAsync("YourSqlProcAction done", (jobId: JobId, result: StrUtils.ShortStr(result, 100)));
             }
+
+            return true;
         }
     }
 }

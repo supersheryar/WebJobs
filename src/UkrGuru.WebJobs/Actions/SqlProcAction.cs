@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Oleksandr Viktor (UkrGuru). All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
-using Microsoft.Extensions.Logging;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UkrGuru.SqlJson;
@@ -12,9 +10,10 @@ namespace UkrGuru.WebJobs.Actions
 {
     public class SqlProcAction : BaseAction
     {
-        public override async Task ExecuteAsync(CancellationToken cancellationToken)
+        public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken)
         {
-            var proc = More.GetValue("proc") ?? throw new ArgumentNullException("proc");
+            var proc = More.GetValue("proc");
+            if (string.IsNullOrWhiteSpace(proc)) throw new(nameof(proc));
 
             var data = More.GetValue("data");
 
@@ -22,13 +21,13 @@ namespace UkrGuru.WebJobs.Actions
 
             var result_name = More.GetValue("result_name");
 
-            _logger.LogDebug("SqlProcAction prepared", new { jobId = JobId, proc, data = Utils.StrUtils.ShortStr(data, 100), result_name, timeout });
+            await LogHelper.LogDebugAsync("SqlProcAction", (jobId: JobId, proc, data: Utils.StrUtils.ShortStr(data, 100), result_name, timeout));
 
             if (string.IsNullOrEmpty(result_name))
             {
-                await DbHelper.ExecProcAsync($"WJb_{proc}", data, timeout);
+                _ = await DbHelper.ExecProcAsync($"WJb_{proc}", data, timeout);
 
-                _logger.LogInformation("SqlProcAction done", new { jobId = JobId });
+                await LogHelper.LogInformationAsync("SqlProcAction done", new { jobId = JobId });
             }
             else
             {
@@ -36,8 +35,10 @@ namespace UkrGuru.WebJobs.Actions
 
                 More[result_name] = result;
 
-                _logger.LogInformation("SqlProcAction done", new { jobId = JobId, result = Utils.StrUtils.ShortStr(result, 100) });
+                await LogHelper.LogInformationAsync("SqlProcAction done", (jobId: JobId, result: Utils.StrUtils.ShortStr(result, 100)));
             }
+
+            return true;
         }
     }
 }

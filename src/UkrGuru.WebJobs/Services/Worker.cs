@@ -31,29 +31,27 @@ namespace UkrGuru.WebJobs.Services
                     var job = await DbHelper.FromProcAsync<JobQueue>("WJbQueue_Start1st");
                     if (job.Id > 0)
                     {
+                        var jobId = job.Id;
                         try
                         {
-                            _logger.LogInformation($"Job #{job.Id} started.");
-                            
                             var type = Type.GetType(job.ActionType) ?? Type.GetType($"UkrGuru.WebJobs.Actions.{job.ActionType}");
                             
                             dynamic action = Activator.CreateInstance(type);
 
-                            action.Init(job, _logger);
+                            action.Init(job);
 
-                            await action.ExecuteAsync(stoppingToken);
+                            bool result = await action.ExecuteAsync(stoppingToken);
 
-                            await action.NextAsync(stoppingToken);
-
-                            _logger.LogInformation($"Job #{job.Id} finished.");
+                            if (result) await action.NextAsync(stoppingToken);
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, $"Job #{job.Id} crashed.");
+                            _logger.LogError(ex, $"Job #{jobId} crashed.");
+                            await LogHelper.LogErrorAsync($"Job #{jobId} crashed.", (jobId, errMsg: ex.Message));
                         }
                         finally
                         {
-                            await DbHelper.ExecProcAsync("WJbQueue_Finish", job.Id);
+                            await DbHelper.ExecProcAsync("WJbQueue_Finish", jobId);
                         }
 
                         _delay = 100;
@@ -66,6 +64,7 @@ namespace UkrGuru.WebJobs.Services
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Worker.ExecuteAsync Error");
+                    await LogHelper.LogErrorAsync("Worker.ExecuteAsync Error", new { errMsg = ex.Message });
                 }
 
                 await Task.Delay(_delay, stoppingToken);

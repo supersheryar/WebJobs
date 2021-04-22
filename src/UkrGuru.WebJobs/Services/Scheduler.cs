@@ -46,6 +46,7 @@ namespace UkrGuru.WebJobs.Services
                         catch (Exception ex)
                         {
                             _logger.LogError(ex, "WJbQueue_InsCron Error", nameof(ExecuteAsync));
+                            await LogHelper.LogErrorAsync("WJbQueue_InsCron Error", new { errMsg = ex.Message });
                         }
                     }
 
@@ -55,6 +56,7 @@ namespace UkrGuru.WebJobs.Services
             catch (Exception ex)
             {
                 _logger.LogCritical(ex, "Scheduler Error", nameof(ExecuteAsync));
+                await LogHelper.LogErrorAsync("Scheduler Error", new { errMsg = ex.Message });
             }
         }
     }

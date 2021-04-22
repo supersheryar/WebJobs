@@ -3,6 +3,7 @@ SET QUOTED_IDENTIFIER ON
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CronExpandAll]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
 BEGIN
 execute dbo.sp_executesql @statement = N'
+
 CREATE FUNCTION [dbo].[CronExpandAll] (@Expression varchar(100), @Min int, @Max int) 
 RETURNS @Values TABLE (Value int)
 AS BEGIN
@@ -292,3 +293,4 @@ EXIT_PROC:
 END
 ' 
 END
+
