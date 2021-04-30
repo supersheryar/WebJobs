@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Logs\**" />
+    <Content Remove="Pages\Logs\**" />
+    <EmbeddedResource Remove="Pages\Logs\**" />
+    <None Remove="Pages\Logs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\1.0.0.sql" />
   </ItemGroup>
 
@@ -16,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="UkrGuru.WebJobs" Version="1.1.0" />
+    <ProjectReference Include="..\UkrGuru.WebJobs\UkrGuru.WebJobs.csproj" />
   </ItemGroup>
 
 </Project>

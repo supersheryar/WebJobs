@@ -10,8 +10,11 @@ namespace UkrGuru.WebJobs.Actions
 {
     public class BaseAction
     {
-        private const string NEXT_PREFIX = "next_";
-        private const string NEXT_RULE = "next_rule";
+        private const string NEXT_RULE = "next";
+        private const string FAIL_RULE = "fail";
+
+        private const string NEXT_PREFIX = NEXT_RULE + "_";
+        private const string FAIL_PREFIX = FAIL_RULE + "_";
 
         public int JobId { get; set; }
         public More More { get; set; }
@@ -33,17 +36,19 @@ namespace UkrGuru.WebJobs.Actions
             return true;
         }
 
-        public virtual async Task NextAsync(CancellationToken cancellationToken)
+        public virtual async Task NextAsync(bool execute_result, CancellationToken cancellationToken)
         {
-            var next_rule = More.GetValue(NEXT_RULE);
+            var next_prefix = execute_result ? NEXT_PREFIX : FAIL_PREFIX;
+
+            var next_rule = More.GetValue(execute_result ? NEXT_RULE : FAIL_RULE);
             if (string.IsNullOrEmpty(next_rule)) return;
 
             var next_more = new More();
             foreach (var more in More)
             {
-                if (more.Key.StartsWith(NEXT_PREFIX) && !more.Key.Equals(NEXT_RULE, System.StringComparison.CurrentCultureIgnoreCase))
+                if (more.Key.StartsWith(next_prefix))
                 {
-                    next_more.Add(more.Key[NEXT_PREFIX.Length..], more.Value);
+                    next_more.Add(more.Key[next_prefix.Length..], more.Value);
                 }
             }
 

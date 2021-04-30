@@ -42,7 +42,7 @@ namespace UkrGuru.WebJobs.Services
 
                             bool result = await action.ExecuteAsync(stoppingToken);
 
-                            if (result) await action.NextAsync(stoppingToken);
+                            await action.NextAsync(result, stoppingToken);
                         }
                         catch (Exception ex)
                         {

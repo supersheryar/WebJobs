@@ -26,7 +26,7 @@ INSERT [dbo].[WJbRules] ([Id], [Name], [Disabled], [Priority], [ActionId], [More
   "cron": "* * * * *",
   "proc": "Proc1_Demo",
   "result_name": "next_data",
-  "next_rule": "4"
+  "next": "4"
 }')
 INSERT [dbo].[WJbRules] ([Id], [Name], [Disabled], [Priority], [ActionId], [MoreJson]) VALUES (4, N'Next Rule', 0, 2, 1, N'{
   "proc": "Proc2_Demo",
