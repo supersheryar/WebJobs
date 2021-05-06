@@ -13,11 +13,9 @@
     <Description>Starter library for running background tasks under your ASP.NET Core website. Supports cron and trigger Rules. Allows extensibility for any custom Action.</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
-    <Version>1.1.2</Version>
+    <Version>1.1.3</Version>
     <PackageTags>worker aspnetcore scheduler sqlserver webjobs sql-server-procedures</PackageTags>
-    <PackageReleaseNotes>1. Added "next" and "fail" switcher for Complex Rule
-2. Added LogHelper
-3. Added Demo Rules</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

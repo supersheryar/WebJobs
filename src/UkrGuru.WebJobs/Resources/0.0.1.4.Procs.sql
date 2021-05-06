@@ -148,10 +148,3 @@ AS
 DECLARE @Start datetime = CAST(@Data as datetime)
 SELECT DATEDIFF(SECOND, @Start, GETDATE())
 ';
-EXEC dbo.sp_executesql @statement = N'
-CREATE OR ALTER PROCEDURE [dbo].[Your_Delay_Demo]
-    @Data varchar(10)
-AS
-DECLARE @Delay DATETIME = DATEADD(SECOND, CAST(@Data AS int), CONVERT(DATETIME, 0))
-WAITFOR DELAY @Delay
-';

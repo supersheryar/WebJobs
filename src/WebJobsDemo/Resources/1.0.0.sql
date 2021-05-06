@@ -1,3 +1,17 @@
+SET IDENTITY_INSERT [dbo].[WJbActions] ON 
+INSERT [dbo].[WJbActions] ([Id], [Name], [Disabled], [Type], [MoreJson]) VALUES (1000, N'RunYourSqlProc', 0, N'WebJobsDemo.Actions.YourSqlProcAction, WebJobsDemo', N'{
+  "proc": "",
+  "data": null,
+  "timeout": null,
+  "result_name": null
+}')
+SET IDENTITY_INSERT [dbo].[WJbActions] OFF
+SET IDENTITY_INSERT [dbo].[WJbRules] ON 
+INSERT [dbo].[WJbRules] ([Id], [Name], [Disabled], [Priority], [ActionId], [MoreJson]) VALUES (1000, N'Your Rule', 0, 2, 1000, N'{
+  "proc": "Delay_Demo",
+  "data": "7"
+}')
+SET IDENTITY_INSERT [dbo].[WJbRules] OFF
 EXEC dbo.sp_executesql @statement = N'
 CREATE OR ALTER PROCEDURE [dbo].[WJbActions_Del_Demo]
     @Data varchar(10)
@@ -124,4 +138,11 @@ FROM WJbRules R
 CROSS JOIN (SELECT * FROM OPENJSON(@Data) 
     WITH (Name nvarchar(100), Priority tinyint, ActionId int, MoreJson nvarchar(max))) D
 WHERE Id = JSON_VALUE(@Data,''$.Id'')
+';
+EXEC dbo.sp_executesql @statement = N'
+CREATE OR ALTER PROCEDURE [dbo].[Your_Delay_Demo]
+    @Data varchar(10)
+AS
+DECLARE @Delay DATETIME = DATEADD(SECOND, CAST(@Data AS int), CONVERT(DATETIME, 0))
+WAITFOR DELAY @Delay
 ';

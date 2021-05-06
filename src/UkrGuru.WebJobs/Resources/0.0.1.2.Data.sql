@@ -6,12 +6,6 @@ INSERT [dbo].[WJbActions] ([Id], [Name], [Disabled], [Type], [MoreJson]) VALUES 
   "timeout": null,
   "result_name": null
 }')
-INSERT [dbo].[WJbActions] ([Id], [Name], [Disabled], [Type], [MoreJson]) VALUES (1000, N'RunYourSqlProc', 0, N'WebJobsDemo.Actions.YourSqlProcAction, WebJobsDemo', N'{
-  "proc": "",
-  "data": null,
-  "timeout": null,
-  "result_name": null
-}')
 SET IDENTITY_INSERT [dbo].[WJbActions] OFF
 SET IDENTITY_INSERT [dbo].[WJbRules] ON 
 
@@ -31,9 +25,5 @@ INSERT [dbo].[WJbRules] ([Id], [Name], [Disabled], [Priority], [ActionId], [More
 INSERT [dbo].[WJbRules] ([Id], [Name], [Disabled], [Priority], [ActionId], [MoreJson]) VALUES (4, N'Next Rule', 0, 2, 1, N'{
   "proc": "Proc2_Demo",
   "result_name": "result"
-}')
-INSERT [dbo].[WJbRules] ([Id], [Name], [Disabled], [Priority], [ActionId], [MoreJson]) VALUES (1000, N'Your Rule', 0, 2, 1000, N'{
-  "proc": "Delay_Demo",
-  "data": "7"
 }')
 SET IDENTITY_INSERT [dbo].[WJbRules] OFF
