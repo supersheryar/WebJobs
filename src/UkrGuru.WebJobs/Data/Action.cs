@@ -8,12 +8,16 @@ namespace UkrGuru.WebJobs.Data
     public partial class Action 
     {
         [Key]
+        [Display(Name = "Id")]
         public int ActionId { get; set; }
 
+        [Display(Name = "Action")]
         public string ActionName { get; set; }
 
+        [Display(Name = "Type")]
         public string ActionType { get; set; }
 
+        [Display(Name = "More")] 
         public string ActionMore { get; set; }
     }
 }

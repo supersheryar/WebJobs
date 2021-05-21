@@ -12,17 +12,17 @@ namespace WebJobsDemo.Pages.Rules
     {
         public async Task<IActionResult> OnGet()
         {
-            Rule = new Rule();
+            Rule = new RuleInput();
 
             var actions = await DbHelper.FromProcAsync<List<Action>>("WJbActions_List_Demo");
 
-            ViewData["Actions"] = new SelectList(actions, "Id", "Name");
+            ViewData["Actions"] = new SelectList(actions, "ActionId", "ActionName");
 
             return Page();
         }
 
         [BindProperty]
-        public Rule Rule { get; set; } 
+        public RuleInput Rule { get; set; } 
 
         public async Task<IActionResult> OnPostAsync()
         {

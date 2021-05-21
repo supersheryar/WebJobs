@@ -14,7 +14,7 @@ namespace WebJobsDemo.Pages.Actions
         }
 
         [BindProperty]
-        public Action Action { get; set; }
+        public ActionInput Action { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {

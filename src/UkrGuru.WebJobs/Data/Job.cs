@@ -12,8 +12,10 @@ namespace UkrGuru.WebJobs.Data
     public class Job : Rule
     {
         [Key]
+        [Display(Name = "Id")]
         public int JobId { get; set; }
 
+        [Display(Name = "Priority")]
         public Priorities JobPriority { get; set; } = Priorities.Normal;
 
         [DisplayFormat(DataFormatString = "{0:HH:mm:ss.fff}")]
@@ -25,6 +27,7 @@ namespace UkrGuru.WebJobs.Data
         [DisplayFormat(DataFormatString = "{0:HH:mm:ss.fff}")]
         public DateTime? Finished { get; set; }
 
+        [Display(Name = "More")]
         public string JobMore { get; set; }
     }
 }

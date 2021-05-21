@@ -8,16 +8,21 @@ namespace UkrGuru.WebJobs.Data
     public partial class ActionInput 
     {
         [Key]
+        [Display(Name = "Id")]
+
         public int ActionId { get; set; }
 
         [Required]
         [StringLength(100)]
+        [Display(Name = "Action")]
         public string ActionName { get; set; }
 
         [Required]
         [StringLength(255)]
+        [Display(Name = "Type")]
         public string ActionType { get; set; }
 
+        [Display(Name = "More")]
         public string ActionMore { get; set; }
     }
 }

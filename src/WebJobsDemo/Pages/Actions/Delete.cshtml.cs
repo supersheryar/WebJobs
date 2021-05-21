@@ -9,13 +9,13 @@ namespace WebJobsDemo.Pages.Actions
     public class DeleteModel : PageModel
     {
         [BindProperty]
-        public Action Action { get; set; }
+        public ActionInput Action { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null) return NotFound();
 
-            Action = await DbHelper.FromProcAsync<Action>("WJbActions_Item_Demo", id);
+            Action = await DbHelper.FromProcAsync<ActionInput>("WJbActions_Item_Demo", id);
 
             if (Action.ActionId == 0) return NotFound();
 
