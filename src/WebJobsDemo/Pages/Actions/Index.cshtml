@@ -14,13 +14,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Actions[0].Name)
+                @Html.DisplayNameFor(model => model.Actions[0].ActionName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Actions[0].Type)
+                @Html.DisplayNameFor(model => model.Actions[0].ActionType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Actions[0].MoreJson)
+                @Html.DisplayNameFor(model => model.Actions[0].ActionMore)
             </th>
             <th>
 
@@ -32,17 +32,17 @@
         {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.ActionName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Type)
+                @Html.DisplayFor(modelItem => item.ActionType)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MoreJson)
+                @Html.DisplayFor(modelItem => item.ActionMore)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-page="./Edit" asp-route-id="@item.ActionId">Edit</a> |
+                <a asp-page="./Delete" asp-route-id="@item.ActionId">Delete</a>
             </td>
         </tr>
         }

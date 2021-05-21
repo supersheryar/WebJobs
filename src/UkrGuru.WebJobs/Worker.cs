@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using UkrGuru.SqlJson;
-using UkrGuru.WebJobs.Models;
+using UkrGuru.WebJobs.Data;
 
-namespace UkrGuru.WebJobs.Services
+namespace UkrGuru.WebJobs
 {
     public class Worker : BackgroundService
     {
@@ -29,9 +29,9 @@ namespace UkrGuru.WebJobs.Services
                 try
                 {
                     var job = await DbHelper.FromProcAsync<JobQueue>("WJbQueue_Start1st");
-                    if (job.Id > 0)
+                    if (job.JobId > 0)
                     {
-                        var jobId = job.Id;
+                        var jobId = job.JobId;
                         try
                         {
                             var type = Type.GetType(job.ActionType) ?? Type.GetType($"UkrGuru.WebJobs.Actions.{job.ActionType}");

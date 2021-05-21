@@ -9,7 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using UkrGuru.SqlJson;
 
-namespace UkrGuru.WebJobs.Services
+namespace UkrGuru.WebJobs
 {
     public class Scheduler : BackgroundService
     {

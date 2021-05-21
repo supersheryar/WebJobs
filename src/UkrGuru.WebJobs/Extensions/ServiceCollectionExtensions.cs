@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
 using UkrGuru.SqlJson;
-using UkrGuru.WebJobs.Services;
+using UkrGuru.WebJobs;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -24,9 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddHostedService<Scheduler>();
             for (int i = 0; i < nThreads; i++)
-            {
                 services.AddSingleton<IHostedService, Worker>();
-            }
         }
     }
 }

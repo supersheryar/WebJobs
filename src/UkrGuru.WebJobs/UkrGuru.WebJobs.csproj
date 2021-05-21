@@ -13,7 +13,7 @@
     <Description>Starter library for running background tasks under your ASP.NET Core website. Supports cron and trigger Rules. Allows extensibility for any custom Action.</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
-    <Version>1.1.3</Version>
+    <Version>1.2.1</Version>
     <PackageTags>worker aspnetcore scheduler sqlserver webjobs sql-server-procedures</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
@@ -24,17 +24,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\0.0.1.2.Data.sql" />
-    <None Remove="Resources\0.0.1.3.Funcs.sql" />
-    <None Remove="Resources\0.0.1.4.Procs.sql" />
     <None Remove="Resources\0.0.1.4.Procs.WJb_Create_TestJobs.sql" />
+    <None Remove="Resources\1.2.0.2.Data.sql" />
+    <None Remove="Resources\1.2.0.3.Funcs.sql" />
+    <None Remove="Resources\1.2.0.4.Procs.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\0.0.1.4.Procs.sql" />
-    <EmbeddedResource Include="Resources\0.0.1.3.Funcs.sql" />
-    <EmbeddedResource Include="Resources\0.0.1.2.Data.sql" />
-    <EmbeddedResource Include="Resources\0.0.1.1.Tables.sql" />
+    <EmbeddedResource Include="Resources\1.2.0.4.Procs.sql" />
+    <EmbeddedResource Include="Resources\1.2.0.3.Funcs.sql" />
+    <EmbeddedResource Include="Resources\1.2.0.2.Data.sql" />
+    <EmbeddedResource Include="Resources\1.2.0.1.Tables.sql" />
   </ItemGroup>
 
   <ItemGroup>

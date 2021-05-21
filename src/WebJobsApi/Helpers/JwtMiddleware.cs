@@ -24,12 +24,12 @@ namespace WebJobsApi.Helpers
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-            if (token != null) attachLoginToContext(context, token);
+            if (token != null) AttachLoginToContext(context, token);
 
             await _next(context);
         }
 
-        private void attachLoginToContext(HttpContext context, string token)
+        private void AttachLoginToContext(HttpContext context, string token)
         {
             try
             {

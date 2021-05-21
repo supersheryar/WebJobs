@@ -19,7 +19,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Jobs[0].Id)
+                @Html.DisplayNameFor(model => model.Jobs[0].JobId)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Jobs[0].Created)
@@ -34,7 +34,7 @@
                 @Html.DisplayNameFor(model => model.Jobs[0].Finished)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Jobs[0].MoreJson)
+                @Html.DisplayNameFor(model => model.Jobs[0].JobMore)
             </th>
         </tr>
     </thead>
@@ -43,7 +43,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Id)
+                    @Html.DisplayFor(modelItem => item.JobId)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Created)
@@ -58,7 +58,7 @@
                     @Html.DisplayFor(modelItem => item.Finished, "HH:mm:ss.ttt")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MoreJson)
+                    @Html.DisplayFor(modelItem => item.JobMore)
                 </td>
             </tr>
         }

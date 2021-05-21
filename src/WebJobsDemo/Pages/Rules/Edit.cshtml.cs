@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using UkrGuru.SqlJson;
-using UkrGuru.WebJobs.Models;
+using UkrGuru.WebJobs.Data;
 
 namespace WebJobsDemo.Pages.Rules
 {
@@ -19,7 +19,7 @@ namespace WebJobsDemo.Pages.Rules
 
             Rule = await DbHelper.FromProcAsync<Rule>("WJbRules_Item_Demo", id);
 
-            if (Rule.Id == 0) return NotFound();
+            if (Rule.RuleId == 0) return NotFound();
 
             var actions = await DbHelper.FromProcAsync<List<Action>>("WJbActions_List_Demo");
 

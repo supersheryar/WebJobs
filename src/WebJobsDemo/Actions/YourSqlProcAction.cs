@@ -3,8 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Actions;
-using UkrGuru.WebJobs.Models;
-using UkrGuru.WebJobs.Utils;
+using UkrGuru.WebJobs.Data;
 
 namespace WebJobsDemo.Actions
 {
@@ -21,7 +20,7 @@ namespace WebJobsDemo.Actions
 
             var result_name = More.GetValue("result_name");
 
-            await LogHelper.LogDebugAsync("YourSqlProcAction", (jobId: JobId, proc, data: StrUtils.ShortStr(data, 100), result_name, timeout));
+            await LogHelper.LogDebugAsync("YourSqlProcAction", (jobId: JobId, proc, data: ShortStr(data, 200), result_name, timeout));
 
             if (string.IsNullOrEmpty(result_name))
             {
@@ -35,7 +34,7 @@ namespace WebJobsDemo.Actions
 
                 More[result_name] = result;
 
-                await LogHelper.LogInformationAsync("YourSqlProcAction done", (jobId: JobId, result: StrUtils.ShortStr(result, 100)));
+                await LogHelper.LogInformationAsync("YourSqlProcAction done", (jobId: JobId, result: ShortStr(result, 200)));
             }
 
             return true;

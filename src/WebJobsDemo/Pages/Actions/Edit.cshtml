@@ -13,21 +13,21 @@
     <div class="col-md-8">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Action.Id" />
+            <input type="hidden" asp-for="Action.ActionId" />
             <div class="form-group">
-                <label asp-for="Action.Name" class="control-label"></label>
-                <input asp-for="Action.Name" class="form-control" />
-                <span asp-validation-for="Action.Name" class="text-danger"></span>
+                <label asp-for="Action.ActionName" class="control-label"></label>
+                <input asp-for="Action.ActionName" class="form-control" />
+                <span asp-validation-for="Action.ActionName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Action.Type" class="control-label"></label>
-                <input asp-for="Action.Type" class="form-control" placeholder="TypeName, AssemblyName" />
-                <span asp-validation-for="Action.Type" class="text-danger"></span>
+                <label asp-for="Action.ActionType" class="control-label"></label>
+                <input asp-for="Action.ActionType" class="form-control" placeholder="TypeName, AssemblyName" />
+                <span asp-validation-for="Action.ActionType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Action.MoreJson" class="control-label"></label>
-                <textarea asp-for="Action.MoreJson" class="form-control" rows="10"></textarea>
-                <span asp-validation-for="Action.MoreJson" class="text-danger"></span>
+                <label asp-for="Action.ActionMore" class="control-label"></label>
+                <textarea asp-for="Action.ActionMore" class="form-control" rows="10"></textarea>
+                <span asp-validation-for="Action.ActionMore" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

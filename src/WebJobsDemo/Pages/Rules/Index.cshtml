@@ -14,19 +14,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Rules[0].Id)
+                @Html.DisplayNameFor(model => model.Rules[0].RuleId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Rules[0].Name)
+                @Html.DisplayNameFor(model => model.Rules[0].RuleName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Rules[0].Priority)
+                @Html.DisplayNameFor(model => model.Rules[0].RulePriority)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Rules[0].ActionName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Rules[0].MoreJson)
+                @Html.DisplayNameFor(model => model.Rules[0].RuleMore)
             </th>
             <th>
 
@@ -38,23 +38,23 @@
         {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                @Html.DisplayFor(modelItem => item.RuleId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.RuleName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Priority)
+                @Html.DisplayFor(modelItem => item.RulePriority)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ActionName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MoreJson)
+                @Html.DisplayFor(modelItem => item.RuleMore)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-page="./Edit" asp-route-id="@item.RuleId">Edit</a> |
+                <a asp-page="./Delete" asp-route-id="@item.RuleId">Delete</a>
             </td>
         </tr>
         }

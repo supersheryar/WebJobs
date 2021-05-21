@@ -9,6 +9,7 @@
     <Description>UkrGuru.WebJobs with API methods for remote adminitration WebJobs, Rules and Actions.</Description>
     <AssemblyName>UkrGuru.WebJobs.Api</AssemblyName>
     <UserSecretsId>eb5b106a-f34a-41db-a3cb-143179f51c9b</UserSecretsId>
+    <Version>1.2.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -4,5 +4,5 @@ CREATE OR ALTER PROCEDURE [dbo].[WJa_Actions_Del_Demo]
 AS
 UPDATE WJbActions
 SET Disabled = 1
-WHERE (Id = CAST(@Data AS int))
+WHERE (ActionId = CAST(@Data AS int))
 ';

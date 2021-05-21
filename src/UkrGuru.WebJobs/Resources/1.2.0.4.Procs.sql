@@ -2,18 +2,18 @@ EXEC dbo.sp_executesql @statement = N'
 CREATE OR ALTER PROCEDURE [dbo].[WJbLogs_Ins]
     @Data nvarchar(max)
 AS
-INSERT INTO WJbLogs (LogLevel, Title, MoreJson)
+INSERT INTO WJbLogs (LogLevel, Title, LogMore)
 VALUES (JSON_VALUE(@Data, ''$.logLevel''), JSON_VALUE(@Data, ''$.title''), 
-    ISNULL(JSON_QUERY(@Data, ''$.more''), JSON_VALUE(@Data, ''$.more'')))
+    ISNULL(JSON_QUERY(@Data, ''$.logMore''), JSON_VALUE(@Data, ''$.logMore'')))
 ';
 EXEC dbo.sp_executesql @statement = N'
 CREATE OR ALTER PROCEDURE [dbo].[WJbQueue_Finish] 
     @Data varchar(10)
 AS
 ;WITH cte AS (
-SELECT TOP 1 Q.Id, Q.[Priority], Q.Created, Q.RuleId, Q.Started, GETDATE() AS Finished, Q.MoreJson 
+SELECT TOP 1 Q.JobId, Q.JobPriority, Q.Created, Q.RuleId, Q.Started, GETDATE() AS Finished, Q.JobMore 
     FROM WJbQueue Q
-    WHERE Q.Id = CAST(@Data as int) AND Q.Started IS NOT NULL)
+    WHERE Q.JobId = CAST(@Data as int) AND Q.Started IS NOT NULL)
 DELETE cte 
 OUTPUT deleted.* INTO WJbHistory
 ';
@@ -21,7 +21,7 @@ EXEC dbo.sp_executesql @statement = N'
 CREATE OR ALTER PROCEDURE [dbo].[WJbQueue_FinishAll] 
 AS
 ;WITH cte AS (
-SELECT Q.Id, Q.[Priority], Q.Created, Q.RuleId, Q.Started, GETDATE() AS Finished, Q.MoreJson 
+SELECT Q.JobId, Q.JobPriority, Q.Created, Q.RuleId, Q.Started, GETDATE() AS Finished, Q.JobMore 
     FROM WJbQueue Q
     WHERE Q.Started IS NOT NULL)
 DELETE cte 
@@ -32,35 +32,35 @@ CREATE OR ALTER PROCEDURE [dbo].[WJbQueue_Ins]
 	@Data nvarchar(max) 
 AS
 DECLARE @RuleId int = CASE WHEN ISNUMERIC(JSON_VALUE(@Data, ''$.Rule'')) = 1 THEN JSON_VALUE(@Data, ''$.Rule'') 
-    ELSE (SELECT TOP 1 Id FROM WJbRules WHERE (Name = JSON_VALUE(@Data, ''$.Rule''))) END;
+    ELSE (SELECT TOP 1 RuleId FROM WJbRules WHERE (RuleName = JSON_VALUE(@Data, ''$.Rule''))) END;
 
-INSERT INTO WJbQueue (RuleId, Priority, MoreJson)
-SELECT @RuleId, JSON_VALUE(@Data, ''$.Priority''), JSON_QUERY(@Data, ''$.MoreJson'')
+INSERT INTO WJbQueue (RuleId, JobPriority, JobMore)
+SELECT @RuleId, JSON_VALUE(@Data, ''$.RulePriority''), JSON_QUERY(@Data, ''$.RuleMore'')
 --SELECT * FROM OPENJSON(@Data) 
---WITH (RuleId int, Priority tinyint, MoreJson nvarchar(max))
+--WITH (RuleId int, RulePriority tinyint, RuleMore nvarchar(max))
 
 SELECT SCOPE_IDENTITY()
 ';
 EXEC dbo.sp_executesql @statement = N'
 CREATE OR ALTER PROCEDURE [dbo].[WJbQueue_InsCron]
 AS
-INSERT INTO WJbQueue (RuleId, Priority)
-SELECT R.Id, R.Priority
+INSERT INTO WJbQueue (RuleId, JobPriority)
+SELECT R.RuleId, R.RulePriority
 FROM WJbRules R
 WHERE R.Disabled = 0 
-AND NOT JSON_VALUE(MoreJson, ''$.cron'') IS NULL
-AND NOT EXISTS (SELECT 1 FROM WJbQueue WHERE RuleId = R.Id)
-AND dbo.CronValidate(JSON_VALUE(MoreJson, ''$.cron''), GETDATE()) = 1
+AND NOT JSON_VALUE(R.RuleMore, ''$.cron'') IS NULL
+AND NOT EXISTS (SELECT 1 FROM WJbQueue WHERE RuleId = R.RuleId)
+AND dbo.CronValidate(JSON_VALUE(R.RuleMore, ''$.cron''), GETDATE()) = 1
 ';
 EXEC dbo.sp_executesql @statement = N'
 CREATE OR ALTER PROCEDURE [dbo].[WJbQueue_Item]
 	@Data varchar(10) 
 AS
-SELECT TOP (1) Q.*, R.MoreJson RuleMoreJson, A.Name ActionName, A.Type ActionType, A.MoreJson ActionMoreJson
+SELECT TOP (1) Q.*, R.RuleMore, A.ActionName, A.ActionType, A.ActionMore
 FROM WJbQueue Q
-INNER JOIN WJbRules R ON Q.RuleId = R.Id 
-INNER JOIN WJbActions A ON R.ActionId = A.Id
-WHERE Q.Id = CAST(@Data as int)
+INNER JOIN WJbRules R ON Q.RuleId = R.RuleId 
+INNER JOIN WJbActions A ON R.ActionId = A.ActionId
+WHERE Q.JobId = CAST(@Data as int)
 FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
 ';
 EXEC dbo.sp_executesql @statement = N'
@@ -69,30 +69,30 @@ CREATE OR ALTER PROCEDURE [dbo].[WJbQueue_Start]
 AS
 UPDATE WJbQueue
 SET Started = GETDATE()
-WHERE Id = CAST(@Data as int)
+WHERE JobId = CAST(@Data as int)
 
 EXEC WJbQueue_Item @Data
 ';
 EXEC dbo.sp_executesql @statement = N'
 CREATE OR ALTER PROCEDURE [dbo].[WJbQueue_Start1st]
 AS
-DECLARE @Job TABLE (Id int);
+DECLARE @Job TABLE (JobId int);
 
 WITH cte AS (
-SELECT TOP 1 Q.Id, Q.Started 
+SELECT TOP 1 Q.JobId, Q.Started 
     FROM WJbQueue Q
-    INNER JOIN WJbRules R ON Q.RuleId = R.Id
+    INNER JOIN WJbRules R ON Q.RuleId = R.RuleId
     WHERE Q.Started IS NULL 
-    ORDER BY R.Priority ASC, Q.Id ASC)
+    ORDER BY R.RulePriority ASC, Q.JobId ASC)
 UPDATE cte 
 SET [Started] = GETDATE()
-OUTPUT inserted.Id INTO @Job
+OUTPUT inserted.JobId INTO @Job
 
-SELECT TOP (1) Q.*, R.MoreJson RuleMoreJson, A.Name ActionName, A.Type ActionType, A.MoreJson ActionMoreJson
+SELECT TOP (1) Q.*, R.RuleMore, A.ActionName, A.ActionType, A.ActionMore
 FROM WJbQueue Q
-INNER JOIN @Job T1 ON Q.Id = T1.Id
-INNER JOIN WJbRules R ON Q.RuleId = R.Id 
-INNER JOIN WJbActions A ON R.ActionId = A.Id
+INNER JOIN @Job T1 ON Q.JobId = T1.JobId
+INNER JOIN WJbRules R ON Q.RuleId = R.RuleId 
+INNER JOIN WJbActions A ON R.ActionId = A.ActionId
 FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
 ';
 EXEC dbo.sp_executesql @statement = N'
@@ -126,15 +126,15 @@ WAITFOR DELAY @Delay
 EXEC dbo.sp_executesql @statement = N'
 CREATE OR ALTER   PROCEDURE [dbo].[WJb_Jobs_Ins_Demo]
 AS
-INSERT INTO WJbQueue ( RuleId, Priority, MoreJson)
-SELECT Id, Priority, N''{ "data": "5" }''
+INSERT INTO WJbQueue (RuleId, JobPriority, JobMore)
+SELECT RuleId, RulePriority, N''{ "data": "5" }''
 FROM WJbRules
-WHERE (Id = 2) AND (Disabled = 0)
+WHERE (RuleId = 2) AND (Disabled = 0)
 
-INSERT INTO WJbQueue ( RuleId, Priority, MoreJson)
-SELECT Id, Priority, N''{ "data": "7" }''
+INSERT INTO WJbQueue ( RuleId, JobPriority, JobMore)
+SELECT RuleId, RulePriority, N''{ "data": "7" }''
 FROM WJbRules
-WHERE (Id = 100) AND (Disabled = 0)
+WHERE (RuleId = 100) AND (Disabled = 0)
 ';
 EXEC dbo.sp_executesql @statement = N'
 CREATE OR ALTER PROCEDURE [dbo].[WJb_Proc1_Demo]

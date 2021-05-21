@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using UkrGuru.SqlJson;
-using UkrGuru.WebJobs.Models;
+using UkrGuru.WebJobs.Data;
 
 namespace WebJobsDemo.Pages.Rules
 {

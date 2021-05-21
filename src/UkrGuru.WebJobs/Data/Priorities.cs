@@ -1,4 +1,4 @@
-﻿namespace UkrGuru.WebJobs.Models
+﻿namespace UkrGuru.WebJobs.Data
 {
     public enum Priorities : int
     {

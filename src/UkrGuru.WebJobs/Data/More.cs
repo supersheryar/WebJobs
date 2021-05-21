@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace UkrGuru.WebJobs.Models
+namespace UkrGuru.WebJobs.Data
 {
     public class More : Dictionary<string, string>
     {
@@ -20,9 +20,8 @@ namespace UkrGuru.WebJobs.Models
 
             var items = JsonSerializer.Deserialize<More>(json);
             foreach (var item in items)
-            {
-                if (!more.ContainsKey(item.Key)) { more.Add(item.Key, item.Value); }
-            }
+                if (!more.ContainsKey(item.Key)) 
+                    more.Add(item.Key, item.Value);
         }
 
         public static string GetValue([NotNull] this More more, [NotNull] string name)

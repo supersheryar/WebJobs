@@ -26,10 +26,10 @@ namespace WebJobsApi.Helpers
         {
             if (_wjaSettings.ApiHoleKey != apiholekey) return null;
 
-            return generateJwtToken(_wjaSettings.ApiHoleEmail);
+            return GenerateJwtToken(_wjaSettings.ApiHoleEmail);
         }
 
-        private string generateJwtToken(string email)
+        private string GenerateJwtToken(string email)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_wjaSettings.SecurityKey);

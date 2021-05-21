@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using UkrGuru.SqlJson;
-using UkrGuru.WebJobs.Models;
+using UkrGuru.WebJobs.Data;
 
 namespace WebJobsDemo.Pages.Actions
 {
@@ -17,7 +17,7 @@ namespace WebJobsDemo.Pages.Actions
 
             Action = await DbHelper.FromProcAsync<Action>("WJbActions_Item_Demo", id);
 
-            if (Action.Id == 0) return NotFound();
+            if (Action.ActionId == 0) return NotFound();
 
             return Page();
         }

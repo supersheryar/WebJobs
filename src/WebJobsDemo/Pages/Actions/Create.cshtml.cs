@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using UkrGuru.SqlJson;
-using UkrGuru.WebJobs.Models;
+using UkrGuru.WebJobs.Data;
 
 namespace WebJobsDemo.Pages.Actions
 {

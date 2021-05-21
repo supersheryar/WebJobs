@@ -4,7 +4,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using UkrGuru.SqlJson;
-using UkrGuru.WebJobs.Models;
+using UkrGuru.WebJobs.Data;
 
 namespace UkrGuru.WebJobs.Actions
 {
@@ -21,12 +21,12 @@ namespace UkrGuru.WebJobs.Actions
 
         public virtual void Init(Job job)
         {
-            JobId = job.Id;
+            JobId = job.JobId;
 
             More = new More();
-            More.AddNew(job.MoreJson);
-            More.AddNew(job.RuleMoreJson);
-            More.AddNew(job.ActionMoreJson);
+            More.AddNew(job.JobMore);
+            More.AddNew(job.RuleMore);
+            More.AddNew(job.ActionMore);
         }
 
         public virtual async Task<bool> ExecuteAsync(CancellationToken cancellationToken)
@@ -45,12 +45,8 @@ namespace UkrGuru.WebJobs.Actions
 
             var next_more = new More();
             foreach (var more in More)
-            {
                 if (more.Key.StartsWith(next_prefix))
-                {
                     next_more.Add(more.Key[next_prefix.Length..], more.Value);
-                }
-            }
 
             await LogHelper.LogDebugAsync("NextAsync", (jobId: JobId, next_rule, next_more));
 
@@ -59,5 +55,7 @@ namespace UkrGuru.WebJobs.Actions
 
             await LogHelper.LogInformationAsync("NextAsync done", (jobId: JobId, result: "OK", next_jobId));
         }
+
+        public string ShortStr(string text, int maxLength) => (!string.IsNullOrEmpty(text) && text.Length > maxLength) ? text.Substring(0, maxLength) + "..." : text;
     }
 }

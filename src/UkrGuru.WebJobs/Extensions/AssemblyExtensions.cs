@@ -23,9 +23,8 @@ namespace System.Reflection
 
                 var files = assembly.GetManifestResourceNames().Where(s => s.EndsWith(".sql")).OrderBy(s => s);
                 foreach (var file in files)
-                {
-                    if (file.CompareTo(version_file) >= 0) assembly.ExecScript(file);
-                }
+                    if (file.CompareTo(version_file) >= 0) 
+                        assembly.ExecScript(file);
 
                 try { DbHelper.ExecProcAsync($"WJbSettings_Set", new { Name = product_name, Value = product_version }).Wait(); } catch { }
             }

@@ -4,22 +4,20 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace UkrGuru.WebJobs.Models
+namespace UkrGuru.WebJobs.Data
 {
     public class JobQueue : Job { }
     public class JobHistory : Job { }
 
-    public class Job 
+    public class Job : Rule
     {
         [Key]
-        public int Id { get; set; }
+        public int JobId { get; set; }
 
-        public Priorities Priority { get; set; } = Priorities.Normal;
+        public Priorities JobPriority { get; set; } = Priorities.Normal;
 
         [DisplayFormat(DataFormatString = "{0:HH:mm:ss.fff}")]
         public DateTime Created { get; set; }
-
-        public int RuleId { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:HH:mm:ss.fff}")]
         public DateTime? Started { get; set; }
@@ -27,17 +25,7 @@ namespace UkrGuru.WebJobs.Models
         [DisplayFormat(DataFormatString = "{0:HH:mm:ss.fff}")]
         public DateTime? Finished { get; set; }
 
-        public string MoreJson { get; set; }
-
-        public string RuleName { get; set; }
-
-        public string RuleMoreJson { get; set; }
-
-        public string ActionName { get; set; }
-
-        public string ActionType { get; set; }
-
-        public string ActionMoreJson { get; set; }
+        public string JobMore { get; set; }
     }
 }
     
