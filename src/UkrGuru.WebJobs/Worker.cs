@@ -36,7 +36,7 @@ namespace UkrGuru.WebJobs
                         {
                             var type = Type.GetType(job.ActionType) ?? Type.GetType($"UkrGuru.WebJobs.Actions.{job.ActionType}");
                             
-                            dynamic action = Activator.CreateInstance(type);
+                            using dynamic action = Activator.CreateInstance(type);
 
                             action.Init(job);
 
