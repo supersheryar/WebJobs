@@ -35,8 +35,8 @@ namespace UkrGuru.WebJobs
                         try
                         {
                             var type = Type.GetType(job.ActionType) ?? Type.GetType($"UkrGuru.WebJobs.Actions.{job.ActionType}");
-                            
-                            using dynamic action = Activator.CreateInstance(type);
+
+                            dynamic action = Activator.CreateInstance(type);
 
                             action.Init(job);
 
@@ -64,7 +64,7 @@ namespace UkrGuru.WebJobs
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Worker.ExecuteAsync Error");
-                    await LogHelper.LogErrorAsync("Worker.ExecuteAsync Error", new { errMsg = ex.Message });
+                    await LogHelper.LogErrorAsync("Worker.ExecuteAsync Error", more: new { errMsg = ex.Message });
                 }
 
                 await Task.Delay(_delay, stoppingToken);

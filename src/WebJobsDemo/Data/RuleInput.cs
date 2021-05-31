@@ -7,25 +7,24 @@ namespace UkrGuru.WebJobs.Data
 {
     public partial class RuleInput
     {
-        [Key]
+        [Display(Name = "Id")]
         public int RuleId { get; set; }
 
         [Required]
         [StringLength(100)]
         [Display(Name = "Rule")]
-
         public string RuleName { get; set; }
 
         [Required]
         [Display(Name = "Priority")]
-        public Priorities RulePriority { get; set; } = Priorities.Normal;
+        public Priorities? RulePriority { get; set; } = Priorities.Normal;
 
         [Display(Name = "More")]
         public string RuleMore { get; set; }
 
         [Required]
         [Display(Name = "Action")]
-        public int ActionId { get; set; }
+        public int? ActionId { get; set; }
     }
 }
     

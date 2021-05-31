@@ -11,7 +11,6 @@ namespace UkrGuru.WebJobs.Data
 
     public class Job : Rule
     {
-        [Key]
         [Display(Name = "Id")]
         public int JobId { get; set; }
 

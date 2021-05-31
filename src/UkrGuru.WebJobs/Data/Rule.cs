@@ -7,7 +7,6 @@ namespace UkrGuru.WebJobs.Data
 {
     public partial class Rule: Action
     {
-        [Key]
         [Display(Name = "Id")]
         public int RuleId { get; set; }
 

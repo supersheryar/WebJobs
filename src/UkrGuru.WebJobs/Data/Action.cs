@@ -7,7 +7,6 @@ namespace UkrGuru.WebJobs.Data
 {
     public partial class Action 
     {
-        [Key]
         [Display(Name = "Id")]
         public int ActionId { get; set; }
 

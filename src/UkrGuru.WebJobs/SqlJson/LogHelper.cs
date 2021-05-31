@@ -4,6 +4,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace UkrGuru.SqlJson
@@ -23,7 +24,7 @@ namespace UkrGuru.SqlJson
         {
             if ((byte)logLevel < (byte)MinLogLevel) return;
 
-            try { _ = await DbHelper.ExecProcAsync("WJbLogs_Ins", new { logLevel, title, more }); } catch { }
+            try { _ = await DbHelper.ExecProcAsync("WJbLogs_Ins", new { logLevel, title, logMore = more is string ? more : JsonSerializer.Serialize(more) }); } catch { }
         }
 
         public static async Task LogTraceAsync([NotNull] this SqlConnection connection, string title, object more = null) => await LogAsync(connection, LogLevel.Trace, title, more);
@@ -32,12 +33,12 @@ namespace UkrGuru.SqlJson
         public static async Task LogWarningAsync([NotNull] this SqlConnection connection, string title, object more = null) => await LogAsync(connection, LogLevel.Warning, title, more);
         public static async Task LogErrorAsync([NotNull] this SqlConnection connection, string title, object more = null) => await LogAsync(connection, LogLevel.Error, title, more);
         public static async Task LogCriticalAsync([NotNull] this SqlConnection connection, string title, object more = null) => await LogAsync(connection, LogLevel.Critical, title, more);
-       
+
         public static async Task LogAsync([NotNull] this SqlConnection connection, LogLevel logLevel, string title, object more = null)
         {
             if ((byte)logLevel < (byte)MinLogLevel) return;
-            
-            try { _ = await connection.ExecProcAsync("WJbLogs_Ins", new { logLevel, title, more }); } catch { }
+
+            try { _ = await connection.ExecProcAsync("WJbLogs_Ins", new { logLevel, title, logMore = more is string ? more : JsonSerializer.Serialize(more) }); } catch { }
         }
     }
 }

@@ -51,7 +51,7 @@ namespace UkrGuru.WebJobs.Actions
             await LogHelper.LogDebugAsync("NextAsync", (jobId: JobId, next_rule, next_more));
 
             var next_jobId = await DbHelper.FromProcAsync("WJbQueue_Ins",
-                new { Rule = next_rule, Priority = (byte)Priorities.ASAP, MoreJson = next_more });
+                new { Rule = next_rule, RulePriority = (byte)Priorities.ASAP, RuleMore = next_more });
 
             await LogHelper.LogInformationAsync("NextAsync done", (jobId: JobId, result: "OK", next_jobId));
         }
