@@ -48,12 +48,12 @@ namespace UkrGuru.WebJobs.Actions
                 if (more.Key.StartsWith(next_prefix))
                     next_more.Add(more.Key[next_prefix.Length..], more.Value);
 
-            await LogHelper.LogDebugAsync("NextAsync", (jobId: JobId, next_rule, next_more));
+            await LogHelper.LogDebugAsync("NextAsync", new { jobId = JobId, next_rule, next_more });
 
             var next_jobId = await DbHelper.FromProcAsync("WJbQueue_Ins",
                 new { Rule = next_rule, RulePriority = (byte)Priorities.ASAP, RuleMore = next_more });
 
-            await LogHelper.LogInformationAsync("NextAsync done", (jobId: JobId, result: "OK", next_jobId));
+            await LogHelper.LogInformationAsync("NextAsync done", new { jobId = JobId, result = "OK", next_jobId });
         }
 
         public string ShortStr(string text, int maxLength) => (!string.IsNullOrEmpty(text) && text.Length > maxLength) ? text.Substring(0, maxLength) + "..." : text;

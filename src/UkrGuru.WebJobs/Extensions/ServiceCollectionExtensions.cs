@@ -2,11 +2,11 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs;
+using UkrGuru.WebJobs.Data;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace UkrGuru.WebJobs.Data
 {
-    public class More : Dictionary<string, string>
+    public partial class More : Dictionary<string, string>
     {
     }
 

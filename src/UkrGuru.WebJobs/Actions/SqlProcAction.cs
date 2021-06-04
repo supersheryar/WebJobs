@@ -21,7 +21,7 @@ namespace UkrGuru.WebJobs.Actions
 
             var result_name = More.GetValue("result_name");
 
-            await LogHelper.LogDebugAsync("SqlProcAction", (jobId: JobId, proc, data: ShortStr(data, 200), result_name, timeout));
+            await LogHelper.LogDebugAsync("SqlProcAction", new { jobId = JobId, proc, data = ShortStr(data, 200), result_name, timeout });
 
             if (string.IsNullOrEmpty(result_name))
             {
@@ -35,7 +35,7 @@ namespace UkrGuru.WebJobs.Actions
 
                 More[result_name] = result;
 
-                await LogHelper.LogInformationAsync("SqlProcAction done", (jobId: JobId, result: ShortStr(result, 200)));
+                await LogHelper.LogInformationAsync("SqlProcAction done", new { jobId = JobId, result = ShortStr(result, 200) });
             }
 
             return true;

@@ -31,7 +31,7 @@ namespace UkrGuru.WebJobs
                     var job = await DbHelper.FromProcAsync<JobQueue>("WJbQueue_Start1st");
                     if (job.JobId > 0)
                     {
-                        var jobId = job.JobId;
+                        var jobId = job.JobId; bool result = false;
                         try
                         {
                             var type = Type.GetType(job.ActionType) ?? Type.GetType($"UkrGuru.WebJobs.Actions.{job.ActionType}");
@@ -40,18 +40,18 @@ namespace UkrGuru.WebJobs
 
                             action.Init(job);
 
-                            bool result = await action.ExecuteAsync(stoppingToken);
+                            result = await action.ExecuteAsync(stoppingToken);
 
                             await action.NextAsync(result, stoppingToken);
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, $"Job #{jobId} crashed.");
-                            await LogHelper.LogErrorAsync($"Job #{jobId} crashed.", (jobId, errMsg: ex.Message));
+                            result = false; _logger.LogError(ex, $"Job #{jobId} crashed.");
+                            await LogHelper.LogErrorAsync($"Job #{jobId} crashed.", new { jobId, errMsg = ex.Message });
                         }
                         finally
                         {
-                            await DbHelper.ExecProcAsync("WJbQueue_Finish", jobId);
+                            _ = await DbHelper.ExecProcAsync("WJbQueue_Finish", jobId.ToString());
                         }
 
                         _delay = 100;
@@ -64,7 +64,7 @@ namespace UkrGuru.WebJobs
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Worker.ExecuteAsync Error");
-                    await LogHelper.LogErrorAsync("Worker.ExecuteAsync Error", more: new { errMsg = ex.Message });
+                    await LogHelper.LogErrorAsync("Worker.ExecuteAsync Error", new { errMsg = ex.Message });
                 }
 
                 await Task.Delay(_delay, stoppingToken);

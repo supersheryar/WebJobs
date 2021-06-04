@@ -12,7 +12,7 @@ namespace WebJobsDemo.Actions
         public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken)
         {
             var proc = More.GetValue("proc");
-            if (string.IsNullOrWhiteSpace(proc)) throw new (nameof(proc));
+            if (string.IsNullOrWhiteSpace(proc)) throw new(nameof(proc));
 
             var data = More.GetValue("data");
 
@@ -20,7 +20,7 @@ namespace WebJobsDemo.Actions
 
             var result_name = More.GetValue("result_name");
 
-            await LogHelper.LogDebugAsync("YourSqlProcAction", (jobId: JobId, proc, data: ShortStr(data, 200), result_name, timeout));
+            await LogHelper.LogDebugAsync("YourSqlProcAction", new { jobId = JobId, proc, data = ShortStr(data, 200), result_name, timeout });
 
             if (string.IsNullOrEmpty(result_name))
             {
@@ -34,7 +34,7 @@ namespace WebJobsDemo.Actions
 
                 More[result_name] = result;
 
-                await LogHelper.LogInformationAsync("YourSqlProcAction done", (jobId: JobId, result: ShortStr(result, 200)));
+                await LogHelper.LogInformationAsync("YourSqlProcAction done", new { jobId = JobId, result = ShortStr(result, 200) });
             }
 
             return true;

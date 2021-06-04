@@ -6,10 +6,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace UkrGuru.WebJobs.Data
 {
-    public class JobQueue : Job { }
-    public class JobHistory : Job { }
+    public partial class JobQueue : Job { }
+    public partial class JobHistory : Job { }
 
-    public class Job : Rule
+    public partial class Job : Rule
     {
         [Display(Name = "Id")]
         public int JobId { get; set; }
@@ -28,6 +28,8 @@ namespace UkrGuru.WebJobs.Data
 
         [Display(Name = "More")]
         public string JobMore { get; set; }
+
+        public bool Result { get; set; }
     }
 }
     
