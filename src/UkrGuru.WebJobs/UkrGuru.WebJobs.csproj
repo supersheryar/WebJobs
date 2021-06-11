@@ -13,9 +13,9 @@
     <Description>A starter library for performing background Jobs on your ASP.NET Core website. Supports cron and trigger Rules. Provides extensibility for any custom Action.</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
-    <Version>1.2.3</Version>
+    <Version>1.2.5</Version>
     <PackageTags>worker aspnetcore scheduler sqlserver webjobs sql-server-procedures</PackageTags>
-    <PackageReleaseNotes>"Convert to tuple" was the wrong idea. Rollback.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added CancellationToken in all methods. Optimised Scheduler.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -34,7 +34,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Include="UkrGuru.SqlJson" Version="2.1.7" />
+    <PackageReference Include="UkrGuru.SqlJson" Version="2.1.8" />
   </ItemGroup>
 
   <ItemGroup>

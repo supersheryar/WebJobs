@@ -28,8 +28,8 @@ namespace UkrGuru.WebJobs
             {
                 try
                 {
-                    var job = await DbHelper.FromProcAsync<JobQueue>("WJbQueue_Start1st");
-                    if (job.JobId > 0)
+                    var job = await DbHelper.FromProcAsync<JobQueue>("WJbQueue_Start1st", cancellationToken: stoppingToken);
+                    if (job?.JobId > 0)
                     {
                         var jobId = job.JobId; bool result = false;
                         try
@@ -51,14 +51,14 @@ namespace UkrGuru.WebJobs
                         }
                         finally
                         {
-                            _ = await DbHelper.ExecProcAsync("WJbQueue_Finish", jobId.ToString());
+                            _ = await DbHelper.ExecProcAsync("WJbQueue_Finish", jobId.ToString(), cancellationToken: stoppingToken);
                         }
 
                         _delay = 100;
                     }
                     else
                     {
-                        if (_delay < 25600) _delay += 100;
+                        if (_delay < 12800) _delay += 100;
                     }
                 }
                 catch (Exception ex)

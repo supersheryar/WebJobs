@@ -14,49 +14,31 @@ namespace UkrGuru.WebJobs
     public class Scheduler : BackgroundService
     {
         private readonly ILogger<Scheduler> _logger;
-        private readonly IConfiguration _configuration;
 
-        public Scheduler(ILogger<Scheduler> logger, IConfiguration configuration)
-        {
+        public Scheduler(ILogger<Scheduler> logger) { 
             _logger = logger;
-            _configuration = configuration;
         }
-
-        private DateTime _lastTime = DateTime.Today;
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                _ = Task.Run(async () => await CreateCronJobs(stoppingToken), stoppingToken);
+
+                await Task.Delay(TimeSpan.FromSeconds(60 - DateTime.Now.Second), stoppingToken);
+            }
+        }
+
+        protected virtual async Task CreateCronJobs(CancellationToken stoppingToken)
+        {
             try
             {
-                while (!stoppingToken.IsCancellationRequested)
-                {
-                    //if (string.IsNullOrEmpty(DbHelper.ConnString))
-                    //{
-                    //    DbHelper.ConnString = _configuration.GetConnectionString("SqlJsonConnection");
-                    //}
-
-                    if (_lastTime.AddMinutes(1) < DateTime.Now)
-                    {
-                        _lastTime = DateTime.Now;
-
-                        try
-                        {
-                            await DbHelper.ExecProcAsync("WJbQueue_InsCron");
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError(ex, "WJbQueue_InsCron Error", nameof(ExecuteAsync));
-                            await LogHelper.LogErrorAsync("WJbQueue_InsCron Error", new { errMsg = ex.Message });
-                        }
-                    }
-
-                    await Task.Delay(16000, stoppingToken);
-                }
+                await DbHelper.ExecProcAsync("WJbQueue_InsCron", cancellationToken: stoppingToken);
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(ex, "Scheduler Error", nameof(ExecuteAsync));
-                await LogHelper.LogErrorAsync("Scheduler Error", new { errMsg = ex.Message });
+                _logger.LogError(ex, "WJbQueue_InsCron Error", nameof(ExecuteAsync));
+                await LogHelper.LogErrorAsync("WJbQueue_InsCron Error", new { errMsg = ex.Message });
             }
         }
     }

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System.Linq;
+using UkrGuru.WebJobs.Data;
 using WebJobsApi.Helpers;
 
 namespace WebJobsApi

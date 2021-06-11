@@ -25,13 +25,13 @@ namespace UkrGuru.WebJobs.Actions
 
             if (string.IsNullOrEmpty(result_name))
             {
-                _ = await DbHelper.ExecProcAsync($"WJb_{proc}", data, timeout);
+                _ = await DbHelper.ExecProcAsync($"WJb_{proc}", data, timeout, cancellationToken);
 
                 await LogHelper.LogInformationAsync("SqlProcAction done", new { jobId = JobId });
             }
             else
             {
-                var result = await DbHelper.FromProcAsync($"WJb_{proc}", data, timeout);
+                var result = await DbHelper.FromProcAsync($"WJb_{proc}", data, timeout, cancellationToken);
 
                 More[result_name] = result;
 
