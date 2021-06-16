@@ -25,6 +25,9 @@ namespace UkrGuru.WebJobs.Data
         [Required]
         [Display(Name = "Action")]
         public int? ActionId { get; set; }
+
+        [Display(Name = "Disabled")]
+        public bool Disabled { get; set; }
     }
 }
     

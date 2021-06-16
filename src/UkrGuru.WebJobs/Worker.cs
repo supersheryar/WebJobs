@@ -51,7 +51,8 @@ namespace UkrGuru.WebJobs
                         }
                         finally
                         {
-                            _ = await DbHelper.ExecProcAsync("WJbQueue_Finish", jobId.ToString(), cancellationToken: stoppingToken);
+                            _ = await DbHelper.ExecProcAsync("WJbQueue_Finish", new { JobId = jobId, JobStatus = result ? JobStatus.Completed : JobStatus.Failed },
+                                cancellationToken: stoppingToken);
                         }
 
                         _delay = 100;

@@ -18,6 +18,8 @@ namespace UkrGuru.WebJobs.Data
 
         [Display(Name = "More")] 
         public string ActionMore { get; set; }
+
+        public bool Disabled { get; set; }
     }
 }
     

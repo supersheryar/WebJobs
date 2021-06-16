@@ -29,7 +29,8 @@ namespace UkrGuru.WebJobs.Data
         [Display(Name = "More")]
         public string JobMore { get; set; }
 
-        public bool Result { get; set; }
+        [Display(Name = "Status")]
+        public JobStatus JobStatus { get; set; }
     }
 }
     

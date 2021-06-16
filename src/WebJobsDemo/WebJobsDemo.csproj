@@ -4,7 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
     <UserSecretsId>12dd54be-cd4e-4f6a-9c0b-459b55357aa2</UserSecretsId>
-    <Version>1.2.2</Version>
+    <Version>1.2.7</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,10 +16,12 @@
 
   <ItemGroup>
     <None Remove="Resources\1.2.0.sql" />
+    <None Remove="Resources\1.2.7.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\1.2.0.sql" />
+    <EmbeddedResource Include="Resources\1.2.7.sql" />
   </ItemGroup>
 
   <ItemGroup>

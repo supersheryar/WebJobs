@@ -13,9 +13,9 @@
     <Description>A starter library for performing background Jobs on your ASP.NET Core website. Supports cron and trigger Rules. Provides extensibility for any custom Action.</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
-    <Version>1.2.5</Version>
+    <Version>1.2.7</Version>
     <PackageTags>worker aspnetcore scheduler sqlserver webjobs sql-server-procedures</PackageTags>
-    <PackageReleaseNotes>Added CancellationToken in all methods. Optimised Scheduler.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added JobStatus in WJbQueue and WJbHistory.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -24,6 +24,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\1.2.7.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\1.2.7.sql" />
     <EmbeddedResource Include="Resources\1.2.0.4.Procs.sql" />
     <EmbeddedResource Include="Resources\1.2.0.3.Funcs.sql" />
     <EmbeddedResource Include="Resources\1.2.0.2.Data.sql" />

@@ -36,31 +36,37 @@
             <th>
                 @Html.DisplayNameFor(model => model.Jobs[0].JobMore)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Jobs[0].JobStatus)
+            </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.Jobs)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.JobId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Created)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RuleName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Started, "HH:mm:ss.ttt")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Finished, "HH:mm:ss.ttt")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.JobMore)
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Created)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RuleName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Started, "HH:mm:ss.ttt")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Finished, "HH:mm:ss.ttt")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobMore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobStatus)
+            </td>
+        </tr>
         }
     </tbody>
 </table>
