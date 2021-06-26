@@ -5,6 +5,10 @@
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
     <UserSecretsId>12dd54be-cd4e-4f6a-9c0b-459b55357aa2</UserSecretsId>
     <Version>1.2.7</Version>
+    <Authors>Oleksandr Viktor (UkrGuru)</Authors>
+    <Company>PE VIKTOR Oleksandr Oleksandrovych</Company>
+    <Copyright>Oleksandr Viktor (UkrGuru)</Copyright>
+    <Description>Demonstration of use UkrGuru.WebJobs Package under a ASP.NET Core Website</Description>
   </PropertyGroup>
 
   <ItemGroup>

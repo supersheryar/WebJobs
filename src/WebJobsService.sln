@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31410.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebJobsService", "WebJobsService\WebJobsService.csproj", "{35770D09-A849-4E62-8EDA-7608AB6CBAAB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35770D09-A849-4E62-8EDA-7608AB6CBAAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35770D09-A849-4E62-8EDA-7608AB6CBAAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35770D09-A849-4E62-8EDA-7608AB6CBAAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35770D09-A849-4E62-8EDA-7608AB6CBAAB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8E56D361-E273-4F7A-9AFD-8EC039228E15}
+	EndGlobalSection
+EndGlobal
