@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>UkrGuru.WebJobs.Actions</AssemblyName>
+    <RootNamespace>UkrGuru.WebJobs</RootNamespace>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
+    <Authors>Oleksandr Viktor (UkrGuru)</Authors>
+    <Company>Oleksandr Viktor (UkrGuru)</Company>
+    <Copyright>Oleksandr Viktor (UkrGuru)</Copyright>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageIcon>ukrguru-logo.jpg</PackageIcon>
+    <PackageIconUrl />
+    <RepositoryUrl>https://github.com/UkrGuru/WebJobs</RepositoryUrl>
+    <PackageTags>worker aspnetcore scheduler sqlserver webjobs sql-server-procedures</PackageTags>
+    <Description>Part of UkrGuru.WebJobs package extracted for Custom Actions future.</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.2.8</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="UkrGuru.SqlJson" Version="2.1.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\ukrguru-logo.jpg">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
