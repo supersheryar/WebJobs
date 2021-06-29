@@ -10,7 +10,7 @@ Supports cron and trigger Rules. Allows extensibility for any custom Action.
 ### Prerequisites
 
 - IDE - Visual Studio 2019 or higher
-- Framework - .NET Core 3.0 or higher
+- Framework - .NET Core 5.0 or higher
 - Database - SQL Server 2016 Express or higher 
 
 ### Clone
