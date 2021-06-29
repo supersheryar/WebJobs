@@ -3,7 +3,7 @@
 UkrGuru.WebJobs is a Starter Library for running background tasks under your ASP.NET Core website with Sql Server.
 Supports cron and trigger Rules. Allows extensibility for any custom Action.
 
-![Demo_App](https://github.com/UkrGuru/WebJobs/docs/images/webjobs-demo.gif)
+![Demo_App](https://github.com/UkrGuru/WebJobs/blob/main/docs/images/webjobs-demo.gif)
 
 ## Installation
 
