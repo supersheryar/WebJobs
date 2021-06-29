@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>UkrGuru.WebJobs.Actions.SshNet</AssemblyName>
+    <RootNamespace>UkrGuru.WebJobs.Actions.SshNet</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SSH.NET" Version="2020.0.1" />
+    <PackageReference Include="UkrGuru.WebJobs.Actions" Version="1.2.8" />
+  </ItemGroup>
+
+</Project>
