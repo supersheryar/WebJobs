@@ -13,9 +13,9 @@
     <Description>A starter library for performing background Jobs on your ASP.NET Core website. Supports cron and trigger Rules. Provides extensibility for any custom Action.</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
-    <Version>1.2.9</Version>
+    <Version>1.3.0</Version>
     <PackageTags>worker aspnetcore scheduler sqlserver webjobs sql-server-procedures</PackageTags>
-    <PackageReleaseNotes>Extract UkrGuru.WebJobs.Actions in separate package for CustomActions future.</PackageReleaseNotes>
+    <PackageReleaseNotes>Upgrade to UkrGuru.WebJobs.Actions 1.3.0</PackageReleaseNotes>
     <AssemblyName>UkrGuru.WebJobs</AssemblyName>
     <RootNamespace>UkrGuru.WebJobs</RootNamespace>
   </PropertyGroup>
@@ -48,8 +48,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Include="UkrGuru.SqlJson" Version="2.1.8" />
-    <PackageReference Include="UkrGuru.WebJobs.Actions" Version="1.2.8" />
+    <PackageReference Include="UkrGuru.WebJobs.Actions" Version="1.3.0" />
   </ItemGroup>
 
   <ItemGroup>

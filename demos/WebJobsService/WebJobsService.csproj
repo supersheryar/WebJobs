@@ -19,6 +19,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
-    <PackageReference Include="UkrGuru.WebJobs" Version="1.2.9" />
+    <PackageReference Include="UkrGuru.WebJobs" Version="1.3.0" />
   </ItemGroup>
 </Project>
