@@ -16,17 +16,17 @@ namespace UkrGuru.WebJobs.Actions
 {
     public class SmtpSettings
     {
-        [JsonPropertyName("smptFrom")]
+        [JsonPropertyName("from")]
         public string From { get; set; }
-        [JsonPropertyName("smptHost")]
+        [JsonPropertyName("host")]
         public string Host { get; set; }
-        [JsonPropertyName("smptPort")]
+        [JsonPropertyName("port")]
         public int Port { get; set; }
-        [JsonPropertyName("smptEnableSsl")]
+        [JsonPropertyName("enableSsl")]
         public bool EnableSsl { get; set; }
-        [JsonPropertyName("smptUserName")]
+        [JsonPropertyName("userName")]
         public string UserName { get; set; }
-        [JsonPropertyName("smptPassword")]
+        [JsonPropertyName("password")]
         public string Password { get; set; }
     }
 
