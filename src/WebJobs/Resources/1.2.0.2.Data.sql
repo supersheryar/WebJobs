@@ -1,5 +1,4 @@
 SET IDENTITY_INSERT [dbo].[WJbActions] ON 
-
 INSERT [dbo].[WJbActions] ([ActionId], [ActionName], [Disabled], [ActionType], [ActionMore]) VALUES (1, N'RunSqlProc', 0, N'SqlProcAction, UkrGuru.WebJobs', N'{
   "proc": "",
   "data": null,
@@ -7,8 +6,8 @@ INSERT [dbo].[WJbActions] ([ActionId], [ActionName], [Disabled], [ActionType], [
   "result_name": null
 }')
 SET IDENTITY_INSERT [dbo].[WJbActions] OFF
-SET IDENTITY_INSERT [dbo].[WJbRules] ON 
 
+SET IDENTITY_INSERT [dbo].[WJbRules] ON 
 INSERT [dbo].[WJbRules] ([RuleId], [RuleName], [Disabled], [RulePriority], [ActionId], [RuleMore]) VALUES (1, N'Cron Rule', 0, 2, 1, N'{
   "cron": "* * * * *",
   "proc": "Jobs_Ins_Demo"

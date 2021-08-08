@@ -81,12 +81,12 @@ namespace UkrGuru.WebJobs.Actions.SshNet
 
                             if (!string.IsNullOrEmpty(local_move_path))
                             {
-                                File.Move(info.FullName, Path.Combine(local_move_path, info.Name), true);
+                                System.IO.File.Move(info.FullName, Path.Combine(local_move_path, info.Name), true);
                                 await LogHelper.LogDebugAsync(funcName, new { jobId, errMsg = $"Moved: {info.Name}" });
                             }
                             else
                             {
-                                File.Delete(info.FullName);
+                                System.IO.File.Delete(info.FullName);
                                 await LogHelper.LogDebugAsync(funcName, new { jobId, errMsg = $"Deleted: {info.Name}" });
                             }
                         }

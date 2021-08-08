@@ -66,7 +66,7 @@ namespace UkrGuru.WebJobs.Actions.SshNet
 
                             try
                             {
-                                using var stream = File.OpenWrite(localFile);
+                                using var stream = System.IO.File.OpenWrite(localFile);
                                 {
                                     client.DownloadFile(remoteFile, stream);
 

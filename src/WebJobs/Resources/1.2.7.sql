@@ -1,8 +1,8 @@
 EXEC dbo.sp_executesql @statement = N'
-ALTER TABLE dbo.WJbQueue ADD
-	JobStatus tinyint NOT NULL CONSTRAINT DF_WJbQueue_JobStatus DEFAULT 0
-ALTER TABLE dbo.WJbHistory ADD
-	JobStatus tinyint NOT NULL CONSTRAINT DF_WJbHistory_JobStatus DEFAULT 0
+IF OBJECT_ID(''dbo.DF_WJbQueue_JobStatus'', ''D'') IS NULL 
+    ALTER TABLE dbo.WJbQueue ADD JobStatus tinyint NOT NULL CONSTRAINT DF_WJbQueue_JobStatus DEFAULT 0;
+IF OBJECT_ID(''dbo.DF_WJbHistory_JobStatus'', ''D'') IS NULL 
+    ALTER TABLE dbo.WJbHistory ADD JobStatus tinyint NOT NULL CONSTRAINT DF_WJbHistory_JobStatus DEFAULT 0;
 ';
 
 EXEC dbo.sp_executesql @statement = N'
