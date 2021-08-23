@@ -11,7 +11,7 @@ Supports cron and trigger Rules. Allows extensibility for any custom Action.
 
 - IDE - Visual Studio 2019 or higher
 - Framework - .NET 5 or higher
-- Database - SQL Server 2016 Express or higher 
+- Database - SQL Server 2019 Express or higher 
 
 ### Clone
 
