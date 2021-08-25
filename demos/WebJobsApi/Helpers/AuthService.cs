@@ -22,16 +22,11 @@ namespace WebJobsApi.Helpers
             _wjaSettings = wjaSettings.Value;
         }
 
-        public string Authenticate([FromBody] string apiholekey)
-        {
-            if (_wjaSettings.ApiHoleKey != apiholekey) return null;
-
-            return GenerateJwtToken(_wjaSettings.ApiHoleEmail);
-        }
+        public string Authenticate([FromBody] string apiholekey) => _wjaSettings.ApiHoleKey == apiholekey ? GenerateJwtToken(_wjaSettings.ApiHoleEmail) : null;
 
         private string GenerateJwtToken(string email)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityTokenHandler tokenHandler = new();
             var key = Encoding.ASCII.GetBytes(_wjaSettings.SecurityKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {

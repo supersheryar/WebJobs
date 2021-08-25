@@ -13,9 +13,9 @@
     <Description>A starter library for performing background Jobs on your ASP.NET Core website. Supports cron and trigger Rules. Provides extensibility for any custom Action.</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
-    <Version>1.3.1</Version>
+    <Version>1.3.3</Version>
     <PackageTags>worker aspnetcore scheduler sqlserver webjobs sql-server-procedures sendemail</PackageTags>
-    <PackageReleaseNotes>Added SendEmailAction and WJbFiles for large body and attachments</PackageReleaseNotes>
+    <PackageReleaseNotes>Added FillTemplateAction</PackageReleaseNotes>
     <AssemblyName>UkrGuru.WebJobs</AssemblyName>
     <RootNamespace>UkrGuru.WebJobs</RootNamespace>
   </PropertyGroup>
@@ -34,9 +34,13 @@
     <None Remove="Resources\1.2.7.sql" />
     <None Remove="Resources\1.2.8.sql" />
     <None Remove="Resources\1.3.1.sql" />
+    <None Remove="Resources\1.3.2.sql" />
+    <None Remove="Resources\1.3.3.sql" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\1.3.3.sql" />
+    <EmbeddedResource Include="Resources\1.3.2.sql" />
     <EmbeddedResource Include="Resources\1.3.1.sql" />
     <EmbeddedResource Include="Resources\1.2.0.1.Tables.sql" />
     <EmbeddedResource Include="Resources\1.2.0.2.Data.sql" />
@@ -50,7 +54,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Include="UkrGuru.WebJobs.Actions" Version="1.3.1" />
+    <PackageReference Include="UkrGuru.WebJobs.Actions" Version="1.3.3" />
   </ItemGroup>
 
   <ItemGroup>

@@ -13,11 +13,11 @@
     <PackageIcon>ukrguru-logo.jpg</PackageIcon>
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/UkrGuru/WebJobs</RepositoryUrl>
-    <PackageTags>worker aspnetcore scheduler sqlserver webjobs sql-server-procedures sendemail</PackageTags>
+    <PackageTags>worker aspnetcore scheduler sqlserver webjobs sql-server-procedures sendemail template</PackageTags>
     <Description>Part of UkrGuru.WebJobs package extracted for Custom Actions future.</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.3.1</Version>
-    <PackageReleaseNotes>Added SendEmailAction and WJbFiles for large body and attachments</PackageReleaseNotes>
+    <Version>1.3.3</Version>
+    <PackageReleaseNotes>Added FillTemplateAction</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
