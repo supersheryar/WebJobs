@@ -60,7 +60,7 @@ namespace UkrGuru.WebJobs.Actions
 
             if (Guid.TryParse(body, out var guidBody))
             {
-                var file = await DbHelper.FromProcAsync<File>("WJbFiles_Item", guidBody);
+                var file = await DbHelper.FromProcAsync<File>("WJbFiles_Item", body);
                 if (file.Id != Guid.Empty) body = Encoding.UTF8.GetString(file.FileContent);
             }
 
@@ -77,7 +77,7 @@ namespace UkrGuru.WebJobs.Actions
             {
                 if (Guid.TryParse(attachment, out var guidAttach))
                 {
-                    var file = await DbHelper.FromProcAsync<File>("WJbFiles_Item", guidAttach);
+                    var file = await DbHelper.FromProcAsync<File>("WJbFiles_Item", attachment);
                     if (file.Id != Guid.Empty)
                     {
                         System.IO.MemoryStream ms = new (file.FileContent);
@@ -97,7 +97,7 @@ namespace UkrGuru.WebJobs.Actions
                     var fileName = Convert.ToString(files[i]);
                     if (Guid.TryParse(fileName, out var guidAttach))
                     {
-                        var file = await DbHelper.FromProcAsync<File>("WJbFiles_Item", guidAttach);
+                        var file = await DbHelper.FromProcAsync<File>("WJbFiles_Item", fileName);
                         if (file.Id != Guid.Empty)
                         {
                             System.IO.MemoryStream ms = new (file.FileContent);
