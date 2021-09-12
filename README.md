@@ -16,13 +16,13 @@ Available SSH.NET Actions:
 ![Demo_App](https://github.com/UkrGuru/WebJobs/blob/main/docs/images/webjobs-demo.gif)
 
 ## Documentation
-- ![Getting Started Guide](#)
-- ![How-to Guide](#)
+- [Getting Started Guide](#)
+- [How-to Guide](#)
 
 ## Demos
-- ![WebJobsDemo](#https://github.com/UkrGuru/WebJobs/tree/main/demos/WebJobsDemo) 
-- ![WebJobsService](#https://github.com/UkrGuru/WebJobs/tree/main/demos/WebJobsService) 
-- ![CustomActions](#https://github.com/UkrGuru/WebJobs/tree/main/demos/CustomActions) 
+- [WebJobsDemo](#https://github.com/UkrGuru/WebJobs/tree/main/demos/WebJobsDemo) 
+- [WebJobsService](#https://github.com/UkrGuru/WebJobs/tree/main/demos/WebJobsService) 
+- [CustomActions](#https://github.com/UkrGuru/WebJobs/tree/main/demos/CustomActions) 
 
 ## Installation
 
