@@ -56,7 +56,7 @@ namespace UkrGuru.WebJobs.Actions
             var attachment = More.GetValue("attachment");
             var attachments = More.GetValue("attachments");
 
-            await LogHelper.LogDebugAsync("SendEmailAction", new { jobId = JobId, to, cc, bcc, subject, body = ShortStr(body, 200), attachment, attachments });
+            await LogHelper.LogDebugAsync(nameof(SendEmailAction), new { jobId = JobId, to, cc, bcc, subject, body = ShortStr(body, 200), attachment, attachments });
 
             if (Guid.TryParse(body, out var guidBody))
             {
@@ -118,7 +118,7 @@ namespace UkrGuru.WebJobs.Actions
 
             await smtp.SendMailAsync(message);
 
-            await LogHelper.LogDebugAsync("SendEmailAction", new { jobId = JobId, result = "OK" });
+            await LogHelper.LogInformationAsync(nameof(SendEmailAction), new { jobId = JobId, result = "OK" });
 
             return true;
         }

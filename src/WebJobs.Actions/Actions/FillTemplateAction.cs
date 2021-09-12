@@ -21,31 +21,37 @@ namespace UkrGuru.WebJobs.Actions
             if (string.IsNullOrWhiteSpace(tname_pattern)) throw new ArgumentNullException(nameof(tname_pattern));
 
             var vals = new More();
-            foreach (var more in this.More)
-                if (more.Key.StartsWith(tvalue_prefix))
-                    vals.Add(more.Key[tvalue_prefix.Length..], more.Value);
+            foreach (var more in from more in this.More
+                                 where more.Key.StartsWith(tvalue_prefix)
+                                 select more)
+            {
+                vals.Add(more.Key[tvalue_prefix.Length..], more.Value);
+            }
 
             var templates = new More();
             foreach (var more in More.ToList())
-                if (more.Key.StartsWith("template_"))
+            {
+                if (!more.Key.StartsWith("template_")) continue;
+
+                var tkey = more.Key[template_prefix.Length..];
+                var template = more.Value;
+
+                var query = from m in new Regex(tname_pattern).Matches(template) select m.Value;
+
+                var vars = query.Distinct().ToArray();
+                foreach (var key in from key in vars
+                                    where vals.ContainsKey(key)
+                                    select key)
                 {
-                    var tkey = more.Key[template_prefix.Length..];
-                    var template = more.Value;
-
-                    var query = from m in new Regex(tname_pattern).Matches(template) select m.Value;
-
-                    var vars = query.Distinct().ToArray();
-
-                    foreach (var key in vars)
-                        if (vals.ContainsKey(key))
-                            template = template.Replace(key, vals[key]);
-
-                    await LogHelper.LogDebugAsync("FillTemplateAction", new { jobId = JobId, tkey, template = ShortStr(template, 200) });
-
-                    More[$"next_{tkey}"] = template;
+                    template = template.Replace(key, vals[key]);
                 }
 
-            await LogHelper.LogDebugAsync("FillTemplateAction", new { jobId = JobId, result = "OK" });
+                await LogHelper.LogDebugAsync(nameof(FillTemplateAction), new { jobId = JobId, tkey, template = ShortStr(template, 200) });
+
+                More[$"next_{tkey}"] = template;
+            }
+
+            await LogHelper.LogInformationAsync(nameof(FillTemplateAction), new { jobId = JobId, result = "OK" });
 
             return true;
         }

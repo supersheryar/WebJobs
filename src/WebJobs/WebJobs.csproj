@@ -10,14 +10,15 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageIcon>ukrguru-logo.jpg</PackageIcon>
     <RepositoryUrl>https://github.com/UkrGuru/WebJobs</RepositoryUrl>
-    <Description>A starter library for performing background Jobs on your ASP.NET Core website. Supports cron and trigger Rules. Provides extensibility for any custom Action.</Description>
+    <Description>UkrGuru.WebJobs package is a scheduler and worker for any of your background jobs under any type of .NET 5 applications. Supports cron in the Rules. Provides extensibility for any Custom Actions.</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
-    <Version>1.3.5</Version>
-    <PackageTags>worker aspnetcore scheduler sqlserver webjobs sql-server-procedures sendemail</PackageTags>
-    <PackageReleaseNotes>Fixed bug with WJbFiles_Item parameter</PackageReleaseNotes>
+    <Version>1.3.6</Version>
+    <PackageTags>netcore sqlserver webjobs scheduler worker sql-server-procedures sendemail template</PackageTags>
+    <PackageReleaseNotes></PackageReleaseNotes>
     <AssemblyName>UkrGuru.WebJobs</AssemblyName>
     <RootNamespace>UkrGuru.WebJobs</RootNamespace>
+    <PackageIconUrl />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

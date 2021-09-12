@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
+using System.Linq;
 
 namespace UkrGuru.WebJobs.Actions
 {
@@ -44,9 +45,12 @@ namespace UkrGuru.WebJobs.Actions
             if (string.IsNullOrEmpty(next_rule)) return;
 
             var next_more = new More();
-            foreach (var more in More)
-                if (more.Key.StartsWith(next_prefix))
-                    next_more.Add(more.Key[next_prefix.Length..], more.Value);
+            foreach (var more in from more in More
+                                 where more.Key.StartsWith(next_prefix)
+                                 select more)
+            {
+                next_more.Add(more.Key[next_prefix.Length..], more.Value);
+            }
 
             await LogHelper.LogDebugAsync("NextAsync", new { jobId = JobId, next_rule, next_more });
 
@@ -54,7 +58,7 @@ namespace UkrGuru.WebJobs.Actions
                 new { Rule = next_rule, RulePriority = (byte)Priorities.ASAP, RuleMore = next_more },
                 cancellationToken: cancellationToken);
 
-            await LogHelper.LogInformationAsync("NextAsync done", new { jobId = JobId, result = "OK", next_jobId });
+            await LogHelper.LogInformationAsync("NextAsync", new { jobId = JobId, result = "OK", next_jobId });
         }
 
         public string ShortStr(string text, int maxLength) => (!string.IsNullOrEmpty(text) && text.Length > maxLength) ? text.Substring(0, maxLength) + "..." : text;

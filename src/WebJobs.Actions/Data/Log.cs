@@ -8,6 +8,7 @@ namespace UkrGuru.WebJobs.Data
 {
     public partial class Log
     {
+        [Key]
         [Display(Name = "Id")]
         public int LogId { get; set; }
 

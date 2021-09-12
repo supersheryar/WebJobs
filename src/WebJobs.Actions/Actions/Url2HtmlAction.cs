@@ -21,7 +21,7 @@ namespace UkrGuru.WebJobs.Actions
             var result_name = More.GetValue("result_name");
             if (string.IsNullOrEmpty(result_name)) result_name = "next_body";
 
-            await LogHelper.LogDebugAsync("Url2HtmlAction", new { jobId = JobId, url, result_name });
+            await LogHelper.LogDebugAsync(nameof(Url2HtmlAction), new { jobId = JobId, url, result_name });
 
             var html = string.Empty;
 
@@ -34,7 +34,7 @@ namespace UkrGuru.WebJobs.Actions
 
             More[result_name] = html;
 
-            await LogHelper.LogInformationAsync("Url2HtmlAction", new { jobId = JobId, result = "OK", result_name, html });
+            await LogHelper.LogInformationAsync(nameof(Url2HtmlAction), new { jobId = JobId, result = "OK", html });
 
             return true;
         }
