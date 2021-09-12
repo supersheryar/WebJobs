@@ -20,9 +20,9 @@ Available SSH.NET Actions:
 - [How-to Guide](#)
 
 ## Demos
-- [WebJobsDemo](#https://github.com/UkrGuru/WebJobs/tree/main/demos/WebJobsDemo) 
-- [WebJobsService](#https://github.com/UkrGuru/WebJobs/tree/main/demos/WebJobsService) 
-- [CustomActions](#https://github.com/UkrGuru/WebJobs/tree/main/demos/CustomActions) 
+- [WebJobsDemo](https://github.com/UkrGuru/WebJobs/tree/main/demos/WebJobsDemo) 
+- [WebJobsService](https://github.com/UkrGuru/WebJobs/tree/main/demos/WebJobsService) 
+- [CustomActions](https://github.com/UkrGuru/WebJobs/tree/main/demos/CustomActions) 
 
 ## Installation
 
