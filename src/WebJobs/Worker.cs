@@ -13,14 +13,10 @@ namespace UkrGuru.WebJobs
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
-
         private int _delay = 100;
 
-        public Worker(ILogger<Worker> logger)
-        {
-            _logger = logger;
-        }
+        private readonly ILogger<Worker> _logger;
+        public Worker(ILogger<Worker> logger) => _logger = logger;
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -34,7 +30,7 @@ namespace UkrGuru.WebJobs
                         var jobId = job.JobId; bool result = false;
                         try
                         {
-                            var type = Type.GetType(job.ActionType) ?? Type.GetType($"UkrGuru.WebJobs.Actions.{job.ActionType}");
+                            var type = Type.GetType(job.ActionType);
 
                             dynamic action = Activator.CreateInstance(type);
 
@@ -46,13 +42,15 @@ namespace UkrGuru.WebJobs
                         }
                         catch (Exception ex)
                         {
-                            result = false; _logger.LogError(ex, $"Job #{jobId} crashed.");
+                            result = false;
+
+                            _logger.LogError(ex, $"Job #{jobId} crashed.", nameof(ExecuteAsync));
                             await LogHelper.LogErrorAsync($"Job #{jobId} crashed.", new { jobId, errMsg = ex.Message });
                         }
                         finally
                         {
-                            _ = await DbHelper.ExecProcAsync("WJbQueue_Finish", new { JobId = jobId, JobStatus = result ? JobStatus.Completed : JobStatus.Failed },
-                                cancellationToken: stoppingToken);
+                            _ = await DbHelper.ExecProcAsync("WJbQueue_Finish", new { JobId = jobId, 
+                                    JobStatus = result ? JobStatus.Completed : JobStatus.Failed }, cancellationToken: stoppingToken);
                         }
 
                         _delay = 100;
@@ -64,7 +62,7 @@ namespace UkrGuru.WebJobs
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Worker.ExecuteAsync Error");
+                    _logger.LogError(ex, "Worker.ExecuteAsync Error", nameof(ExecuteAsync));
                     await LogHelper.LogErrorAsync("Worker.ExecuteAsync Error", new { errMsg = ex.Message });
                 }
 

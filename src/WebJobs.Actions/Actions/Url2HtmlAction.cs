@@ -13,12 +13,11 @@ namespace UkrGuru.WebJobs.Actions
 {
     public class Url2HtmlAction : BaseAction
     {
-        public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken)
+        public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            var url = More.GetValue("url");
-            if (string.IsNullOrEmpty(url)) throw new ArgumentNullException(nameof(url));
+            var url = More.GetValue("url").ThrowIfBlank("url");
 
-            var result_name = More.GetValue("result_name");
+            var result_name = More.GetValue("result_name"); 
             if (string.IsNullOrEmpty(result_name)) result_name = "next_body";
 
             await LogHelper.LogDebugAsync(nameof(Url2HtmlAction), new { jobId = JobId, url, result_name });
@@ -30,7 +29,7 @@ namespace UkrGuru.WebJobs.Actions
             html = await client.DownloadStringTaskAsync(url);
 
             if (html?.Length > 200) html = await DbHelper.FromProcAsync("WJbFiles_Ins", 
-                new { FileName = "body.html", FileContent = Encoding.UTF8.GetBytes(html) });
+                new { FileName = "body.html", FileContent = Encoding.UTF8.GetBytes(html) }, cancellationToken: cancellationToken);
 
             More[result_name] = html;
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace UkrGuru.WebJobs.Data
 {
-    public partial class More : Dictionary<string, string>
+    public class More : Dictionary<string, object>
     {
     }
 } 

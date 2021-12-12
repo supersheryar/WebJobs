@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
 using System.Linq;
+using System;
 
 namespace UkrGuru.WebJobs.Actions
 {
     public class BaseAction
     {
-        private const string NEXT_RULE = "next";
+        private const string GOOD_RULE = "next";
         private const string FAIL_RULE = "fail";
 
-        private const string NEXT_PREFIX = NEXT_RULE + "_";
+        private const string GOOD_PREFIX = GOOD_RULE + "_";
         private const string FAIL_PREFIX = FAIL_RULE + "_";
 
         public int JobId { get; set; }
@@ -22,6 +23,8 @@ namespace UkrGuru.WebJobs.Actions
 
         public virtual void Init(Job job)
         {
+            job.ThrowIfNull(nameof(job));
+
             JobId = job.JobId;
 
             More = new More();
@@ -30,27 +33,24 @@ namespace UkrGuru.WebJobs.Actions
             More.AddNew(job.ActionMore);
         }
 
-        public virtual async Task<bool> ExecuteAsync(CancellationToken cancellationToken)
+        public virtual async Task<bool> ExecuteAsync(CancellationToken cancellationToken = default)
         {
             await Task.Delay(100, cancellationToken);
 
             return true;
         }
 
-        public virtual async Task NextAsync(bool execute_result, CancellationToken cancellationToken)
+        public virtual async Task NextAsync(bool execute_result, CancellationToken cancellationToken = default)
         {
-            var next_prefix = execute_result ? NEXT_PREFIX : FAIL_PREFIX;
+            var next_prefix = execute_result ? GOOD_PREFIX : FAIL_PREFIX;
 
-            var next_rule = More.GetValue(execute_result ? NEXT_RULE : FAIL_RULE);
+            var next_rule = More.GetValue(execute_result ? GOOD_RULE : FAIL_RULE);
             if (string.IsNullOrEmpty(next_rule)) return;
 
             var next_more = new More();
-            foreach (var more in from more in More
-                                 where more.Key.StartsWith(next_prefix)
-                                 select more)
-            {
+
+            foreach (var more in More.Where(item => item.Key.StartsWith(next_prefix)))
                 next_more.Add(more.Key[next_prefix.Length..], more.Value);
-            }
 
             await LogHelper.LogDebugAsync("NextAsync", new { jobId = JobId, next_rule, next_more });
 
@@ -61,6 +61,7 @@ namespace UkrGuru.WebJobs.Actions
             await LogHelper.LogInformationAsync("NextAsync", new { jobId = JobId, result = "OK", next_jobId });
         }
 
-        public string ShortStr(string text, int maxLength) => (!string.IsNullOrEmpty(text) && text.Length > maxLength) ? text.Substring(0, maxLength) + "..." : text;
+        public string ShortStr(string text, int maxLength) => (!string.IsNullOrEmpty(text) 
+            && text.Length > maxLength) ? text.Substring(0, maxLength) + "..." : text;
     }
 }

@@ -13,10 +13,7 @@ namespace UkrGuru.WebJobs
     public class Scheduler : BackgroundService
     {
         private readonly ILogger<Scheduler> _logger;
-
-        public Scheduler(ILogger<Scheduler> logger) { 
-            _logger = logger;
-        }
+        public Scheduler(ILogger<Scheduler> logger) => _logger = logger;
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -36,7 +33,7 @@ namespace UkrGuru.WebJobs
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "WJbQueue_InsCron Error", nameof(ExecuteAsync));
+                _logger.LogError(ex, "WJbQueue_InsCron Error", nameof(CreateCronJobs));
                 await LogHelper.LogErrorAsync("WJbQueue_InsCron Error", new { errMsg = ex.Message });
             }
         }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Oleksandr Viktor (UkrGuru). All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UkrGuru.SqlJson;
@@ -8,12 +9,11 @@ using UkrGuru.WebJobs.Data;
 
 namespace UkrGuru.WebJobs.Actions
 {
-    public class SqlProcAction : BaseAction
+    public class RunSqlProcAction : BaseAction
     {
-        public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken)
+        public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            var proc = More.GetValue("proc");
-            if (string.IsNullOrWhiteSpace(proc)) throw new(nameof(proc));
+            var proc = More.GetValue("proc").ThrowIfBlank("proc");
 
             var data = More.GetValue("data");
 
@@ -21,13 +21,13 @@ namespace UkrGuru.WebJobs.Actions
 
             var result_name = More.GetValue("result_name");
 
-            await LogHelper.LogDebugAsync(nameof(SqlProcAction), new { jobId = JobId, proc, data = ShortStr(data, 200), result_name, timeout });
+            await LogHelper.LogDebugAsync(nameof(RunSqlProcAction), new { jobId = JobId, proc, data = ShortStr(data, 200), result_name, timeout });
 
             if (string.IsNullOrEmpty(result_name))
             {
                 _ = await DbHelper.ExecProcAsync($"WJb_{proc}", data, timeout, cancellationToken);
 
-                await LogHelper.LogInformationAsync(nameof(SqlProcAction), new { jobId = JobId });
+                await LogHelper.LogInformationAsync(nameof(RunSqlProcAction), new { jobId = JobId });
             }
             else
             {
@@ -35,7 +35,7 @@ namespace UkrGuru.WebJobs.Actions
 
                 More[result_name] = result;
 
-                await LogHelper.LogInformationAsync(nameof(SqlProcAction), new { jobId = JobId, result = ShortStr(result, 200) });
+                await LogHelper.LogInformationAsync(nameof(RunSqlProcAction), new { jobId = JobId, result = ShortStr(result, 200) });
             }
 
             return true;

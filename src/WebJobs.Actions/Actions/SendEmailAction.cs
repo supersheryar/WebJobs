@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
@@ -32,20 +33,17 @@ namespace UkrGuru.WebJobs.Actions
 
     public class SendEmailAction : BaseAction
     {
-        public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken)
+        public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken = default)
         {
-            var smtp_settings_name = More.GetValue("smtp_settings_name");
-            if (string.IsNullOrWhiteSpace(smtp_settings_name)) throw new ArgumentNullException(nameof(smtp_settings_name));
+            var smtp_settings_name = More.GetValue("smtp_settings_name").ThrowIfBlank("smtp_settings_name"); 
 
-            var smtp_settings = await DbHelper.FromProcAsync<SmtpSettings>("WJbSettings_Get", new { Name = smtp_settings_name }, cancellationToken: cancellationToken);
-            if (string.IsNullOrWhiteSpace(smtp_settings?.Host)) throw new ArgumentNullException("smtp_settings");
+            var smtp_settings = await DbHelper.FromProcAsync<SmtpSettings>("WJbSettings_Get", 
+                new { Name = smtp_settings_name }, cancellationToken: cancellationToken);
+            smtp_settings.Host.ThrowIfBlank(nameof(smtp_settings));
 
-            var from = More.GetValue("from");
-            if (string.IsNullOrWhiteSpace(from)) from = smtp_settings.From;
-            if (string.IsNullOrWhiteSpace(from)) throw new ArgumentNullException(nameof(from));
+            var from = More.GetValue("from").ThrowIfBlank("from");
 
-            var to = More.GetValue("to");
-            if (string.IsNullOrWhiteSpace(to)) throw new ArgumentNullException(nameof(to));
+            var to = More.GetValue("to").ThrowIfBlank("to");
 
             var cc = More.GetValue("cc");
             var bcc = More.GetValue("bcc");
@@ -60,7 +58,7 @@ namespace UkrGuru.WebJobs.Actions
 
             if (Guid.TryParse(body, out var guidBody))
             {
-                var file = await DbHelper.FromProcAsync<File>("WJbFiles_Item", body);
+                var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", body, cancellationToken:cancellationToken);
                 if (file.Id != Guid.Empty) body = Encoding.UTF8.GetString(file.FileContent);
             }
 
@@ -77,10 +75,10 @@ namespace UkrGuru.WebJobs.Actions
             {
                 if (Guid.TryParse(attachment, out var guidAttach))
                 {
-                    var file = await DbHelper.FromProcAsync<File>("WJbFiles_Item", attachment);
+                    var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", attachment, cancellationToken: cancellationToken);
                     if (file.Id != Guid.Empty)
                     {
-                        System.IO.MemoryStream ms = new (file.FileContent);
+                        MemoryStream ms = new (file.FileContent);
                         message.Attachments.Add(new Attachment(ms, file.FileName));
                     }
                 }
@@ -97,10 +95,10 @@ namespace UkrGuru.WebJobs.Actions
                     var fileName = Convert.ToString(files[i]);
                     if (Guid.TryParse(fileName, out var guidAttach))
                     {
-                        var file = await DbHelper.FromProcAsync<File>("WJbFiles_Item", fileName);
+                        var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", fileName, cancellationToken: cancellationToken);
                         if (file.Id != Guid.Empty)
                         {
-                            System.IO.MemoryStream ms = new (file.FileContent);
+                            MemoryStream ms = new (file.FileContent);
                             message.Attachments.Add(new Attachment(ms, file.FileName));
                         }
                     }
@@ -116,7 +114,7 @@ namespace UkrGuru.WebJobs.Actions
             smtp.EnableSsl = smtp_settings.EnableSsl;
             smtp.Credentials = new NetworkCredential(smtp_settings.UserName, smtp_settings.Password);
 
-            await smtp.SendMailAsync(message);
+            await smtp.SendMailAsync(message, cancellationToken);
 
             await LogHelper.LogInformationAsync(nameof(SendEmailAction), new { jobId = JobId, result = "OK" });
 
