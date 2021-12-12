@@ -16,7 +16,7 @@
     <PackageTags>netcore sqlserver scheduler worker sendemail template</PackageTags>
     <Description>Part of the UkrGuru.WebJobs package, extracted to create Custom Actions.</Description>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
     <PackageReleaseNotes>It's new, not full compatabilty with 1.x ver. Please intall in new db and load Settings, Actions, Rules manually.</PackageReleaseNotes>
   </PropertyGroup>
 

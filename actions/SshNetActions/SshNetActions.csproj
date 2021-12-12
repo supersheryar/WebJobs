@@ -4,6 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>UkrGuru.WebJobs.Actions.SshNet</AssemblyName>
     <RootNamespace>UkrGuru.WebJobs.Actions.SshNet</RootNamespace>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -13,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="SSH.NET" Version="2020.0.1" />
-    <PackageReference Include="UkrGuru.WebJobs.Actions" Version="1.3.5" />
+    <PackageReference Include="UkrGuru.WebJobs.Actions" Version="2.0.1" />
   </ItemGroup>
 
 </Project>

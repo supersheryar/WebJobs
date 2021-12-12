@@ -20,7 +20,7 @@ namespace WebJobsService
                 .UseWindowsService()
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddWebJobsService(connString: hostContext.Configuration.GetConnectionString("SqlJsonConnection"),
+                    services.AddWebJobs(connString: hostContext.Configuration.GetConnectionString("SqlJsonConnection"),
                         logLevel: hostContext.Configuration.GetValue<LogLevel>("WJbSettings:LogLevel"),
                         nThreads: hostContext.Configuration.GetValue<int>("WJbSettings:NThreads"));
                 });

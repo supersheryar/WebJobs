@@ -30,11 +30,7 @@ namespace UkrGuru.WebJobs
                         var jobId = job.JobId; bool result = false;
                         try
                         {
-                            var type = Type.GetType(job.ActionType);
-
-                            dynamic action = Activator.CreateInstance(type);
-
-                            action.Init(job);
+                            var action = job.NewAction();
 
                             result = await action.ExecuteAsync(stoppingToken);
 
@@ -45,12 +41,12 @@ namespace UkrGuru.WebJobs
                             result = false;
 
                             _logger.LogError(ex, $"Job #{jobId} crashed.", nameof(ExecuteAsync));
-                            await LogHelper.LogErrorAsync($"Job #{jobId} crashed.", new { jobId, errMsg = ex.Message });
+                            await LogHelper.LogErrorAsync($"Job #{jobId} crashed.", new { jobId, errMsg = ex.Message }, stoppingToken);
                         }
                         finally
                         {
-                            _ = await DbHelper.ExecProcAsync("WJbQueue_Finish", new { JobId = jobId, 
-                                    JobStatus = result ? JobStatus.Completed : JobStatus.Failed }, cancellationToken: stoppingToken);
+                            _ = await DbHelper.ExecProcAsync("WJbQueue_Finish", new { JobId = jobId, JobStatus = result ? JobStatus.Completed : JobStatus.Failed }, 
+                                    cancellationToken: stoppingToken);
                         }
 
                         _delay = 100;
@@ -63,7 +59,7 @@ namespace UkrGuru.WebJobs
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Worker.ExecuteAsync Error", nameof(ExecuteAsync));
-                    await LogHelper.LogErrorAsync("Worker.ExecuteAsync Error", new { errMsg = ex.Message });
+                    await LogHelper.LogErrorAsync("Worker.ExecuteAsync Error", new { errMsg = ex.Message }, stoppingToken);
                 }
 
                 await Task.Delay(_delay, stoppingToken);

@@ -42,7 +42,7 @@ namespace UkrGuru.WebJobs.Actions.SshNet
                 if (!string.IsNullOrEmpty(local_base_path))
                     local_path = Path.Combine(local_base_path, local_path);
 
-                var remove = More.GetValue("remove", false);
+                var remove = More.GetValue("remove", false) ?? false;
 
                 var connectionInfo = new ConnectionInfo(sshnet_options.Host, sshnet_options.UserName, 
                     new PasswordAuthenticationMethod(sshnet_options.UserName, sshnet_options.Password));

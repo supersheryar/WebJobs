@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using System.Linq;
 using UkrGuru.WebJobs.Data;
 using WebJobsApi.Helpers;
@@ -35,10 +34,6 @@ namespace WebJobsApi
 
             services.AddCors();
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "UkrGuru.WebJobs.Api", Version = "v1" });
-            });
 
             services.Configure<WJaSettings>(Configuration.GetSection("WJaSettings"));
 
@@ -53,8 +48,6 @@ namespace WebJobsApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UkrGuru.WebJobs.Api v1"));
             }
 
             app.UseHttpsRedirection();

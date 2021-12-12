@@ -33,8 +33,8 @@ namespace UkrGuru.WebJobs
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "WJbQueue_InsCron Error", nameof(CreateCronJobs));
-                await LogHelper.LogErrorAsync("WJbQueue_InsCron Error", new { errMsg = ex.Message });
+                _logger.LogError(ex, "CreateCronJobs Error", nameof(CreateCronJobs));
+                await LogHelper.LogErrorAsync("CreateCronJobs Error", new { errMsg = ex.Message }, stoppingToken);
             }
         }
     }

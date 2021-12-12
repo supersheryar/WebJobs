@@ -75,10 +75,8 @@ namespace System.Reflection.Tests
 
             //job.JobMore = @"{ ""next"": ""Rule"", ""data"": """", ""enabled"": true }"
             //"result_name": "next_data", "next": "1", "next_proc": "PlannedJobs_Proc" }
-    
-            dynamic action = Activator.CreateInstance(Type.GetType(job.ActionType) ?? Type.GetType($"UkrGuru.WebJobs.Actions.{job.ActionType}"));
 
-            action.Init(job);
+            var action = job.CreateAction(); 
 
             var result = action.ExecuteAsync().Result;
 
@@ -95,9 +93,7 @@ namespace System.Reflection.Tests
             Job job = new() { ActionType = "RunSqlProcAction, UkrGuru.WebJobs.Actions" };
             job.JobMore = @"{ ""proc"": ""HelloTest"", ""data"": ""Alex"", ""result_name"": ""proc_result"" }";
 
-            dynamic action = Activator.CreateInstance(Type.GetType(job.ActionType) ?? Type.GetType($"UkrGuru.WebJobs.Actions.{job.ActionType}"));
-
-            action.Init(job);
+            var action = job.CreateAction();
 
             var result = action.ExecuteAsync().Result;
             // action.NextAsync(result).Wait();
@@ -121,9 +117,7 @@ namespace System.Reflection.Tests
             job.ActionMore = @"{ ""tname_pattern"": ""[A-Z]{1,}[_]{1,}[A-Z]{1,}[_]{0,}[A-Z]{0,}"" }";
             job.JobMore = @"{ ""template_subject"": ""Hello DEAR_NAME!"", ""tvalue_DEAR_NAME"": ""Alex"" }";
 
-            dynamic action = Activator.CreateInstance(Type.GetType(job.ActionType) ?? Type.GetType($"UkrGuru.WebJobs.Actions.{job.ActionType}"));
-
-            action.Init(job);
+            var action = job.CreateAction();
 
             var result = action.ExecuteAsync().Result;
             // action.NextAsync(result).Wait();
@@ -137,12 +131,9 @@ namespace System.Reflection.Tests
         //public void Url2HtmlActionTest()
         //{
         //    Job job = new() { ActionType = "Url2HtmlAction, UkrGuru.WebJobs.Actions" };
-
-        //    dynamic action = Activator.CreateInstance(Type.GetType(job.ActionType) ?? Type.GetType($"UkrGuru.WebJobs.Actions.{job.ActionType}"));
-
         //    job.JobMore = @"{ ""url"": ""https://ukrguru.com/"", ""result_name"": ""next_body"" }";
 
-        //    action.Init(job);
+        //    var action = job.CreateAction();
 
         //    var result = action.ExecuteAsync().Result;
         //    // action.NextAsync(result).Wait();
