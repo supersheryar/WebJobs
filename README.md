@@ -13,7 +13,7 @@ Available SSH.NET Actions:
 - SshNetGetFiles - downloads files from remote directory to local directory.
 - SshNetPutFiles - uploads files from local directory to remote directory.
 
-![Demo_App](https://github.com/UkrGuru/WebJobs/blob/main/docs/images/webjobs-demo.gif)
+![Demo_App](https://github.com/UkrGuru/WebJobs/raw/main/docs/images/webjobs-demo.gif)
 
 ## Documentation
 - [Getting Started Guide](#)
