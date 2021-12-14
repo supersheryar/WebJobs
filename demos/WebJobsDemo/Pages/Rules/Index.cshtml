@@ -34,6 +34,9 @@
             <th>
 
             </th>
+            <th>
+
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -59,7 +62,9 @@
                 @Html.DisplayFor(modelItem => item.Disabled)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.RuleId">Edit</a> |
+                <a asp-page="./Edit" asp-route-id="@item.RuleId">Edit</a>
+            </td>
+            <td>
                 <a asp-page="./Delete" asp-route-id="@item.RuleId">Delete</a>
             </td>
         </tr>

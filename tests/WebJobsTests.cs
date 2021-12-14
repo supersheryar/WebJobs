@@ -2,14 +2,15 @@
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
 using UkrGuru.WebJobs.Actions;
+using System.Threading.Tasks;
 
 namespace System.Reflection.Tests
 {
-    public class WebJobsActionsTests
+    public class WebJobsTests
     {
         private readonly bool dbOK;
 
-        public WebJobsActionsTests()
+        public WebJobsTests()
         {
             var dbName = "WebJobsTest";
 
@@ -35,67 +36,67 @@ namespace System.Reflection.Tests
         }
 
         [Fact]
-        public void WJbSettingsTests()
+        public async Task WJbSettingsTests()
         {
-            DbHelper.ExecProc("WJbSettings_Set", new { Name = "Name1", Value = "Value1" });
+            await DbHelper.ExecProcAsync("WJbSettings_Set", new { Name = "Name1", Value = "Value1" });
 
             Assert.Equal("Value1", DbHelper.FromProc("WJbSettings_Get", "Name1"));
 
-            DbHelper.ExecProc("WJbSettings_Set", new { Name = "Name1", Value = "Value11" });
+            await DbHelper.ExecProcAsync("WJbSettings_Set", new { Name = "Name1", Value = "Value11" });
 
             Assert.Equal("Value11", DbHelper.FromProc("WJbSettings_Get", "Name1"));
         }
 
         [Fact]
-        public void WJbFilesTests()
+        public async Task WJbFilesTests()
         {
             var content = new byte[256]; for (int i = 0; i < 256; i++) content[i] = (byte)i;
 
-            var guid = DbHelper.FromProc("WJbFiles_Ins", new File { FileName = "test.bin", FileContent = content });
+            var guid = await DbHelper.FromProcAsync("WJbFiles_Ins", new File { FileName = "test.bin", FileContent = content });
 
-            var file = DbHelper.FromProc<File>("WJbFiles_Get", guid);
+            var file = await DbHelper.FromProcAsync<File>("WJbFiles_Get", guid);
 
             Assert.Equal(file.FileContent, content);
         }
 
         [Fact]
-        public void WJbLogsTests()
+        public async Task WJbLogsTests()
         {
-            DbHelper.ExecProc("WJbLogs_Ins", new { logLevel = LogLevel.Information, title="Test #1", logMore = "Test #1" });
+            await DbHelper.ExecProcAsync("WJbLogs_Ins", new { logLevel = LogLevel.Information, title = "Test #1", logMore = "Test #1" });
 
-            DbHelper.ExecProc("WJbLogs_Ins", new { logLevel = LogLevel.Information, title = "Test #2", logMore = new { jobId = 2, result = "OK" } });
+            await DbHelper.ExecProcAsync("WJbLogs_Ins", new { logLevel = LogLevel.Information, title = "Test #2", logMore = new { jobId = 2, result = "OK" } });
 
             Assert.True(true);
         }
 
         [Fact]
-        public void BaseActionTest()
+        public async Task BaseActionTest()
         {
-            Job job = new() { ActionType = "BaseAction, UkrGuru.WebJobs.Actions" };
+            Job job = new() { ActionType = "BaseAction, UkrGuru.WebJobs" };
 
             //job.JobMore = @"{ ""next"": ""Rule"", ""data"": """", ""enabled"": true }"
             //"result_name": "next_data", "next": "1", "next_proc": "PlannedJobs_Proc" }
 
-            var action = job.CreateAction(); 
+            var action = job.CreateAction();
 
-            var result = action.ExecuteAsync().Result;
+            var result = await action.ExecuteAsync();
 
-            action.NextAsync(result).Wait();
+            await action.NextAsync(result);
 
             Assert.True(true);
         }
 
         [Fact]
-        public void SqlProcActionTest()
+        public async Task RunSqlProcActionTest()
         {
-            DbHelper.ExecCommand("CREATE OR ALTER PROCEDURE [dbo].[WJb_HelloTest] (@Data varchar(100)) AS SELECT 'Hello ' + @Data  + '!'");
+            await DbHelper.ExecCommandAsync("CREATE OR ALTER PROCEDURE [dbo].[WJb_HelloTest] (@Data varchar(100)) AS SELECT 'Hello ' + @Data  + '!'");
 
-            Job job = new() { ActionType = "RunSqlProcAction, UkrGuru.WebJobs.Actions" };
+            Job job = new() { ActionType = "RunSqlProcAction, UkrGuru.WebJobs" };
             job.JobMore = @"{ ""proc"": ""HelloTest"", ""data"": ""Alex"", ""result_name"": ""proc_result"" }";
 
             var action = job.CreateAction();
 
-            var result = action.ExecuteAsync().Result;
+            var result = await action.ExecuteAsync();
             // action.NextAsync(result).Wait();
 
             var proc_result = ((More)action.More).GetValue("proc_result");
@@ -110,16 +111,16 @@ namespace System.Reflection.Tests
         //}
 
         [Fact]
-        public void FillTemplateActionTest()
+        public async Task FillTemplateActionTest()
         {
-            Job job = new() { ActionType = "FillTemplateAction, UkrGuru.WebJobs.Actions" };
+            Job job = new() { ActionType = "FillTemplateAction, UkrGuru.WebJobs" };
 
             job.ActionMore = @"{ ""tname_pattern"": ""[A-Z]{1,}[_]{1,}[A-Z]{1,}[_]{0,}[A-Z]{0,}"" }";
             job.JobMore = @"{ ""template_subject"": ""Hello DEAR_NAME!"", ""tvalue_DEAR_NAME"": ""Alex"" }";
 
             var action = job.CreateAction();
 
-            var result = action.ExecuteAsync().Result;
+            var result = await action.ExecuteAsync();
             // action.NextAsync(result).Wait();
 
             var subject = ((More)action.More).GetValue("next_subject");
@@ -128,9 +129,29 @@ namespace System.Reflection.Tests
         }
 
         //[Fact]
+        //public async Task RunApiHoleActionTest()
+        //{
+        //    await DbHelper.ExecCommandAsync("CREATE OR ALTER PROCEDURE [dbo].[WJb_HelloTest] (@Data varchar(100)) AS SELECT 'Hello ' + @Data  + '!'");
+
+        //    Job job = new() { ActionType = "RunApiHoleAction, UkrGuru.WebJobs" };
+        //    job.JobMore = @"{ ""proc"": ""HelloTest"", ""data"": ""Alex"", ""result_name"": ""proc_result"" }";
+
+        //    var action = job.CreateAction();
+
+        //    var result = await action.ExecuteAsync();
+        //    // action.NextAsync(result).Wait();
+
+        //    var proc_result = ((More)action.More).GetValue("proc_result");
+
+        //    Assert.Equal("Hello Alex!", proc_result);
+        //}
+
+
+
+        //[Fact]
         //public void Url2HtmlActionTest()
         //{
-        //    Job job = new() { ActionType = "Url2HtmlAction, UkrGuru.WebJobs.Actions" };
+        //    Job job = new() { ActionType = "Url2HtmlAction, UkrGuru.WebJobs" };
         //    job.JobMore = @"{ ""url"": ""https://ukrguru.com/"", ""result_name"": ""next_body"" }";
 
         //    var action = job.CreateAction();

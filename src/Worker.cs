@@ -30,7 +30,7 @@ namespace UkrGuru.WebJobs
                         var jobId = job.JobId; bool result = false;
                         try
                         {
-                            var action = job.NewAction();
+                            var action = job.CreateAction();
 
                             result = await action.ExecuteAsync(stoppingToken);
 

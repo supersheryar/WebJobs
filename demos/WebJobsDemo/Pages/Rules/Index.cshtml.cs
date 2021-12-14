@@ -12,7 +12,7 @@ namespace WebJobsDemo.Pages.Rules
 
         public async Task OnGetAsync()
         {
-            Rules = await DbHelper.FromProcAsync<List<Rule>>("WJbRules_List_Demo");
+            Rules = await DbHelper.FromProcAsync<List<Rule>>("WJbRules_Grd_Demo");
         }
     }
 }

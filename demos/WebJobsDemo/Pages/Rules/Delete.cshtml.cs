@@ -15,7 +15,7 @@ namespace WebJobsDemo.Pages.Rules
         {
             if (id == null) return NotFound();
 
-            Rule = await DbHelper.FromProcAsync<Rule>("WJbRules_Item_Demo", id);
+            Rule = await DbHelper.FromProcAsync<Rule>("WJbRules_Get_Demo", id);
 
             if (Rule.RuleId == 0) return NotFound();
 

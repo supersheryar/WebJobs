@@ -25,6 +25,9 @@
             <th>
 
             </th>
+            <th>
+
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -41,7 +44,9 @@
                 @Html.DisplayFor(modelItem => item.ActionMore)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.ActionId">Edit</a> |
+                <a asp-page="./Edit" asp-route-id="@item.ActionId">Edit</a>
+            </td>
+            <td>
                 <a asp-page="./Delete" asp-route-id="@item.ActionId">Delete</a>
             </td>
         </tr>

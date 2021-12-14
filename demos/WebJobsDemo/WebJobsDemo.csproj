@@ -19,23 +19,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Resources\1.2.0.sql" />
-    <None Remove="Resources\1.2.7.sql" />
-    <None Remove="Resources\1.2.8.sql" />
+    <None Remove="Resources\2.3.0.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\1.2.0.sql" />
-    <EmbeddedResource Include="Resources\1.2.7.sql" />
-    <EmbeddedResource Include="Resources\1.2.8.sql" />
+    <EmbeddedResource Include="Resources\2.3.0.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="UkrGuru.WebJobs" Version="2.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CustomActions\CustomActions.csproj" />
+    <PackageReference Include="UkrGuru.WebJobs" Version="2.3.0" />
   </ItemGroup>
 
 </Project>

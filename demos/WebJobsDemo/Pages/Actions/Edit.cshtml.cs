@@ -15,7 +15,7 @@ namespace WebJobsDemo.Pages.Actions
         {
             if (id == null) return NotFound();
 
-            Action = await DbHelper.FromProcAsync<ActionInput>("WJbActions_Item_Demo", id);
+            Action = await DbHelper.FromProcAsync<ActionInput>("WJbActions_Get_Demo", id);
 
             if (Action.ActionId == 0) return NotFound();
 

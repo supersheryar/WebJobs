@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\WebJobs.Actions\WebJobs.Actions.csproj" />
+    <ProjectReference Include="..\src\WebJobs.csproj" />
   </ItemGroup>
 
 </Project>

@@ -17,11 +17,11 @@ namespace WebJobsDemo.Pages.Rules
         {
             if (id == null) return NotFound();
 
-            Rule = await DbHelper.FromProcAsync<RuleInput>("WJbRules_Item_Demo", id);
+            Rule = await DbHelper.FromProcAsync<RuleInput>("WJbRules_Get_Demo", id);
 
             if (Rule.RuleId == 0) return NotFound();
 
-            var actions = await DbHelper.FromProcAsync<List<Action>>("WJbActions_List_Demo");
+            var actions = await DbHelper.FromProcAsync<List<Action>>("WJbActions_Lst_Demo");
 
             ViewData["Actions"] = new SelectList(actions, "ActionId", "ActionName");
 

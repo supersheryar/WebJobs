@@ -14,7 +14,7 @@ namespace WebJobsDemo.Pages.Rules
         {
             Rule = new RuleInput();
 
-            var actions = await DbHelper.FromProcAsync<List<Action>>("WJbActions_List_Demo");
+            var actions = await DbHelper.FromProcAsync<List<Action>>("WJbActions_Lst_Demo");
 
             ViewData["Actions"] = new SelectList(actions, "ActionId", "ActionName");
 

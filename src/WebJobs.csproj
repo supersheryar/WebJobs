@@ -3,24 +3,25 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Authors>Oleksandr Viktor (UkrGuru)</Authors>
     <Company>Oleksandr Viktor (UkrGuru)</Company>
     <Copyright>Oleksandr Viktor (UkrGuru)</Copyright>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageIcon>ukrguru-logo.jpg</PackageIcon>
     <RepositoryUrl>https://github.com/UkrGuru/WebJobs</RepositoryUrl>
     <Description>UkrGuru.WebJobs package is a scheduler and worker for any of your background jobs under any type of .NET 5 applications. Supports cron in the Rules. Provides extensibility for any Custom Actions. Uses UkrGuru.SqlJson for database connection.</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
-    <Version>2.0.0</Version>
+    <Version>2.3.0</Version>
     <PackageTags>netcore sqlserver webjobs scheduler worker sql-server-procedures sendemail template</PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
     <AssemblyName>UkrGuru.WebJobs</AssemblyName>
     <RootNamespace>UkrGuru.WebJobs</RootNamespace>
     <PackageIconUrl />
-    <PackageProjectUrl>https://ukrguru.com/wjb</PackageProjectUrl>
-    <DelaySign>false</DelaySign>
+    <PackageProjectUrl>https://github.com/UkrGuru/WebJobs</PackageProjectUrl>
+    <DelaySign>False</DelaySign>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -30,24 +31,45 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Include="UkrGuru.WebJobs.Actions" Version="2.0.1" />
+    <Compile Remove="Actions\RunApiHoleAction.cs" />
+    <Compile Remove="Actions\Url2HtmlAction.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\..\LICENSE.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\..\ukrguru-logo.jpg">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </EmbeddedResource>
+    <None Remove="Resources\1.9.9.1.Tables.sql" />
+    <None Remove="Resources\1.9.9.2.Data.sql" />
+    <None Remove="Resources\1.9.9.3.Funcs.sql" />
+    <None Remove="Resources\1.9.9.4.Procs.sql" />
+    <None Remove="Resources\2.1.0.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    <PackageReference Include="UkrGuru.SqlJson" Version="3.4.5" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\1.9.9.1.Tables.sql" />
+    <EmbeddedResource Include="Resources\1.9.9.2.Data.sql" />
+    <EmbeddedResource Include="Resources\1.9.9.3.Funcs.sql" />
+    <EmbeddedResource Include="Resources\1.9.9.4.Procs.sql" />
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <EmbeddedResource Include="..\ukrguru-logo.jpg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

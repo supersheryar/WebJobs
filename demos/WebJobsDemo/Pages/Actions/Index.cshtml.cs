@@ -12,7 +12,7 @@ namespace WebJobsDemo.Pages.Actions
 
         public async Task OnGetAsync()
         {
-            Actions = await DbHelper.FromProcAsync<List<Action>>("WJbActions_List_Demo");
+            Actions = await DbHelper.FromProcAsync<List<Action>>("WJbActions_Grd_Demo");
         }
     }
 }

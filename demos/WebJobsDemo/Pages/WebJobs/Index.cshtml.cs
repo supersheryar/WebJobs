@@ -17,9 +17,9 @@ namespace WebJobsDemo.Pages.Jobs
         {
             Date = HttpContext.Request.Query["date"];
 
-            if (string.IsNullOrEmpty(Date)) Date = System.DateTime.Today.ToString("yyyy-MM-dd");
+            if (string.IsNullOrEmpty(Date)) Date = DateTime.Today.ToString("yyyy-MM-dd");
 
-            Jobs = await DbHelper.FromProcAsync<List<Job>>("WJbHistory_List_Demo", new { Date });
+            Jobs = await DbHelper.FromProcAsync<List<Job>>("WJbHistory_Grd_Demo", Date);
         }
     }
 }
