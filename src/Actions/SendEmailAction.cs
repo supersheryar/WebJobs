@@ -37,8 +37,7 @@ namespace UkrGuru.WebJobs.Actions
         {
             var smtp_settings_name = More.GetValue("smtp_settings_name").ThrowIfBlank("smtp_settings_name"); 
 
-            var smtp_settings = await DbHelper.FromProcAsync<SmtpSettings>("WJbSettings_Get", 
-                new { Name = smtp_settings_name }, cancellationToken: cancellationToken);
+            var smtp_settings = await DbHelper.FromProcAsync<SmtpSettings>("WJbSettings_Get", smtp_settings_name, cancellationToken: cancellationToken);
             smtp_settings.Host.ThrowIfBlank(nameof(smtp_settings));
 
             var from = More.GetValue("from").ThrowIfBlank("from");

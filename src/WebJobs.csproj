@@ -11,9 +11,9 @@
     <Description>UkrGuru.WebJobs package is a scheduler and worker for any of your background jobs under any type of .NET 5 applications. Supports cron in the Rules. Provides extensibility for any Custom Actions. Uses UkrGuru.SqlJson for database connection.</Description>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
-    <Version>2.3.0</Version>
+    <Version>2.4.0</Version>
     <PackageTags>netcore sqlserver webjobs scheduler worker sql-server-procedures sendemail template</PackageTags>
-    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageReleaseNotes>Added RunApiProcAction.</PackageReleaseNotes>
     <AssemblyName>UkrGuru.WebJobs</AssemblyName>
     <RootNamespace>UkrGuru.WebJobs</RootNamespace>
     <PackageIconUrl />
