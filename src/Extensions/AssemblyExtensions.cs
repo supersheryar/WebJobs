@@ -16,12 +16,13 @@ namespace System.Reflection
             var product_version = assembly.GetName().Version.ToString();
             // var product_version = FileVersionInfo.GetVersionInfo(assembly.Location).ProductVersion;
 
-            var db_version = "1.0.0.0";
+            string db_version = null;
             try { db_version = DbHelper.FromProc($"WJbSettings_Get", product_name); } catch { }
 
+            db_version = db_version ?? "1.0.0.0";
             if (db_version.CompareTo(product_version) < 0)
             {
-                var version_file = $"{product_name}.Resources.{db_version ?? "1.0.0.0"}.sql";
+                var version_file = $"{product_name}.Resources.{db_version}.sql";
 
                 var resourceNames = assembly.GetManifestResourceNames()
                     .Where(s => s.EndsWith(".sql") && s.CompareTo(version_file) >= 0)

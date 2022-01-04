@@ -16,18 +16,18 @@ namespace System.Reflection.Tests
 
             var connectionString = $"Server=(localdb)\\mssqllocaldb;Database={dbName};Trusted_Connection=True";
 
-            //var dbInitScript = $"IF DB_ID('{dbName}') IS NOT NULL BEGIN " +
-            //    $"  ALTER DATABASE {dbName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; " +
-            //    $"  DROP DATABASE {dbName}; " +
-            //    $"END " +
-            //    $"CREATE DATABASE {dbName};";
+            var dbInitScript = $"IF DB_ID('{dbName}') IS NOT NULL BEGIN " +
+                $"  ALTER DATABASE {dbName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; " +
+                $"  DROP DATABASE {dbName}; " +
+                $"END " +
+                $"CREATE DATABASE {dbName};";
 
-            //DbHelper.ConnectionString = connectionString.Replace(dbName, "master");
-            //DbHelper.ExecCommand(dbInitScript);
+            DbHelper.ConnectionString = connectionString.Replace(dbName, "master");
+            DbHelper.ExecCommand(dbInitScript);
 
             DbHelper.ConnectionString = connectionString;
-            //dbOK = Assembly.GetAssembly(typeof(BaseAction)).InitDb();
-            dbOK = true;
+            dbOK = Assembly.GetAssembly(typeof(BaseAction)).InitDb();
+            //dbOK = true;
         }
 
         [Fact]
