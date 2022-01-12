@@ -1,12 +1,8 @@
 ﻿// Copyright (c) Oleksandr Viktor (UkrGuru). All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
-using System.Threading;
-using System.Threading.Tasks;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
-using System.Linq;
-using System;
 
 namespace UkrGuru.WebJobs.Actions
 {
@@ -21,13 +17,17 @@ namespace UkrGuru.WebJobs.Actions
         public int JobId { get; set; }
         public More More { get; set; }
 
+        public BaseAction()
+        {
+            More = new More();
+        }
+
         public virtual void Init(Job job)
         {
             job.ThrowIfNull(nameof(job));
 
             JobId = job.JobId;
 
-            More = new More();
             More.AddNew(job.JobMore);
             More.AddNew(job.RuleMore);
             More.AddNew(job.ActionMore);
@@ -52,16 +52,16 @@ namespace UkrGuru.WebJobs.Actions
             foreach (var more in More.Where(item => item.Key.StartsWith(next_prefix)))
                 next_more.Add(more.Key[next_prefix.Length..], more.Value);
 
-            await LogHelper.LogDebugAsync("NextAsync", new { jobId = JobId, next_rule, next_more });
+            await LogHelper.LogDebugAsync("NextAsync", new { jobId = JobId, next_rule, next_more }, cancellationToken);
 
             var next_jobId = await DbHelper.FromProcAsync("WJbQueue_Ins",
                 new { Rule = next_rule, RulePriority = (byte)Priorities.ASAP, RuleMore = next_more },
                 cancellationToken: cancellationToken);
 
-            await LogHelper.LogInformationAsync("NextAsync", new { jobId = JobId, result = "OK", next_jobId });
+            await LogHelper.LogInformationAsync("NextAsync", new { jobId = JobId, result = "OK", next_jobId }, cancellationToken);
         }
 
-        public string ShortStr(string text, int maxLength) => (!string.IsNullOrEmpty(text) 
-            && text.Length > maxLength) ? text.Substring(0, maxLength) + "..." : text;
+        public static string? ShortStr(string? text, int maxLength) => (!string.IsNullOrEmpty(text)
+            && text.Length > maxLength) ? string.Concat(text.AsSpan(0, maxLength), "...") : text;
     }
 }

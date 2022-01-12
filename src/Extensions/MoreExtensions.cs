@@ -9,10 +9,8 @@ namespace UkrGuru.WebJobs.Data
 {
     public static class MoreExtensions
     {
-        public static void AddNew(this More more, string json)
+        public static void AddNew(this More more, string? json)
         {
-            more.ThrowIfNull(nameof(more));
-
             if (string.IsNullOrWhiteSpace(json)) return;
 
             var items = JsonSerializer.Deserialize<More>(json);
@@ -23,24 +21,18 @@ namespace UkrGuru.WebJobs.Data
                 more.Add(item.Key, Convert.ToString(item.Value));
         }
 
-        public static string GetValue(this More more, string name, string defaultValue = default)
+        public static string? GetValue(this More more, string name, string? defaultValue = default)
         {
-            more.ThrowIfNull(nameof(more));
-
             return more.TryGetValue(name, out var value) ? Convert.ToString(value) : defaultValue;
         }
 
         public static bool? GetValue(this More more, string name, bool? defaultValue)
         {
-            more.ThrowIfNull(nameof(more));
-
             return bool.TryParse(more.GetValue(name), out bool value) ? value : defaultValue;
         }
 
         public static int? GetValue(this More more, string name, int? defaultValue)
         {
-            more.ThrowIfNull(nameof(more));
-
             return (int.TryParse(more.GetValue(name), out int value)) ? value : defaultValue;
         }
     }

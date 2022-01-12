@@ -19,7 +19,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             LogHelper.MinLogLevel = logLevel;
 
-            Assembly.GetAssembly(typeof(BaseAction)).InitDb();
+            var assembly = Assembly.GetAssembly(typeof(BaseAction));
+            ArgumentNullException.ThrowIfNull(assembly);
+            assembly.InitDb();
 
             if (nThreads <= 0) return;
 

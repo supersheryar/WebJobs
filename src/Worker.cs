@@ -1,9 +1,6 @@
 // Copyright (c) Oleksandr Viktor (UkrGuru). All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using UkrGuru.SqlJson;
@@ -32,15 +29,18 @@ namespace UkrGuru.WebJobs
                         {
                             var action = job.CreateAction();
 
-                            result = await action.ExecuteAsync(stoppingToken);
+                            if (action != null)
+                            {
+                                result = await action.ExecuteAsync(stoppingToken);
 
-                            await action.NextAsync(result, stoppingToken);
+                                await action.NextAsync(result, stoppingToken);
+                            }
                         }
                         catch (Exception ex)
                         {
                             result = false;
 
-                            _logger.LogError(ex, $"Job #{jobId} crashed.", nameof(ExecuteAsync));
+                            //_logger.LogError(ex, $"Job #{jobId} crashed.", nameof(ExecuteAsync));
                             await LogHelper.LogErrorAsync($"Job #{jobId} crashed.", new { jobId, errMsg = ex.Message }, stoppingToken);
                         }
                         finally

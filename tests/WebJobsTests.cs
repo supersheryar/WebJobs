@@ -26,7 +26,11 @@ namespace System.Reflection.Tests
             DbHelper.ExecCommand(dbInitScript);
 
             DbHelper.ConnectionString = connectionString;
-            dbOK = Assembly.GetAssembly(typeof(BaseAction)).InitDb();
+
+            var assembly = Assembly.GetAssembly(typeof(BaseAction));
+            ArgumentNullException.ThrowIfNull(assembly);
+
+            dbOK = assembly.InitDb();
             //dbOK = true;
         }
 
@@ -57,7 +61,7 @@ namespace System.Reflection.Tests
 
             var file = await DbHelper.FromProcAsync<File>("WJbFiles_Get", guid);
 
-            Assert.Equal(file.FileContent, content);
+            Assert.Equal(file?.FileContent, content);
         }
 
         [Fact]
@@ -78,13 +82,18 @@ namespace System.Reflection.Tests
             //job.JobMore = @"{ ""next"": ""Rule"", ""data"": """", ""enabled"": true }"
             //"result_name": "next_data", "next": "1", "next_proc": "PlannedJobs_Proc" }
 
+            bool result = false;
+
             var action = job.CreateAction();
 
-            var result = await action.ExecuteAsync();
+            if (action != null)
+            {
+                result = await action.ExecuteAsync();
 
-            await action.NextAsync(result);
+                await action.NextAsync(result);
+            }
 
-            Assert.True(true);
+            Assert.True(result);
         }
 
         [Fact]
@@ -95,12 +104,17 @@ namespace System.Reflection.Tests
             Job job = new() { ActionType = "RunSqlProcAction, UkrGuru.WebJobs" };
             job.JobMore = @"{ ""proc"": ""HelloTest"", ""data"": ""Alex"", ""result_name"": ""proc_result"" }";
 
+
+            var proc_result = null as string;
+
             var action = job.CreateAction();
 
-            var result = await action.ExecuteAsync();
-            // action.NextAsync(result).Wait();
+            if (action != null)
+            {
+                await action.ExecuteAsync();
 
-            var proc_result = ((More)action.More).GetValue("proc_result");
+                proc_result = ((More)action.More).GetValue("proc_result");
+            }
 
             Assert.Equal("Hello Alex!", proc_result);
         }
@@ -119,34 +133,37 @@ namespace System.Reflection.Tests
             job.ActionMore = @"{ ""tname_pattern"": ""[A-Z]{1,}[_]{1,}[A-Z]{1,}[_]{0,}[A-Z]{0,}"" }";
             job.JobMore = @"{ ""template_subject"": ""Hello DEAR_NAME!"", ""tvalue_DEAR_NAME"": ""Alex"" }";
 
+            var subject = null as string;
+
             var action = job.CreateAction();
 
-            var result = await action.ExecuteAsync();
-            // action.NextAsync(result).Wait();
-
-            var subject = ((More)action.More).GetValue("next_subject");
+            if (action != null)
+            {
+                await action.ExecuteAsync();
+                subject = ((More)action.More).GetValue("next_subject");
+            }
 
             Assert.Equal("Hello Alex!", subject);
         }
 
-        [Fact]
-        public async Task RunApiProcActionTest()
-        {
-            //await DbHelper.ExecCommandAsync("CREATE OR ALTER PROCEDURE [dbo].[WJb_HelloTest] (@Data varchar(100)) AS SELECT 'Hello ' + @Data  + '!'");
+        //[Fact]
+        //public async Task RunApiProcActionTest()
+        //{
+        //    //await DbHelper.ExecCommandAsync("CREATE OR ALTER PROCEDURE [dbo].[WJb_HelloTest] (@Data varchar(100)) AS SELECT 'Hello ' + @Data  + '!'");
 
-            Job job = new() {  ActionType = "RunApiProcAction, UkrGuru.WebJobs" };
-            job.RuleMore = @"{  ""api_settings_name"": ""WDogApi"" }";
-            job.JobMore = @"{ ""proc"": ""HelloTest"", ""data"": ""Alex"", ""result_name"": ""proc_result"" }";
+        //    Job job = new() {  ActionType = "RunApiProcAction, UkrGuru.WebJobs" };
+        //    job.RuleMore = @"{  ""api_settings_name"": ""WDogApi"" }";
+        //    job.JobMore = @"{ ""proc"": ""HelloTest"", ""data"": ""Alex"", ""result_name"": ""proc_result"" }";
 
-            var action = job.CreateAction();
+        //    var action = job.CreateAction();
 
-            var result = await action.ExecuteAsync();
-            // action.NextAsync(result).Wait();
+        //    var result = await action.ExecuteAsync();
+        //    // action.NextAsync(result).Wait();
 
-            var proc_result = ((More)action.More).GetValue("proc_result");
+        //    var proc_result = ((More)action.More).GetValue("proc_result");
 
-            Assert.Equal("Hello Alex!", proc_result);
-        }
+        //    Assert.Equal("Hello Alex!", proc_result);
+        //}
 
         //[Fact]
         //public void Url2HtmlActionTest()

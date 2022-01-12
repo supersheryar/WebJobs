@@ -1,15 +1,11 @@
 ﻿// Copyright (c) Oleksandr Viktor (UkrGuru). All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
-using System;
-using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
 
@@ -18,17 +14,22 @@ namespace UkrGuru.WebJobs.Actions
     public class SmtpSettings
     {
         [JsonPropertyName("from")]
-        public string From { get; set; }
+        public string? From { get; set; }
+        
         [JsonPropertyName("host")]
-        public string Host { get; set; }
+        public string? Host { get; set; }
+        
         [JsonPropertyName("port")]
         public int Port { get; set; }
+        
         [JsonPropertyName("enableSsl")]
         public bool EnableSsl { get; set; }
+        
         [JsonPropertyName("userName")]
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
+        
         [JsonPropertyName("password")]
-        public string Password { get; set; }
+        public string? Password { get; set; }
     }
 
     public class SendEmailAction : BaseAction
@@ -38,11 +39,13 @@ namespace UkrGuru.WebJobs.Actions
             var smtp_settings_name = More.GetValue("smtp_settings_name").ThrowIfBlank("smtp_settings_name"); 
 
             var smtp_settings = await DbHelper.FromProcAsync<SmtpSettings>("WJbSettings_Get", smtp_settings_name, cancellationToken: cancellationToken);
-            smtp_settings.Host.ThrowIfBlank(nameof(smtp_settings));
+            ArgumentNullException.ThrowIfNull(smtp_settings);
 
-            var from = More.GetValue("from").ThrowIfBlank("from");
+            var from = More.GetValue("from");
+            ArgumentNullException.ThrowIfNull(from);
 
-            var to = More.GetValue("to").ThrowIfBlank("to");
+            var to = More.GetValue("to");
+            ArgumentNullException.ThrowIfNull(to);
 
             var cc = More.GetValue("cc");
             var bcc = More.GetValue("bcc");
@@ -53,12 +56,12 @@ namespace UkrGuru.WebJobs.Actions
             var attachment = More.GetValue("attachment");
             var attachments = More.GetValue("attachments");
 
-            await LogHelper.LogDebugAsync(nameof(SendEmailAction), new { jobId = JobId, to, cc, bcc, subject, body = ShortStr(body, 200), attachment, attachments });
+            await LogHelper.LogDebugAsync(nameof(SendEmailAction), new { jobId = JobId, to, cc, bcc, subject, body = ShortStr(body, 200), attachment, attachments }, cancellationToken);
 
             if (Guid.TryParse(body, out var guidBody))
             {
                 var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", body, cancellationToken:cancellationToken);
-                if (file.Id != Guid.Empty) body = Encoding.UTF8.GetString(file.FileContent);
+                if (file?.FileContent != null) body = Encoding.UTF8.GetString(file.FileContent);
             }
 
             MailMessage message = new(from, to, subject, body)
@@ -75,11 +78,8 @@ namespace UkrGuru.WebJobs.Actions
                 if (Guid.TryParse(attachment, out var guidAttach))
                 {
                     var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", attachment, cancellationToken: cancellationToken);
-                    if (file.Id != Guid.Empty)
-                    {
-                        MemoryStream ms = new (file.FileContent);
-                        message.Attachments.Add(new Attachment(ms, file.FileName));
-                    }
+                    if (file?.FileContent != null)
+                        message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
                 }
                 else
                 {
@@ -88,22 +88,18 @@ namespace UkrGuru.WebJobs.Actions
             }
             else if (!string.IsNullOrEmpty(attachments))
             {
-                var files = JsonSerializer.Deserialize<object[]>(attachments);
-                for (var i = 0; i < files.Length; i++)
+                foreach (var fileName in JsonSerializer.Deserialize<object[]>(attachments) ?? Enumerable.Empty<object>())
                 {
-                    var fileName = Convert.ToString(files[i]);
-                    if (Guid.TryParse(fileName, out var guidAttach))
+                    var fileNameStr = Convert.ToString(fileName);
+                    if (Guid.TryParse(fileNameStr, out var guidAttach))
                     {
-                        var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", fileName, cancellationToken: cancellationToken);
-                        if (file.Id != Guid.Empty)
-                        {
-                            MemoryStream ms = new (file.FileContent);
-                            message.Attachments.Add(new Attachment(ms, file.FileName));
-                        }
+                        var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", guidAttach, cancellationToken: cancellationToken);
+                        if (file?.FileContent != null)
+                            message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
                     }
-                    else
-                    {
-                        message.Attachments.Add(new Attachment(fileName));
+                    else if (!string.IsNullOrWhiteSpace(fileNameStr)) 
+                    { 
+                        message.Attachments.Add(new Attachment(fileNameStr));
                     }
                 }
             }
@@ -115,7 +111,7 @@ namespace UkrGuru.WebJobs.Actions
 
             await smtp.SendMailAsync(message, cancellationToken);
 
-            await LogHelper.LogInformationAsync(nameof(SendEmailAction), new { jobId = JobId, result = "OK" });
+            await LogHelper.LogInformationAsync(nameof(SendEmailAction), new { jobId = JobId, result = "OK" }, cancellationToken);
 
             return true;
         }

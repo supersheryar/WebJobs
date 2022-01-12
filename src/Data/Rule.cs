@@ -11,13 +11,13 @@ namespace UkrGuru.WebJobs.Data
         public int RuleId { get; set; }
 
         [Display(Name = "Rule")]
-        public string RuleName { get; set; }
+        public string? RuleName { get; set; }
 
         [Display(Name = "Priority")]
         public Priorities RulePriority { get; set; } = Priorities.Normal;
 
         [Display(Name = "More")]
-        public string RuleMore { get; set; }
+        public string? RuleMore { get; set; }
     }
 }
     

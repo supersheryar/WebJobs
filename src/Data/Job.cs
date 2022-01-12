@@ -27,7 +27,7 @@ namespace UkrGuru.WebJobs.Data
         public DateTime? Finished { get; set; }
 
         [Display(Name = "More")]
-        public string JobMore { get; set; }
+        public string? JobMore { get; set; }
 
         [Display(Name = "Status")]
         public JobStatus JobStatus { get; set; }

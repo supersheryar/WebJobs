@@ -11,13 +11,13 @@ namespace UkrGuru.WebJobs.Data
         public int ActionId { get; set; }
 
         [Display(Name = "Action")]
-        public string ActionName { get; set; }
+        public string? ActionName { get; set; }
 
         [Display(Name = "Type")]
-        public string ActionType { get; set; }
+        public string? ActionType { get; set; }
 
         [Display(Name = "More")]
-        public string ActionMore { get; set; }
+        public string? ActionMore { get; set; }
 
         public bool Disabled { get; set; }
     }

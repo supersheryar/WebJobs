@@ -13,9 +13,9 @@ namespace UkrGuru.WebJobs.Data
 
         public DateTime Created { get; set; }
 
-        public string FileName { get; set; }
+        public string? FileName { get; set; }
 
-        public byte[] FileContent { get; set; }
+        public byte[]? FileContent { get; set; }
     }
 }
     

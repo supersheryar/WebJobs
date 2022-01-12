@@ -16,8 +16,8 @@ namespace UkrGuru.WebJobs.Data
 
         public LogLevel LogLevel { get; set; }
 
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
-        public string LogMore { get; set; }
+        public string? LogMore { get; set; }
     }
 }

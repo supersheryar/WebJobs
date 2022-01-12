@@ -10,16 +10,16 @@ namespace System.Reflection
     {
         public static bool InitDb(this Assembly assembly)
         {
-            assembly.ThrowIfNull(nameof(assembly));
+            ArgumentNullException.ThrowIfNull(assembly);
 
             var product_name = assembly.GetName().Name;
-            var product_version = assembly.GetName().Version.ToString();
+            var product_version = Convert.ToString(assembly.GetName().Version);
             // var product_version = FileVersionInfo.GetVersionInfo(assembly.Location).ProductVersion;
 
-            string db_version = null;
+            var db_version = null as string;
             try { db_version = DbHelper.FromProc($"WJbSettings_Get", product_name); } catch { }
 
-            db_version = db_version ?? "1.0.0.0";
+            db_version ??= "1.0.0.0";
             if (db_version.CompareTo(product_version) < 0)
             {
                 var version_file = $"{product_name}.Resources.{db_version}.sql";
