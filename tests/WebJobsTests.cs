@@ -3,6 +3,7 @@ using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
 using UkrGuru.WebJobs.Actions;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace System.Reflection.Tests
 {
