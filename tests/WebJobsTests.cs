@@ -45,11 +45,11 @@ namespace System.Reflection.Tests
         {
             await DbHelper.ExecProcAsync("WJbSettings_Set", new { Name = "Name1", Value = "Value1" });
 
-            Assert.Equal("Value1", DbHelper.FromProc("WJbSettings_Get", "Name1"));
+            Assert.Equal("Value1", DbHelper.FromProc<string?>("WJbSettings_Get", "Name1"));
 
             await DbHelper.ExecProcAsync("WJbSettings_Set", new { Name = "Name1", Value = "Value11" });
 
-            Assert.Equal("Value11", DbHelper.FromProc("WJbSettings_Get", "Name1"));
+            Assert.Equal("Value11", DbHelper.FromProc<string?>("WJbSettings_Get", "Name1"));
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace System.Reflection.Tests
         {
             var content = new byte[256]; for (int i = 0; i < 256; i++) content[i] = (byte)i;
 
-            var guid = await DbHelper.FromProcAsync("WJbFiles_Ins", new File { FileName = "test.bin", FileContent = content });
+            var guid = await DbHelper.FromProcAsync<string?>("WJbFiles_Ins", new File { FileName = "test.bin", FileContent = content });
 
             var file = await DbHelper.FromProcAsync<File>("WJbFiles_Get", guid);
 

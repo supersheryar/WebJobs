@@ -28,7 +28,7 @@ namespace UkrGuru.WebJobs.Actions
             }
             else
             {
-                var result = await DbHelper.FromProcAsync($"WJb_{proc}", data, timeout, cancellationToken);
+                var result = await DbHelper.FromProcAsync<string?>($"WJb_{proc}", data, timeout, cancellationToken);
 
                 More[result_name] = result;
 

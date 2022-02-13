@@ -17,7 +17,7 @@ namespace System.Reflection
             // var product_version = FileVersionInfo.GetVersionInfo(assembly.Location).ProductVersion;
 
             var db_version = null as string;
-            try { db_version = DbHelper.FromProc($"WJbSettings_Get", product_name); } catch { }
+            try { db_version = DbHelper.FromProc<string?>($"WJbSettings_Get", product_name); } catch { }
 
             db_version ??= "1.0.0.0";
             if (db_version.CompareTo(product_version) < 0)
