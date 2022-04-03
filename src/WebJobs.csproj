@@ -11,8 +11,8 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageIcon>ukrguru-logo.jpg</PackageIcon>
     <RepositoryUrl>https://github.com/UkrGuru/WebJobs</RepositoryUrl>
-    <Description>UkrGuru.WebJobs package is a scheduler and worker for any of your background jobs under any type of .NET 5 applications. Supports cron in the Rules. Provides extensibility for any Custom Actions. Uses UkrGuru.SqlJson for database connection.</Description>
-    <Version>3.3.1</Version>
+    <Description>The UkrGuru.WebJobs package is a Scheduler and Worker for any your background Job. Supports cron in Rules. Provides extensibility for any custom Actions. Uses UkrGuru.SqlJson for database connection. </Description>
+    <Version>3.3.2</Version>
     <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
     <PackageTags>dotnet net6 sqlserver webjobs scheduler worker sql-server-procedures sendemail template</PackageTags>
@@ -30,7 +30,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Actions\CsvToJsonAction.cs" />
     <Compile Remove="Actions\RunApiHoleAction.cs" />
+    <Compile Remove="Actions\SftpGetFilesAction.cs" />
     <Compile Remove="Actions\Url2HtmlAction.cs" />
   </ItemGroup>
 
@@ -41,11 +43,12 @@
     <None Remove="Resources\1.9.9.4.Procs.sql" />
     <None Remove="Resources\2.1.0.sql" />
     <None Remove="Resources\2.4.3.sql" />
+    <None Remove="Resources\3.3.2.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
     <PackageReference Include="UkrGuru.SqlJson" Version="4.3.1" />
   </ItemGroup>
 
@@ -62,6 +65,7 @@
     <EmbeddedResource Include="Resources\1.9.9.2.Data.sql" />
     <EmbeddedResource Include="Resources\1.9.9.3.Funcs.sql" />
     <EmbeddedResource Include="Resources\1.9.9.4.Procs.sql" />
+    <EmbeddedResource Include="Resources\3.3.2.sql" />
     <EmbeddedResource Include="Resources\2.4.3.sql" />
     <None Include="..\README.md">
       <Pack>True</Pack>

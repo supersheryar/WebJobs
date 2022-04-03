@@ -59,5 +59,35 @@ namespace UkrGuru.SqlJson
             }
             catch { }
         }
+
+        public static void LogTrace(string title, object? more = null) => Log(LogLevel.Trace, title, more);
+        public static void LogDebug(string title, object? more = null) => Log(LogLevel.Debug, title, more);
+        public static void LogInformation(string title, object? more = null) => Log(LogLevel.Information, title, more);
+        public static void LogWarning(string title, object? more = null) => Log(LogLevel.Warning, title, more);
+        public static void LogError(string title, object? more = null) => Log(LogLevel.Error, title, more);
+        public static void LogCritical(string title, object? more = null) => Log(LogLevel.Critical, title, more);
+
+        public static void Log(LogLevel logLevel, string title, object? more = null)
+        {
+            if ((byte)logLevel < (byte)MinLogLevel) return;
+
+            try { DbHelper.ExecProc("WJbLogs_Ins", new { logLevel, title, logMore = more is string ? more : JsonSerializer.Serialize(more) }); }
+            catch { }
+        }
+
+        public static void LogTrace(this SqlConnection connection, string title, object? more = null) => connection.Log(LogLevel.Trace, title, more);
+        public static void LogDebug(this SqlConnection connection, string title, object? more = null) => connection.Log(LogLevel.Debug, title, more);
+        public static void LogInformation(this SqlConnection connection, string title, object? more = null) => connection.Log(LogLevel.Information, title, more);
+        public static void LogWarning(this SqlConnection connection, string title, object? more = null) => connection.Log(LogLevel.Warning, title, more);
+        public static void LogError(this SqlConnection connection, string title, object? more = null) => connection.Log(LogLevel.Error, title, more);
+        public static void LogCritical(this SqlConnection connection, string title, object? more = null) => connection.Log(LogLevel.Critical, title, more);
+
+        public static void Log(this SqlConnection connection, LogLevel logLevel, string title, object? more = null)
+        {
+            if ((byte)logLevel < (byte)MinLogLevel) return;
+
+            try { connection.ExecProc("WJbLogs_Ins", new { logLevel, title, logMore = more is string ? more : JsonSerializer.Serialize(more) }); }
+            catch { }
+        }
     }
 }
