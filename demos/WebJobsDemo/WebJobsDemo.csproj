@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="UkrGuru.WebJobs" Version="3.2.1" />
+    <PackageReference Include="UkrGuru.WebJobs" Version="3.3.2" />
   </ItemGroup>
 
 </Project>
