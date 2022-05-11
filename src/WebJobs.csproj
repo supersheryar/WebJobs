@@ -12,7 +12,7 @@
     <PackageIcon>ukrguru-logo.jpg</PackageIcon>
     <RepositoryUrl>https://github.com/UkrGuru/WebJobs</RepositoryUrl>
     <Description>The UkrGuru.WebJobs package is a Scheduler and Worker for any your background Job. Supports cron in Rules. Provides extensibility for any custom Actions. Uses UkrGuru.SqlJson for database connection. </Description>
-    <Version>3.3.2</Version>
+    <Version>3.3.4</Version>
     <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
     <PackageTags>dotnet net6 sqlserver webjobs scheduler worker sql-server-procedures sendemail template</PackageTags>

@@ -1,9 +1,6 @@
 // Copyright (c) Oleksandr Viktor (UkrGuru). All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using UkrGuru.SqlJson;
@@ -17,11 +14,15 @@ namespace UkrGuru.WebJobs
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            await DbHelper.ExecCommandAsync("DECLARE @Delay varchar(100) = '00:00:' + " +
+                "REPLACE(CAST(60-CAST(DATEPART(SECOND, GETDATE()) as int) as char(2)), ' ', '0');WAITFOR DELAY @Delay;",
+                 timeout: 100);
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 _ = Task.Run(async () => await CreateCronJobs(stoppingToken), stoppingToken);
 
-                await Task.Delay(TimeSpan.FromSeconds(60 - DateTime.Now.Second), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(60), stoppingToken);
             }
         }
 
@@ -34,6 +35,7 @@ namespace UkrGuru.WebJobs
             catch (Exception ex)
             {
                 _logger.LogError(ex, "CreateCronJobs Error", nameof(CreateCronJobs));
+
                 await LogHelper.LogErrorAsync("CreateCronJobs Error", new { errMsg = ex.Message }, stoppingToken);
             }
         }
