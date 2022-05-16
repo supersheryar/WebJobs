@@ -5,39 +5,36 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using UkrGuru.SqlJson;
 
-namespace UkrGuru.WebJobs
+namespace UkrGuru.WebJobs;
+
+public class Scheduler : BackgroundService
 {
-    public class Scheduler : BackgroundService
+    private readonly ILogger<Scheduler> _logger;
+    public Scheduler(ILogger<Scheduler> logger) => _logger = logger;
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        private readonly ILogger<Scheduler> _logger;
-        public Scheduler(ILogger<Scheduler> logger) => _logger = logger;
+        await DbHelper.ExecCommandAsync("DECLARE @Delay varchar(10) = '00:00:' + FORMAT(60 - DATEPART(SECOND, GETDATE()), '00'); " +
+            "WAITFOR DELAY @Delay;", timeout: 100);
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        while (!stoppingToken.IsCancellationRequested)
         {
-            await DbHelper.ExecCommandAsync("DECLARE @Delay varchar(100) = '00:00:' + " +
-                "REPLACE(CAST(60-CAST(DATEPART(SECOND, GETDATE()) as int) as char(2)), ' ', '0');WAITFOR DELAY @Delay;",
-                 timeout: 100);
+            _ = Task.Run(async () => await CreateCronJobs(stoppingToken));
 
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                _ = Task.Run(async () => await CreateCronJobs(stoppingToken), stoppingToken);
-
-                await Task.Delay(TimeSpan.FromSeconds(60), stoppingToken);
-            }
+            await Task.Delay(TimeSpan.FromSeconds(60), stoppingToken);
         }
+    }
 
-        protected virtual async Task CreateCronJobs(CancellationToken stoppingToken)
+    protected virtual async Task CreateCronJobs(CancellationToken stoppingToken)
+    {
+        try
         {
-            try
-            {
-                await DbHelper.ExecProcAsync("WJbQueue_InsCron", cancellationToken: stoppingToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "CreateCronJobs Error", nameof(CreateCronJobs));
-
-                await LogHelper.LogErrorAsync("CreateCronJobs Error", new { errMsg = ex.Message }, stoppingToken);
-            }
+            await DbHelper.ExecProcAsync("WJbQueue_InsCron", cancellationToken: stoppingToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "CreateCronJobs Error", nameof(CreateCronJobs));
+            await LogHelper.LogErrorAsync("CreateCronJobs Error", new { errMsg = ex.Message }, stoppingToken);
         }
     }
 }

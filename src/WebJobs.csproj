@@ -11,8 +11,8 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageIcon>ukrguru-logo.jpg</PackageIcon>
     <RepositoryUrl>https://github.com/UkrGuru/WebJobs</RepositoryUrl>
-    <Description>The UkrGuru.WebJobs package is a Scheduler and Worker for any your background Job. Supports cron in Rules. Provides extensibility for any custom Actions. Uses UkrGuru.SqlJson for database connection. </Description>
-    <Version>3.3.4</Version>
+    <Description>The UkrGuru.WebJobs package is the Scheduler and Workers for any background Job in your .NET application. Supports cron in Rules. Provides extensibility for any custom Action. Uses UkrGuru.SqlJson for database connection. </Description>
+    <Version>3.4.0</Version>
     <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
     <PackageTags>dotnet net6 sqlserver webjobs scheduler worker sql-server-procedures sendemail template</PackageTags>
@@ -37,13 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Resources\1.9.9.1.Tables.sql" />
-    <None Remove="Resources\1.9.9.2.Data.sql" />
-    <None Remove="Resources\1.9.9.3.Funcs.sql" />
-    <None Remove="Resources\1.9.9.4.Procs.sql" />
     <None Remove="Resources\2.1.0.sql" />
-    <None Remove="Resources\2.4.3.sql" />
-    <None Remove="Resources\3.3.2.sql" />
+    <None Remove="Resources\3.4.0.0.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -61,12 +56,7 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\1.9.9.1.Tables.sql" />
-    <EmbeddedResource Include="Resources\1.9.9.2.Data.sql" />
-    <EmbeddedResource Include="Resources\1.9.9.3.Funcs.sql" />
-    <EmbeddedResource Include="Resources\1.9.9.4.Procs.sql" />
-    <EmbeddedResource Include="Resources\3.3.2.sql" />
-    <EmbeddedResource Include="Resources\2.4.3.sql" />
+    <EmbeddedResource Include="Resources\3.4.0.0.sql" />
     <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>

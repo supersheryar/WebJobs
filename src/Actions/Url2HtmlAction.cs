@@ -9,33 +9,32 @@ using System.Threading.Tasks;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
 
-namespace UkrGuru.WebJobs.Actions
+namespace UkrGuru.WebJobs.Actions;
+
+public class Url2HtmlAction : BaseAction
 {
-    public class Url2HtmlAction : BaseAction
+    public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken = default)
     {
-        public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken = default)
-        {
-            var url = More.GetValue("url").ThrowIfBlank("url");
+        var url = More.GetValue("url").ThrowIfBlank("url");
 
-            var result_name = More.GetValue("result_name"); 
-            if (string.IsNullOrEmpty(result_name)) result_name = "next_body";
+        var result_name = More.GetValue("result_name"); 
+        if (string.IsNullOrEmpty(result_name)) result_name = "next_body";
 
-            await LogHelper.LogDebugAsync(nameof(Url2HtmlAction), new { jobId = JobId, url, result_name });
+        await LogHelper.LogDebugAsync(nameof(Url2HtmlAction), new { jobId = JobId, url, result_name });
 
-            var html = string.Empty;
+        var html = string.Empty;
 
-            using var client = new WebClient() { Encoding = Encoding.UTF8 };
+        using var client = new WebClient() { Encoding = Encoding.UTF8 };
 
-            html = await client.DownloadStringTaskAsync(url);
+        html = await client.DownloadStringTaskAsync(url);
 
-            if (html?.Length > 200) html = await DbHelper.FromProcAsync("WJbFiles_Ins", 
-                new { FileName = "body.html", FileContent = Encoding.UTF8.GetBytes(html) }, cancellationToken: cancellationToken);
+        if (html?.Length > 200) html = await DbHelper.FromProcAsync("WJbFiles_Ins", 
+            new { FileName = "body.html", FileContent = Encoding.UTF8.GetBytes(html) }, cancellationToken: cancellationToken);
 
-            More[result_name] = html;
+        More[result_name] = html;
 
-            await LogHelper.LogInformationAsync(nameof(Url2HtmlAction), new { jobId = JobId, result = "OK", html });
+        await LogHelper.LogInformationAsync(nameof(Url2HtmlAction), new { jobId = JobId, result = "OK", html });
 
-            return true;
-        }
+        return true;
     }
 }

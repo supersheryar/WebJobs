@@ -19,7 +19,7 @@ namespace WebJobsDemo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddWebJobsDemo(connString: Configuration.GetConnectionString("SqlJsonConnection"),
+            services.AddWebJobsDemo(connectionString: Configuration.GetConnectionString("SqlJsonConnection"),
                 logLevel: Configuration.GetValue<LogLevel>("WJbSettings:LogLevel"),
                 nThreads: Configuration.GetValue<int>("WJbSettings:NThreads"));
 

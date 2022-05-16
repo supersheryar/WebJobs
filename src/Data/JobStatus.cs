@@ -1,12 +1,11 @@
-﻿namespace UkrGuru.WebJobs.Data
+﻿namespace UkrGuru.WebJobs.Data;
+
+public enum JobStatus
 {
-    public enum JobStatus
-    {
-        Unknown = 0,
-        Queued = 1,
-        Running = 2,
-        Completed = 3,
-        Failed = 4,
-        Cancelled = 5
-    }
+    Unknown = 0,
+    Queued = 1,
+    Running = 2,
+    Completed = 3,
+    Failed = 4,
+    Cancelled = 5
 }

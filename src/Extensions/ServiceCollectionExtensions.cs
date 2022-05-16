@@ -8,26 +8,28 @@ using UkrGuru.SqlJson;
 using UkrGuru.WebJobs;
 using UkrGuru.WebJobs.Actions;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace Microsoft.Extensions.DependencyInjection;
+
+public static class WebJobsServiceCollectionExtensions
 {
-    public static class WebJobsServiceCollectionExtensions
+    public static void AddWebJobs(this IServiceCollection services, string connectionString, LogLevel logLevel = LogLevel.Debug, int nThreads = 4)
     {
-        public static void AddWebJobs(this IServiceCollection services, string connString, LogLevel logLevel = LogLevel.Debug, int nThreads = 4)
-        {
-            services.AddSqlJson(connString.ThrowIfNull(nameof(connString)));
+        services.AddSqlJson(connectionString.ThrowIfNull(nameof(connectionString)));
 
-            LogHelper.MinLogLevel = logLevel;
+        LogHelper.MinLogLevel = logLevel;
 
-            var assembly = Assembly.GetAssembly(typeof(BaseAction));
-            ArgumentNullException.ThrowIfNull(assembly);
-            assembly.InitDb();
+        var assembly = Assembly.GetAssembly(typeof(BaseAction));
+        ArgumentNullException.ThrowIfNull(assembly);
 
-            if (nThreads <= 0) return;
+        assembly.InitDb();
 
-            services.AddHostedService<Scheduler>();
+        try { DbHelper.ExecProc($"WJbQueue_FinishAll"); } catch { }
 
-            for (int i = 0; i < nThreads; i++)
-                services.AddSingleton<IHostedService, Worker>();
-        }
+        if (nThreads <= 0) return;
+
+        services.AddHostedService<Scheduler>();
+
+        for (int i = 0; i < nThreads; i++)
+            services.AddSingleton<IHostedService, Worker>();
     }
 }

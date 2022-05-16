@@ -1,10 +1,9 @@
-﻿namespace UkrGuru.WebJobs.Data
+﻿namespace UkrGuru.WebJobs.Data;
+
+public enum Priorities : int
 {
-    public enum Priorities : int
-    {
-        ASAP,
-        High,
-        Normal,
-        Low
-    }
+    ASAP,
+    High,
+    Normal,
+    Low
 }

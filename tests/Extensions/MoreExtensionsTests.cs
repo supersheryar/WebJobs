@@ -19,8 +19,9 @@ namespace UkrGuru.WebJobs.Data.Tests
 
             Assert.Equal("Rule", more.GetValue("type"));
             Assert.Empty(more.GetValue("data"));
-            Assert.Equal(60, more.GetValue("timeout", 0));
             Assert.Equal(true, more.GetValue("enabled", false));
+            Assert.Equal(60, more.GetValue("timeout", 0));
+            Assert.Equal(123.45, more.GetValue("amount", 0.0));
         }
     }
 }

@@ -1,17 +1,16 @@
 ﻿using Xunit;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
-using UkrGuru.WebJobs.Actions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace System.Reflection.Tests
 {
-    public class WebJobsTests
+    public class WebJobsTest
     {
         private readonly bool dbOK;
 
-        public WebJobsTests()
+        public WebJobsTest()
         {
             var dbName = "WebJobsTest";
 
@@ -28,7 +27,7 @@ namespace System.Reflection.Tests
 
             DbHelper.ConnectionString = connectionString;
 
-            var assembly = Assembly.GetAssembly(typeof(BaseAction));
+            var assembly = Assembly.GetAssembly(typeof(UkrGuru.WebJobs.Actions.BaseAction));
             ArgumentNullException.ThrowIfNull(assembly);
 
             dbOK = assembly.InitDb();
@@ -68,9 +67,9 @@ namespace System.Reflection.Tests
         [Fact]
         public async Task WJbLogsTests()
         {
-            await DbHelper.ExecProcAsync("WJbLogs_Ins", new { logLevel = LogLevel.Information, title = "Test #1", logMore = "Test #1" });
+            await DbHelper.ExecProcAsync("WJbLogs_Ins", new { LogLevel = LogLevel.Information, Title = "Test #1", LogMore = "Test #1" });
 
-            await DbHelper.ExecProcAsync("WJbLogs_Ins", new { logLevel = LogLevel.Information, title = "Test #2", logMore = new { jobId = 2, result = "OK" } });
+            await DbHelper.ExecProcAsync("WJbLogs_Ins", new { LogLevel = LogLevel.Information, Title = "Test #2", LogMore = new { jobId = 2, result = "OK" } });
 
             Assert.True(true);
         }
@@ -79,9 +78,6 @@ namespace System.Reflection.Tests
         public async Task BaseActionTest()
         {
             Job job = new() { ActionType = "BaseAction, UkrGuru.WebJobs" };
-
-            //job.JobMore = @"{ ""next"": ""Rule"", ""data"": """", ""enabled"": true }"
-            //"result_name": "next_data", "next": "1", "next_proc": "PlannedJobs_Proc" }
 
             bool result = false;
 
@@ -104,7 +100,6 @@ namespace System.Reflection.Tests
 
             Job job = new() { ActionType = "RunSqlProcAction, UkrGuru.WebJobs" };
             job.JobMore = @"{ ""proc"": ""HelloTest"", ""data"": ""Alex"", ""result_name"": ""proc_result"" }";
-
 
             var proc_result = null as string;
 

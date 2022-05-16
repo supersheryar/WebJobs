@@ -3,21 +3,19 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace UkrGuru.WebJobs.Data
+namespace UkrGuru.WebJobs.Data;
+
+public partial class Rule: Action
 {
-    public partial class Rule: Action
-    {
-        [Display(Name = "Id")]
-        public int RuleId { get; set; }
+    [Display(Name = "Id")]
+    public int RuleId { get; set; }
 
-        [Display(Name = "Rule")]
-        public string? RuleName { get; set; }
+    [Display(Name = "Rule")]
+    public string? RuleName { get; set; }
 
-        [Display(Name = "Priority")]
-        public Priorities RulePriority { get; set; } = Priorities.Normal;
+    [Display(Name = "Priority")]
+    public Priorities RulePriority { get; set; } = Priorities.Normal;
 
-        [Display(Name = "More")]
-        public string? RuleMore { get; set; }
-    }
+    [Display(Name = "More")]
+    public string? RuleMore { get; set; }
 }
-    
