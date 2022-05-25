@@ -40,13 +40,13 @@ IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 1))
 IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 2))
 	INSERT [WJbActions] ([ActionId], [ActionName], [ActionType], [ActionMore], [Disabled]) 
 	VALUES (2, N'SendEmail', N'SendEmailAction, UkrGuru.WebJobs', N'{
-	"smtp_settings_name": "",
-	"from": "",
+	"smtp_settings_name": "StmpSettings",
+	"from": null,
 	"to": "",
 	"cc": null,
 	"bcc": null,
-	"subject": "",
-	"body": "",
+	"subject": null,
+	"body": null,
 	"attachment": null,
 	"attachments": null
 }', 0)
@@ -304,7 +304,15 @@ BEGIN
 	ALTER TABLE [WJbFiles] ADD  CONSTRAINT [DF_WJbFiles_Created]  DEFAULT (getdate()) FOR [Created]
 END
 
-
+IF NOT EXISTS (SELECT * FROM [dbo].[WJbSettings] WHERE [Name] = 'StmpSettings')
+INSERT [dbo].[WJbSettings] ([Name], [Value]) VALUES (N'StmpSettings', N'{
+  "from": "test@test.com",
+  "host": "smtp.test.com",
+  "port": 587,
+  "enableSsl": true,
+  "userName": "test@test.com",
+  "password": "12345"
+}')
 
 END
 

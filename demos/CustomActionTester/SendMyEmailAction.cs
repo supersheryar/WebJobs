@@ -5,34 +5,12 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
 
 namespace UkrGuru.WebJobs.Actions;
 
-public class SmtpSettings
-{
-    [JsonPropertyName("from")]
-    public string? From { get; set; }
-    
-    [JsonPropertyName("host")]
-    public string? Host { get; set; }
-    
-    [JsonPropertyName("port")]
-    public int Port { get; set; }
-    
-    [JsonPropertyName("enableSsl")]
-    public bool EnableSsl { get; set; }
-    
-    [JsonPropertyName("userName")]
-    public string? UserName { get; set; }
-    
-    [JsonPropertyName("password")]
-    public string? Password { get; set; }
-}
-
-public class SendEmailAction : BaseAction
+public class SendMyEmailAction : BaseAction
 {
     public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken = default)
     {
@@ -43,10 +21,10 @@ public class SendEmailAction : BaseAction
 
         var from = More.GetValue("from");
         if (string.IsNullOrEmpty(from)) from = smtp_settings.From;
-        ArgumentNullException.ThrowIfNull(from);
+        from.ThrowIfBlank(nameof(from));
 
         var to = More.GetValue("to");
-        ArgumentNullException.ThrowIfNull(to);
+        to.ThrowIfBlank(nameof(to));
 
         var cc = More.GetValue("cc");
         var bcc = More.GetValue("bcc");
@@ -57,7 +35,7 @@ public class SendEmailAction : BaseAction
         var attachment = More.GetValue("attachment");
         var attachments = More.GetValue("attachments");
 
-        await LogHelper.LogDebugAsync(nameof(SendEmailAction), new { jobId = JobId, to, cc, bcc, subject, body = ShortStr(body, 200), attachment, attachments }, cancellationToken);
+        await LogHelper.LogDebugAsync(nameof(SendMyEmailAction), new { jobId = JobId, to, cc, bcc, subject, body = ShortStr(body, 200), attachment, attachments }, cancellationToken);
 
         if (Guid.TryParse(body, out var guidBody))
         {
@@ -112,7 +90,7 @@ public class SendEmailAction : BaseAction
 
         await smtp.SendMailAsync(message, cancellationToken);
 
-        await LogHelper.LogInformationAsync(nameof(SendEmailAction), new { jobId = JobId, result = "OK" }, cancellationToken);
+        await LogHelper.LogInformationAsync(nameof(SendMyEmailAction), new { jobId = JobId, result = "OK" }, cancellationToken);
 
         return true;
     }
