@@ -62,7 +62,11 @@ public class SendEmailAction : BaseAction
         if (Guid.TryParse(body, out var guidBody))
         {
             var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", body, cancellationToken: cancellationToken);
-            if (file?.FileContent != null) body = Encoding.UTF8.GetString(file.FileContent);
+            if (file?.FileContent != null)
+            {
+                await file.DecompressAsync(cancellationToken);
+                body = Encoding.UTF8.GetString(file.FileContent);
+            }
         }
 
         MailMessage message = new(from, to, subject, body)
@@ -80,7 +84,10 @@ public class SendEmailAction : BaseAction
             {
                 var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", attachment, cancellationToken: cancellationToken);
                 if (file?.FileContent != null)
+                {
+                    await file.DecompressAsync(cancellationToken);
                     message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
+                }
             }
             else
             {
@@ -96,7 +103,10 @@ public class SendEmailAction : BaseAction
                 {
                     var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", guidAttach, cancellationToken: cancellationToken);
                     if (file?.FileContent != null)
+                    {
+                        await file.DecompressAsync(cancellationToken);
                         message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
+                    }
                 }
                 else if (!string.IsNullOrWhiteSpace(fileNameStr))
                 {

@@ -7,4 +7,5 @@ Available Standard Actions:
 - RunSqlProc - run sql server stored procedure and stored result in a variable for further processing.
 - SendEmail - send email via your smtp settings.
 - FillTemplate - fill the template with your variable values and stored result in a variable for further processing.
+- DownloadPage - download the page and save the result to a WJbFiles table for further processing.
 - RunApiProc - run sql server stored procedure throught ApiHole and stored result in a variable for further processing.

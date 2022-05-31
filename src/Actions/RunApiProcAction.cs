@@ -73,7 +73,7 @@ public class RunApiProcAction : BaseAction
 
         await LogHelper.LogInformationAsync(nameof(RunApiProcAction), new { jobId = JobId, result = ShortStr(responseBody, 200) }, cancellationToken);
 
-        More[result_name] = responseBody;
+        if (!string.IsNullOrEmpty(result_name)) More[result_name] = responseBody;
 
         return true;
     }

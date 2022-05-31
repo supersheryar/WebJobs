@@ -57,15 +57,22 @@ IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 3))
 	"tname_pattern": "[A-Z]{1,}[_]{1,}[A-Z]{1,}[_]{0,}[A-Z]{0,}"
 }', 0)
 
+IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 4))
+	INSERT [WJbActions] ([ActionId], [ActionName], [ActionType], [ActionMore], [Disabled]) 
+	VALUES (4, N'DownloadPage', N'DownloadPageAction, UkrGuru.WebJobs', N'{ 
+	"url": "",
+	"result_name": "next_body"
+}', 0)
+
 IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 5))
 	INSERT [WJbActions] ([ActionId], [ActionName], [ActionType], [ActionMore], [Disabled]) 
 	VALUES (5, N'RunApiProc', N'RunApiProcAction, UkrGuru.WebJobs', N'{
-  "api_settings_name": "",
-  "proc": "",
-  "data": null,
-  "body": null,
-  "timeout": null,
-  "result_name": null
+	"api_settings_name": "",
+	"proc": "",
+	"data": null,
+	"body": null,
+	"timeout": null,
+	"result_name": null
 }', 0)
 
 SET IDENTITY_INSERT [WJbActions] OFF
@@ -125,14 +132,17 @@ IF NOT EXISTS (SELECT 1 FROM [WJbRules] WHERE (RuleId = 3))
 	INSERT [WJbRules] ([RuleId], [RuleName], [RulePriority], [ActionId], [RuleMore], [Disabled]) 
 	VALUES (3, N'FillTemplate Base', 2, 3, NULL, 0)
 
-SET IDENTITY_INSERT [WJbRules] OFF
-
-
-SET IDENTITY_INSERT [WJbRules] ON 
+IF NOT EXISTS (SELECT 1 FROM [WJbRules] WHERE (RuleId = 4))
+	INSERT [WJbRules] ([RuleId], [RuleName], [RulePriority], [ActionId], [RuleMore], [Disabled]) 
+	VALUES (4, N'DownloadPage Base', 2, 4, NULL, 0)
 
 IF NOT EXISTS (SELECT 1 FROM [WJbRules] WHERE (RuleId = 5))
 	INSERT [WJbRules] ([RuleId], [RuleName], [RulePriority], [ActionId], [RuleMore], [Disabled]) 
 	VALUES (5, N'RunApiProc Base', 2, 5, NULL, 0)
+
+IF NOT EXISTS (SELECT 1 FROM [WJbRules] WHERE (RuleId = 999))
+	INSERT [WJbRules] ([RuleId], [RuleName], [RulePriority], [ActionId], [RuleMore], [Disabled]) 
+	VALUES (999, N'WebJobs Clean', 2, 1, N'{ "cron": "0 2 * * *", "proc": "Clean", "timeout": 300 }', 1)
 
 SET IDENTITY_INSERT [WJbRules] OFF
 
@@ -630,4 +640,27 @@ IF @@ROWCOUNT = 0
     INSERT INTO WJbSettings ([Name], [Value]) 
     VALUES (@Name, @Value)
 ';
+END
+
+BEGIN /*** Job Procs ***/
+EXEC dbo.sp_executesql @statement = N'
+CREATE OR ALTER PROCEDURE WJb_Clean
+AS
+DECLARE @Today datetime = CAST(GETDATE() as date)
+
+DELETE FROM WJbQueue WHERE Created < @Today
+
+DELETE FROM WJbHistory WHERE Created < DATEADD(MONTH, -1, @Today)
+	AND Created <> CAST(Created as smalldatetime) -- ignore items in safe
+
+DELETE FROM WJbLogs WHERE Logged < DATEADD(MONTH, -1, @Today)
+	AND Logged <> CAST(Logged as smalldatetime)	-- ignore items in safe
+
+DELETE FROM WJbFiles WHERE Created < DATEADD(YEAR, -1, @Today)
+	AND Created <> CAST(Created as smalldatetime) -- ignore items in safe
+';
+
+EXEC dbo.sp_executesql @statement = N'
+';
+
 END

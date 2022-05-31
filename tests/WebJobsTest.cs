@@ -3,6 +3,7 @@ using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 
 namespace System.Reflection.Tests
 {
@@ -30,8 +31,8 @@ namespace System.Reflection.Tests
             var assembly = Assembly.GetAssembly(typeof(UkrGuru.WebJobs.Actions.BaseAction));
             ArgumentNullException.ThrowIfNull(assembly);
 
-            dbOK = assembly.InitDb();
             //dbOK = true;
+            dbOK = assembly.InitDb();
         }
 
         [Fact]
@@ -136,49 +137,47 @@ namespace System.Reflection.Tests
             if (action != null)
             {
                 await action.ExecuteAsync();
+
                 subject = ((More)action.More).GetValue("next_subject");
             }
 
             Assert.Equal("Hello Alex!", subject);
         }
 
-        //[Fact]
-        //public async Task RunApiProcActionTest()
-        //{
-        //    //await DbHelper.ExecCommandAsync("CREATE OR ALTER PROCEDURE [dbo].[WJb_HelloTest] (@Data varchar(100)) AS SELECT 'Hello ' + @Data  + '!'");
+        [Fact]
+        public async Task DownloadPageActionTest()
+        {
+            Job job = new() { ActionType = "DownloadPageAction, UkrGuru.WebJobs" };
+            job.JobMore = @"{ ""url"": ""https://ukrguru.com/"", ""result_name"": ""next_body"" }";
 
-        //    Job job = new() {  ActionType = "RunApiProcAction, UkrGuru.WebJobs" };
-        //    job.RuleMore = @"{  ""api_settings_name"": ""WDogApi"" }";
-        //    job.JobMore = @"{ ""proc"": ""HelloTest"", ""data"": ""Alex"", ""result_name"": ""proc_result"" }";
+            bool result = false; 
 
-        //    var action = job.CreateAction();
+            var action = job.CreateAction();
 
-        //    var result = await action.ExecuteAsync();
-        //    // action.NextAsync(result).Wait();
+            if (action != null)
+            {
+                result = await action.ExecuteAsync();
+            }
 
-        //    var proc_result = ((More)action.More).GetValue("proc_result");
+            Assert.True(result);
 
-        //    Assert.Equal("Hello Alex!", proc_result);
-        //}
+            var guid = null as string;
 
-        //[Fact]
-        //public void Url2HtmlActionTest()
-        //{
-        //    Job job = new() { ActionType = "Url2HtmlAction, UkrGuru.WebJobs" };
-        //    job.JobMore = @"{ ""url"": ""https://ukrguru.com/"", ""result_name"": ""next_body"" }";
+            if (action != null)
+            {
+                guid = ((More)action.More).GetValue("next_body");
+            }
 
-        //    var action = job.CreateAction();
+            var file = DbHelper.FromProc<File>("WJbFiles_Get", guid);
 
-        //    var result = action.ExecuteAsync().Result;
-        //    // action.NextAsync(result).Wait();
+            if (file?.FileContent != null)
+            {
+                await file.DecompressAsync();
 
-        //    var guid = ((More)action.More).GetValue("next_body");
+                var body = Text.Encoding.UTF8.GetString(file.FileContent, 0, file.FileContent.Length);
 
-        //    var file = DbHelper.FromProc<File>("WJbFiles_Get", guid);
-
-        //    var body = Text.Encoding.UTF8.GetString(file.FileContent, 0, file.FileContent.Length);
-
-        //    Assert.Contains("Oleksandr Viktor (UkrGuru)", body);
-        //}
+                Assert.Contains("Oleksandr Viktor (UkrGuru)", body);
+            }
+        }
     }
 }

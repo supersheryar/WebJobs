@@ -15,9 +15,10 @@ public static class AssemblyExtensions
         var assemblyVersion = Convert.ToString(assembly.GetName().Version);
 
         string? currectVersion = null;
-        try { currectVersion = DbHelper.FromProc<string?>("WJbSettings_Get", assemblyName); } catch { }
-        currectVersion ??= "1.0.0.0";
 
+        try { currectVersion = DbHelper.FromProc<string?>("WJbSettings_Get", assemblyName); } catch { }
+
+        currectVersion ??= "0.0.0.0";
         if (currectVersion.CompareTo(assemblyVersion) != 0)
         {
             assembly.ExecResource($"{assemblyName}.Resources.{assemblyVersion}.sql");
