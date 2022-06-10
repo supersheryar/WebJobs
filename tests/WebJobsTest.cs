@@ -4,6 +4,7 @@ using UkrGuru.WebJobs.Data;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Threading;
+using System.Text.Json;
 
 namespace System.Reflection.Tests
 {
@@ -95,12 +96,12 @@ namespace System.Reflection.Tests
         }
 
         [Fact]
-        public async Task RunSqlProcActionTest()
+        public async Task RunSqlProcDataTest()
         {
-            await DbHelper.ExecCommandAsync("CREATE OR ALTER PROCEDURE [dbo].[WJb_HelloTest] (@Data varchar(100)) AS SELECT 'Hello ' + @Data  + '!'");
+            await DbHelper.ExecCommandAsync("CREATE OR ALTER PROCEDURE [dbo].[WJb_DataTest] (@Data varchar(100)) AS SELECT @Data");
 
             Job job = new() { ActionType = "RunSqlProcAction, UkrGuru.WebJobs" };
-            job.JobMore = @"{ ""proc"": ""HelloTest"", ""data"": ""Alex"", ""result_name"": ""proc_result"" }";
+            job.JobMore = @"{ ""proc"": ""DataTest"", ""data"": ""DATA"", ""result_name"": ""proc_result"" }";
 
             var proc_result = null as string;
 
@@ -110,10 +111,32 @@ namespace System.Reflection.Tests
             {
                 await action.ExecuteAsync();
 
-                proc_result = ((More)action.More).GetValue("proc_result");
+                proc_result = ((More)action.More).GetValue("proc_result", null as string);
             }
 
-            Assert.Equal("Hello Alex!", proc_result);
+            Assert.Equal("DATA", proc_result);
+        }
+
+        [Fact]
+        public async Task RunSqlProcNullTest()
+        {
+            await DbHelper.ExecCommandAsync("CREATE OR ALTER PROCEDURE [dbo].[WJb_NullTest] AS SELECT 'OK'");
+
+            Job job = new() { ActionType = "RunSqlProcAction, UkrGuru.WebJobs" };
+            job.JobMore = JsonSerializer.Serialize(new { proc = "NullTest", data = null as string, result_name = "proc_result" });
+
+            var proc_result = null as string;
+
+            var action = job.CreateAction();
+
+            if (action != null)
+            {
+                await action.ExecuteAsync();
+
+                proc_result = ((More)action.More).GetValue("proc_result", null as string);
+            }
+
+            Assert.Equal("OK", proc_result);
         }
 
         //[Fact]

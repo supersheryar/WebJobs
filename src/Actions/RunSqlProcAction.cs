@@ -24,7 +24,7 @@ public class RunSqlProcAction : BaseAction
         {
             _ = await DbHelper.ExecProcAsync($"WJb_{proc}", data, timeout, cancellationToken);
 
-            await LogHelper.LogInformationAsync(nameof(RunSqlProcAction), new { jobId = JobId }, cancellationToken);
+            await LogHelper.LogInformationAsync(nameof(RunSqlProcAction), new { jobId = JobId, result = "OK" }, cancellationToken);
         }
         else
         {

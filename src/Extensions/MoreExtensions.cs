@@ -16,26 +16,18 @@ public static class MoreExtensions
         if (items == null) return;
 
         foreach (var item in items.Where(item => !more.ContainsKey(item.Key)))
-            more.Add(item.Key, Convert.ToString(item.Value));
+            more.Add(item.Key, item.Value);
     }
 
-    public static string? GetValue(this More more, string name, string? defaultValue = default)
-    {
-        return more.TryGetValue(name, out var value) ? Convert.ToString(value) : defaultValue;
-    }
+    public static string? GetValue(this More more, string name, string? defaultValue = default) => 
+        more.TryGetValue(name, out var value) ? value == null ? null : Convert.ToString(value) : defaultValue;
 
-    public static bool? GetValue(this More more, string name, bool? defaultValue)
-    {
-        return bool.TryParse(more.GetValue(name), out bool value) ? value : defaultValue;
-    }
+    public static bool? GetValue(this More more, string name, bool? defaultValue) => 
+        bool.TryParse(more.GetValue(name), out bool value) ? value : defaultValue;
 
-    public static int? GetValue(this More more, string name, int? defaultValue)
-    {
-        return (int.TryParse(more.GetValue(name), out int value)) ? value : defaultValue;
-    }
+    public static int? GetValue(this More more, string name, int? defaultValue) => 
+        (int.TryParse(more.GetValue(name), out int value)) ? value : defaultValue;
 
-    public static double? GetValue(this More more, string name, double? defaultValue)
-    {
-        return (double.TryParse(more.GetValue(name), out double value)) ? value : defaultValue;
-    }
+    public static double? GetValue(this More more, string name, double? defaultValue) => 
+        (double.TryParse(more.GetValue(name), out double value)) ? value : defaultValue;
 }
