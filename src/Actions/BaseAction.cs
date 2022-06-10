@@ -40,12 +40,12 @@ public class BaseAction
         return true;
     }
 
-    public virtual async Task NextAsync(bool execute_result, CancellationToken cancellationToken = default)
+    public virtual async Task<bool> NextAsync(bool exec_result, CancellationToken cancellationToken = default)
     {
-        var next_prefix = execute_result ? GOOD_PREFIX : FAIL_PREFIX;
+        var next_prefix = exec_result ? GOOD_PREFIX : FAIL_PREFIX;
 
-        var next_rule = More.GetValue(execute_result ? GOOD_RULE : FAIL_RULE);
-        if (string.IsNullOrEmpty(next_rule)) return;
+        var next_rule = More.GetValue(exec_result ? GOOD_RULE : FAIL_RULE);
+        if (string.IsNullOrEmpty(next_rule)) return false;
 
         var next_more = new More();
 
@@ -59,6 +59,8 @@ public class BaseAction
             cancellationToken: cancellationToken);
 
         await LogHelper.LogInformationAsync("NextAsync", new { jobId = JobId, result = "OK", next_jobId }, cancellationToken);
+
+        return true;
     }
 
     public static string? ShortStr(string? text, int maxLength) => (!string.IsNullOrEmpty(text)

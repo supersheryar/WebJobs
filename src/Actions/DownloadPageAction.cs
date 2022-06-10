@@ -11,12 +11,11 @@ public class DownloadPageAction : BaseAction
     public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken = default)
     {
         var url = More.GetValue("url").ThrowIfBlank("url");
-
+        var filename = More.GetValue("filename") ?? "file.txt";
         var result_name = More.GetValue("result_name") ?? "next_body";
+        await LogHelper.LogDebugAsync(nameof(DownloadPageAction), new { jobId = JobId, url, filename, result_name }, cancellationToken);
 
-        await LogHelper.LogDebugAsync(nameof(DownloadPageAction), new { jobId = JobId, url, result_name }, cancellationToken);
-
-        Data.File file = new();
+        Data.File file = new() { FileName = filename };
 
         using (HttpClient client = new())
         {

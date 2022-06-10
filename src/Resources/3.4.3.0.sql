@@ -61,6 +61,7 @@ IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 4))
 	INSERT [WJbActions] ([ActionId], [ActionName], [ActionType], [ActionMore], [Disabled]) 
 	VALUES (4, N'DownloadPage', N'DownloadPageAction, UkrGuru.WebJobs', N'{ 
 	"url": "",
+	"filename": "file.txt",
 	"result_name": "next_body"
 }', 0)
 

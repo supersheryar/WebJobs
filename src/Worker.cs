@@ -10,7 +10,12 @@ namespace UkrGuru.WebJobs;
 
 public class Worker : BackgroundService
 {
-    private int _delay = 100;
+    private const int NO_DELAY = 0;
+    private const int MIN_DELAY = 100;
+    private const int ADD_DELAY = 1000;
+    private const int MAX_DELAY = MIN_DELAY * 16;
+
+    private int _delay = MIN_DELAY;
 
     private readonly ILogger<Worker> _logger;
     public Worker(ILogger<Worker> logger) => _logger = logger;
@@ -24,21 +29,21 @@ public class Worker : BackgroundService
                 var job = await DbHelper.FromProcAsync<JobQueue>("WJbQueue_Start1st", cancellationToken: stoppingToken);
                 if (job?.JobId > 0)
                 {
-                    var jobId = job.JobId; bool result = false;
+                    var jobId = job.JobId; bool exec_result = false, next_result = false;
                     try
                     {
                         var action = job.CreateAction();
 
                         if (action != null)
                         {
-                            result = await action.ExecuteAsync(stoppingToken);
+                            exec_result = await action.ExecuteAsync(stoppingToken);
 
-                            await action.NextAsync(result, stoppingToken);
+                            next_result = await action.NextAsync(exec_result, stoppingToken);
                         }
                     }
                     catch (Exception ex)
                     {
-                        result = false;
+                        exec_result = false;
 
                         //_logger.LogError(ex, $"Job #{jobId} crashed.", nameof(ExecuteAsync));
                         await LogHelper.LogErrorAsync($"Job #{jobId} crashed.", new { jobId, errMsg = ex.Message }, stoppingToken);
@@ -46,15 +51,15 @@ public class Worker : BackgroundService
                     finally
                     {
                         _ = await DbHelper.ExecProcAsync("WJbQueue_Finish", new { JobId = jobId, 
-                                JobStatus = result ? JobStatus.Completed : JobStatus.Failed }, 
+                                JobStatus = exec_result ? JobStatus.Completed : JobStatus.Failed }, 
                                 cancellationToken: stoppingToken);
                     }
 
-                    _delay = 100;
+                    _delay = next_result ? NO_DELAY : MIN_DELAY;
                 }
                 else
                 {
-                    if (_delay < 12800) _delay += 1000;
+                    if (_delay < MAX_DELAY) _delay += ADD_DELAY;
                 }
             }
             catch (Exception ex)
@@ -63,7 +68,10 @@ public class Worker : BackgroundService
                 await LogHelper.LogErrorAsync("Worker.ExecuteAsync Error", new { errMsg = ex.Message }, stoppingToken);
             }
 
-            await Task.Delay(_delay, stoppingToken);
+            if (_delay > 0) 
+                await Task.Delay(_delay, stoppingToken);
+            else
+                _delay = MIN_DELAY;
         }
     }
 }
