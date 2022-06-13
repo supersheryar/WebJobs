@@ -243,11 +243,22 @@ BEGIN
 	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 END
+
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[WJbFiles]') AND name = N'IX_WJbFiles_CreatedDesc')
 	CREATE NONCLUSTERED INDEX [IX_WJbFiles_CreatedDesc] ON [WJbFiles]
 	(
 		[Created] DESC
 	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'WJbFiles') AND name = N'SHA1') 
+    ALTER TABLE WJbFiles ADD SHA1 [binary](20)
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[WJbFiles]') AND name = N'IX_WJbFiles_SHA1_FileName')
+	CREATE NONCLUSTERED INDEX [IX_WJbFiles_SHA1_FileName] ON [dbo].[WJbFiles]
+	(
+		[SHA1] ASC,
+		[FileName] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 END
 
 BEGIN /*** Init WJbLogs ***/
@@ -509,16 +520,31 @@ EXEC dbo.sp_executesql @statement = N'
 CREATE OR ALTER PROCEDURE [WJbFiles_Ins]
     @Data nvarchar(max)
 AS
-DECLARE @Id uniqueidentifier = NEWID();
+DECLARE @Id uniqueidentifier = NULL
+DECLARE @SHA1 binary(20), @FileName nvarchar(100), @FileContent varbinary(max)
 
-INSERT WJbFiles (Id, Created, FileName, FileContent)
-SELECT @Id Id, GETDATE() Created, * 
-FROM OPENJSON(@Data) 
-WITH (FileName nvarchar(100), FileContent varbinary(max))
+SELECT TOP 1 @SHA1 = HashBytes(''SHA1'', FileContent), @FileName = [FileName], @FileContent = FileContent
+FROM OPENJSON(@Data)
+WITH ([FileName] nvarchar(100), FileContent varbinary(max))
+
+SELECT @Id = Id FROM WJbFiles WHERE SHA1 = @SHA1 AND FileName = @FileName
+
+IF @Id IS NULL BEGIN
+	SET @Id = NEWID(); 
+
+	INSERT WJbFiles (Id, Created, FileName, FileContent, SHA1)
+	SELECT @Id Id, GETDATE() Created, @FileName, @FileContent, @SHA1 
+END
 
 SELECT CAST(@Id as varchar(50)) Id
 ';
-
+EXEC dbo.sp_executesql @statement = N'
+CREATE OR ALTER PROCEDURE [WJbFiles_Del]
+	@Data uniqueidentifier
+AS
+DELETE WJbFiles
+WHERE Id = @Data
+';
 END
 
 BEGIN /*** WJbLogs Procs ***/

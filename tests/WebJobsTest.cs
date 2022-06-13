@@ -197,10 +197,31 @@ namespace System.Reflection.Tests
             {
                 await file.DecompressAsync();
 
-                var body = Text.Encoding.UTF8.GetString(file.FileContent, 0, file.FileContent.Length);
+                var body = Text.Encoding.UTF8.GetString(file.FileContent);
 
                 Assert.Contains("Oleksandr Viktor (UkrGuru)", body);
             }
+        }
+
+        [Theory]
+        [InlineData("123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")]
+        public async Task SetFileAsyncTest(string content, CancellationToken cancellationToken = default)
+        {
+            var guid1 = await WJbFileHelper.SetAsync(content, cancellationToken: cancellationToken);
+
+            var guid2 = await WJbFileHelper.SetAsync(content, cancellationToken: cancellationToken);
+
+            Assert.Equal(guid1, guid2);
+
+            var content1 = await WJbFileHelper.GetAsync(guid1, cancellationToken: cancellationToken);
+
+            Assert.Equal(content, content1);
+
+            await WJbFileHelper.DelFileAsync(guid1, cancellationToken: cancellationToken);
+
+            content1 = await WJbFileHelper.GetAsync(guid1, cancellationToken: cancellationToken);
+
+            Assert.Null(content1);
         }
     }
 }

@@ -15,19 +15,19 @@ public class SmtpSettings
 {
     [JsonPropertyName("from")]
     public string? From { get; set; }
-    
+
     [JsonPropertyName("host")]
     public string? Host { get; set; }
-    
+
     [JsonPropertyName("port")]
     public int Port { get; set; }
-    
+
     [JsonPropertyName("enableSsl")]
     public bool EnableSsl { get; set; }
-    
+
     [JsonPropertyName("userName")]
     public string? UserName { get; set; }
-    
+
     [JsonPropertyName("password")]
     public string? Password { get; set; }
 }
@@ -57,17 +57,10 @@ public class SendEmailAction : BaseAction
         var attachment = More.GetValue("attachment");
         var attachments = More.GetValue("attachments");
 
-        await LogHelper.LogDebugAsync(nameof(SendEmailAction), new { jobId = JobId, to, cc, bcc, subject, body = ShortStr(body, 200), attachment, attachments }, cancellationToken);
+        await LogHelper.LogDebugAsync(nameof(SendEmailAction), new { jobId = JobId, to, cc, bcc, subject, 
+            body = ShortStr(body, 200), attachment, attachments }, cancellationToken);
 
-        if (Guid.TryParse(body, out var guidBody))
-        {
-            var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", body, cancellationToken: cancellationToken);
-            if (file?.FileContent != null)
-            {
-                await file.DecompressAsync(cancellationToken);
-                body = Encoding.UTF8.GetString(file.FileContent);
-            }
-        }
+        body = await WJbFileHelper.GetAsync(body, cancellationToken);
 
         MailMessage message = new(from, to, subject, body)
         {
@@ -82,12 +75,10 @@ public class SendEmailAction : BaseAction
         {
             if (Guid.TryParse(attachment, out var guidAttach))
             {
-                var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", attachment, cancellationToken: cancellationToken);
+                var file = await WJbFileHelper.GetFileAsync(attachment, cancellationToken);
+
                 if (file?.FileContent != null)
-                {
-                    await file.DecompressAsync(cancellationToken);
                     message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
-                }
             }
             else
             {
@@ -99,15 +90,12 @@ public class SendEmailAction : BaseAction
             foreach (var fileName in JsonSerializer.Deserialize<object[]>(attachments) ?? Enumerable.Empty<object>())
             {
                 var fileNameStr = Convert.ToString(fileName);
-                if (Guid.TryParse(fileNameStr, out var guidAttach))
-                {
-                    var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", guidAttach, cancellationToken: cancellationToken);
-                    if (file?.FileContent != null)
-                    {
-                        await file.DecompressAsync(cancellationToken);
-                        message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
-                    }
-                }
+
+                var file = await WJbFileHelper.GetFileAsync(attachment, cancellationToken);
+
+                if (file?.FileContent != null)
+                    message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
+
                 else if (!string.IsNullOrWhiteSpace(fileNameStr))
                 {
                     message.Attachments.Add(new Attachment(fileNameStr));
