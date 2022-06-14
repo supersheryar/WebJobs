@@ -1,7 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.IO.Compression;
-using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace UkrGuru.WebJobs;

@@ -60,7 +60,8 @@ public class SendEmailAction : BaseAction
         await LogHelper.LogDebugAsync(nameof(SendEmailAction), new { jobId = JobId, to, cc, bcc, subject, 
             body = ShortStr(body, 200), attachment, attachments }, cancellationToken);
 
-        body = await WJbFileHelper.GetAsync(body, cancellationToken);
+        if (Guid.TryParse(body, out var guidBody))
+            body = await WJbFileHelper.GetAsync(body, cancellationToken);
 
         MailMessage message = new(from, to, subject, body)
         {
