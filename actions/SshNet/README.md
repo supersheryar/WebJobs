@@ -1,6 +1,7 @@
-# UkrGuru.WebJobs
+# UkrGuru.WebJobs.Actions.SshNet
 
-UkrGuru.WebJobs package is a scheduler and worker for any of your background jobs under any type of .NET 6 applications. 
+UkrGuru.WebJobs.Actions.SshNet package is additional actions for UkrGuru.WebJobs. Created on base SSH.NET package for 
+download/upload remote files 
 Supports cron in the Rules. Provides extensibility for any Custom Actions. Uses UkrGuru.SqlJson for database connection.
 
 Standard Actions:
