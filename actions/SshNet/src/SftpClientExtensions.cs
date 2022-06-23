@@ -28,10 +28,8 @@ public static class SftpClientExtensions
     {
         return Task.Run(() =>
         {
-            using (var stream = File.OpenWrite(local_path))
-            {
-                sftp.DownloadFile(remote_path, stream);
-            }
+            using var stream = File.OpenWrite(local_path);
+            sftp.DownloadFile(remote_path, stream);
         }, cancellationToken);
     }
 
@@ -39,10 +37,8 @@ public static class SftpClientExtensions
     {
         return Task.Run(() =>
         {
-            using (var stream = File.OpenRead(local_path))
-            {
-                sftp.UploadFile(stream, remote_path);
-            }
+            using var stream = File.OpenRead(local_path);
+            sftp.UploadFile(stream, remote_path);
         }, cancellationToken);
     }
 }

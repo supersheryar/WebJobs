@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="UkrGuru.WebJobs" Version="3.4.5" />
+    <PackageReference Include="UkrGuru.WebJobs" Version="3.4.6" />
   </ItemGroup>
 
   <ItemGroup>

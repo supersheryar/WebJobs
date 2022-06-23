@@ -7,9 +7,9 @@ namespace UkrGuru.WebJobs.Actions.SshNet;
 
 public class PutFilesAction : SshNetAction
 {
-    public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken)
+    public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken = default)
     {
-        const string funcName = "SshNet_PutFiles";
+        const string funcName = "SshNet.PutFiles";
 
         var jobId = JobId;
 
@@ -32,8 +32,11 @@ public class PutFilesAction : SshNetAction
             local_path = Path.Combine(local_base_path, local_path);
             if (!string.IsNullOrEmpty(local_move_path)) local_move_path = Path.Combine(local_base_path, local_move_path);
         }
+        local_path ??= ".";
 
-        using var sftp = await CreateSftpClient(sshnet_options_name);
+        await LogHelper.LogDebugAsync(funcName, new { jobId, sshnet_options_name, remote_path, local_path, local_base_path, local_move_path }, cancellationToken);
+
+        using var sftp = await CreateSftpClient(sshnet_options_name, cancellationToken);
         {
             sftp.Connect();
 
@@ -47,24 +50,24 @@ public class PutFilesAction : SshNetAction
                 {
                     string remoteFile = $"{remote_path}/{file.Name}", localFile = Path.Combine(local_path, file.Name);
 
-                    await sftp.UploadFileAsync(localFile, remoteFile);
+                    await sftp.UploadFileAsync(localFile, remoteFile, cancellationToken);
 
-                    await LogHelper.LogInformationAsync(funcName, new { jobId, errMsg = $"Uploaded: {file.Name}" });
+                    await LogHelper.LogInformationAsync(funcName, new { jobId, errMsg = $"Uploaded: {file.Name}" }, cancellationToken);
 
                     if (!string.IsNullOrEmpty(local_move_path))
                     {
                         System.IO.File.Move(file.FullName, Path.Combine(local_move_path, file.Name), true);
-                        await LogHelper.LogDebugAsync(funcName, new { jobId, errMsg = $"Moved: {file.Name}" });
+                        await LogHelper.LogDebugAsync(funcName, new { jobId, errMsg = $"Moved: {file.Name}" }, cancellationToken);
                     }
                     else
                     {
                         System.IO.File.Delete(file.FullName);
-                        await LogHelper.LogDebugAsync(funcName, new { jobId, errMsg = $"Deleted: {file.Name}" });
+                        await LogHelper.LogDebugAsync(funcName, new { jobId, errMsg = $"Deleted: {file.Name}" }, cancellationToken);
                     }
                 }
                 catch (Exception ex)
                 {
-                    await LogHelper.LogErrorAsync(funcName, new { jobId, errMsg = $"Failed: {file.Name}. Error: {ex.Message}" });
+                    await LogHelper.LogErrorAsync(funcName, new { jobId, errMsg = $"Failed: {file.Name}. Error: {ex.Message}" }, cancellationToken);
                     throw;
                 }
             }

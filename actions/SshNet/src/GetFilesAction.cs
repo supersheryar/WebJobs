@@ -7,9 +7,9 @@ namespace UkrGuru.WebJobs.Actions.SshNet;
 
 public class GetFilesAction : SshNetAction
 {
-    public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken)
+    public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken = default)
     {
-        const string funcName = "SshNet_GetFiles";
+        const string funcName = "SshNet.GetFiles";
 
         var jobId = JobId;
 
@@ -25,12 +25,15 @@ public class GetFilesAction : SshNetAction
         {
             local_path = Path.Combine(local_base_path, local_path);
         }
+        local_path ??= ".";
 
-        using var sftp = await CreateSftpClient(sshnet_options_name);
+        await LogHelper.LogDebugAsync(funcName, new { jobId, sshnet_options_name, remote_path, local_path, local_base_path }, cancellationToken);
+
+        using var sftp = await CreateSftpClient(sshnet_options_name, cancellationToken);
         {
             sftp.Connect();
 
-            var files = await sftp.ListDirectoryAsync(remote_path);
+            var files = await sftp.ListDirectoryAsync(remote_path, cancellationToken);
 
             foreach (var file in files.Where(e => e.IsRegularFile).OrderBy(o => o.LastWriteTime))
             {
