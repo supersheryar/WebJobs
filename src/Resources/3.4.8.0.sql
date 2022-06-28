@@ -357,7 +357,7 @@ BEGIN
 		                ''JUL'', ''7''),''AUG'', ''8''),''SEP'', ''9''),''OCT'', ''10''),''NOV'', ''11''),''DEC'', ''12''),
 		                ''SUN'', ''0''),''MON'', ''1''),''TUE'', ''2''),''WED'', ''3''),''THU'', ''4''),''FRI'', ''5''),''SAT'', ''6'')
 
-    IF @Expression LIKE ''%[^0-9*,-/ ]%'' RETURN 0
+    IF @Expression LIKE ''%[^0-9*,/ -]%'' RETURN 0
 
     IF dbo.CronValidatePart(dbo.CronWord(@Expression, '' '', 1), DATEPART(MINUTE, @Now), 0, 59) = 0 RETURN 0;
 
@@ -380,7 +380,7 @@ CREATE OR ALTER FUNCTION [dbo].[CronValidatePart](@Expression varchar(100), @Val
 RETURNS tinyint
 AS
 BEGIN
-    IF @Expression LIKE ''%[^0-9*,-/]%'' RETURN 0
+    IF @Expression LIKE ''%[^0-9*,/-]%'' RETURN 0
     IF @Value IS NULL OR @Min IS NULL OR @Max IS NULL OR NOT @Value BETWEEN @Min AND @Max RETURN 0  
 
     IF @Expression = ''*'' RETURN 1
@@ -411,7 +411,7 @@ CREATE OR ALTER FUNCTION [dbo].[CronValidateRange](@Expression varchar(100), @Va
 RETURNS tinyint
 AS
 BEGIN
-    IF @Expression LIKE ''%[^0-9*-/]%'' RETURN 0
+    IF @Expression LIKE ''%[^0-9*/-]%'' RETURN 0
     IF @Value IS NULL OR @Min IS NULL OR @Max IS NULL OR NOT @Value BETWEEN @Min AND @Max RETURN 0  
 
     DECLARE @Begin int, @End int, @Step int

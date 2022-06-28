@@ -12,16 +12,16 @@
     <PackageIcon>ukrguru-logo.jpg</PackageIcon>
     <RepositoryUrl>https://github.com/UkrGuru/WebJobs</RepositoryUrl>
     <Description>The UkrGuru.WebJobs package is the Scheduler and Workers for any background Job in your .NET application. Supports cron in Rules. Provides extensibility for any custom Action. Uses UkrGuru.SqlJson for database connection. </Description>
-    <Version>3.4.7</Version>
+    <Version>3.4.8</Version>
     <SignAssembly>False</SignAssembly>
     <AssemblyOriginatorKeyFile>UkrGuru.pfx</AssemblyOriginatorKeyFile>
     <PackageTags>dotnet net6 sqlserver webjobs scheduler worker sql-server email template</PackageTags>
-    <PackageReleaseNotes>Drop delay vefore NEXT action and fixed bug for null data in RunSqlProcAction </PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed cron bugs for new Sql Server version </PackageReleaseNotes>
     <AssemblyName>UkrGuru.WebJobs</AssemblyName>
     <RootNamespace>UkrGuru.WebJobs</RootNamespace>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <DebugType>none</DebugType>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -42,7 +42,7 @@
 
   <ItemGroup>
     <None Remove="Resources\2.1.0.sql" />
-    <None Remove="Resources\3.4.7.0.sql" />
+    <None Remove="Resources\3.4.8.0.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,7 +60,7 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\3.4.7.0.sql" />
+    <EmbeddedResource Include="Resources\3.4.8.0.sql" />
     <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
