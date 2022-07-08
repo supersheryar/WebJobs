@@ -23,7 +23,7 @@ public class DownloadPageAction : BaseAction
             content = await client.GetStringAsync(url, cancellationToken);
         }
 
-        content = await WJbFileHelper.SetFileAsync(content, filename, cancellationToken);
+        content = await WJbFileHelper.SetFileAsync(content, filename, false, cancellationToken);
 
         if (!string.IsNullOrEmpty(result_name)) More[result_name] = content;
 

@@ -511,7 +511,7 @@ EXEC dbo.sp_executesql @statement = N'
 CREATE OR ALTER PROCEDURE [WJbFiles_Get]
 	@Data uniqueidentifier
 AS
-SELECT Id, Created, FileName, FileContent
+SELECT Id, Created, FileName, FileContent, CAST(CASE WHEN Created = CAST(Created as smalldatetime) THEN 1 ELSE 0 END AS bit) Safe
 FROM WJbFiles
 WHERE Id = @Data
 FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
@@ -521,20 +521,23 @@ CREATE OR ALTER PROCEDURE [WJbFiles_Ins]
     @Data nvarchar(max)
 AS
 DECLARE @Id uniqueidentifier = NULL
-DECLARE @SHA1 binary(20), @FileName nvarchar(100), @FileContent varbinary(max)
+DECLARE @SHA1 binary(20), @FileName nvarchar(100), @FileContent varbinary(max), @Safe bit, @Created datetime
 
-SELECT TOP 1 @SHA1 = HashBytes(''SHA1'', FileContent), @FileName = [FileName], @FileContent = FileContent
+SELECT TOP 1 @SHA1 = HashBytes(''SHA1'', FileContent), @FileName = [FileName], @FileContent = FileContent, @Safe = Safe
 FROM OPENJSON(@Data)
-WITH ([FileName] nvarchar(100), FileContent varbinary(max))
+WITH ([FileName] nvarchar(100), FileContent varbinary(max), Safe bit)
 
 SELECT @Id = Id FROM WJbFiles WHERE SHA1 = @SHA1 AND FileName = @FileName
 
 IF @Id IS NULL BEGIN
-	SET @Id = NEWID(); 
+	SET @Id = NEWID();
+	IF ISNULL(@Safe, 0) = 1 SET @Created = CAST(GETDATE() AS smalldatetime);
 
 	INSERT WJbFiles (Id, Created, FileName, FileContent, SHA1)
-	SELECT @Id Id, GETDATE() Created, @FileName, @FileContent, @SHA1 
+	SELECT @Id, ISNULL(@Created, GETDATE()), @FileName, @FileContent, @SHA1 
 END
+ELSE IF @Safe = 1
+	UPDATE WJbFiles SET Created = CAST(Created as smalldatetime) WHERE Id = @Id   
 
 SELECT CAST(@Id as varchar(50)) Id
 ';
@@ -685,9 +688,6 @@ DELETE FROM WJbLogs WHERE Logged < DATEADD(MONTH, -1, @Today)
 
 DELETE FROM WJbFiles WHERE Created < DATEADD(YEAR, -1, @Today)
 	AND Created <> CAST(Created as smalldatetime) -- ignore items in safe
-';
-
-EXEC dbo.sp_executesql @statement = N'
 ';
 
 END

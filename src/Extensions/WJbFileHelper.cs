@@ -20,7 +20,7 @@ public static class WJbFileHelper
 
     public static async Task<string?> SetAsync(string? value, CancellationToken cancellationToken = default)
     {
-        return await SetFileAsync(value, "file.txt", cancellationToken);
+        return await SetFileAsync(value, "file.txt", false, cancellationToken);
     }
 
     public static async Task DelFileAsync(string? value, CancellationToken cancellationToken = default)
@@ -45,11 +45,11 @@ public static class WJbFileHelper
         return await Task.FromResult(file);
     }
 
-    public static async Task<string?> SetFileAsync(string? value, string? filename = default, CancellationToken cancellationToken = default)
+    public static async Task<string?> SetFileAsync(string? value, string? filename = default, bool safe = default, CancellationToken cancellationToken = default)
     {
         if (value?.Length > 200)
         {
-            File file = new() { FileName = filename, FileContent = Encoding.UTF8.GetBytes(value) };
+            File file = new() { FileName = filename, FileContent = Encoding.UTF8.GetBytes(value), Safe = safe };
 
             await file.CompressAsync(cancellationToken);
 

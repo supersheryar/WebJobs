@@ -15,4 +15,6 @@ public partial class File
     public string? FileName { get; set; }
 
     public byte[]? FileContent { get; set; }
+
+    public bool Safe { get; set; } = false;
 }
