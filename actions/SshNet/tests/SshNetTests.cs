@@ -8,7 +8,7 @@ namespace SshNetTests;
 
 public class SshNetTests
 {
-    private readonly bool dbOK;
+    private readonly bool dbOK = false;
 
     public SshNetTests()
     {
@@ -16,17 +16,19 @@ public class SshNetTests
 
         var connectionString = $"Server=(localdb)\\mssqllocaldb;Database={dbName};Trusted_Connection=True";
 
-        var dbInitScript = $"IF DB_ID('{dbName}') IS NOT NULL BEGIN " +
-            $"  ALTER DATABASE {dbName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; " +
-            $"  DROP DATABASE {dbName}; " +
-            $"END " +
-            $"CREATE DATABASE {dbName};";
+        //var dbInitScript = $"IF DB_ID('{dbName}') IS NOT NULL BEGIN " +
+        //    $"  ALTER DATABASE {dbName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; " +
+        //    $"  DROP DATABASE {dbName}; " +
+        //    $"END " +
+        //    $"CREATE DATABASE {dbName};";
 
-        DbHelper.ConnectionString = connectionString.Replace(dbName, "master");
-        DbHelper.ExecCommand(dbInitScript);
+        //DbHelper.ConnectionString = connectionString.Replace(dbName, "master");
+        //DbHelper.ExecCommand(dbInitScript);
 
         DbHelper.ConnectionString = connectionString;
 
+        if (dbOK) return;
+        
         var assembly1 = Assembly.GetAssembly(typeof(UkrGuru.WebJobs.Actions.BaseAction));
         ArgumentNullException.ThrowIfNull(assembly1);
         dbOK = assembly1.InitDb();

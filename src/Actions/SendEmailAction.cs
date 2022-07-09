@@ -75,12 +75,12 @@ public class SendEmailAction : BaseAction
         {
             if (Guid.TryParse(attachment, out var guidAttach))
             {
-                var file = await WJbFileHelper.GetFileAsync(attachment, cancellationToken);
+                var file = await WJbFileHelper.GetAsync(guidAttach, cancellationToken);
 
                 if (file?.FileContent != null)
                     message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
             }
-            else
+            else 
             {
                 message.Attachments.Add(new Attachment(attachment));
             }
@@ -89,16 +89,18 @@ public class SendEmailAction : BaseAction
         {
             foreach (var fileName in JsonSerializer.Deserialize<object[]>(attachments) ?? Enumerable.Empty<object>())
             {
-                var fileNameStr = Convert.ToString(fileName);
+                attachment = Convert.ToString(fileName);
 
-                var file = await WJbFileHelper.GetFileAsync(attachment, cancellationToken);
-
-                if (file?.FileContent != null)
-                    message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
-
-                else if (!string.IsNullOrWhiteSpace(fileNameStr))
+                if (Guid.TryParse(attachment, out var guidAttach))
                 {
-                    message.Attachments.Add(new Attachment(fileNameStr));
+                    var file = await WJbFileHelper.GetAsync(guidAttach, cancellationToken);
+
+                    if (file?.FileContent != null)
+                        message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
+                }
+                else if (!string.IsNullOrWhiteSpace(attachment))
+                {
+                    message.Attachments.Add(new Attachment(attachment));
                 }
             }
         }

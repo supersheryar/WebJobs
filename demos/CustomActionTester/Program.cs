@@ -72,7 +72,7 @@ static void TestJob(int jobId)
         }
         finally
         {
-            DbHelper.ExecProcAsync("WJbQueue_Finish", new { JobId = jobId, JobStatus = result ? JobStatus.Completed : JobStatus.Failed }).Wait();
+            DbHelper.ExecProc("WJbQueue_Finish", new { JobId = jobId, JobStatus = result ? JobStatus.Completed : JobStatus.Failed });
         }
     }
 }

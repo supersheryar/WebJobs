@@ -3,7 +3,6 @@
 
 using System.Net;
 using System.Net.Mail;
-using System.Text;
 using System.Text.Json;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
@@ -21,10 +20,10 @@ public class SendMyEmailAction : BaseAction
 
         var from = More.GetValue("from");
         if (string.IsNullOrEmpty(from)) from = smtp_settings.From;
-        from.ThrowIfBlank(nameof(from));
+        ArgumentNullException.ThrowIfNull(from);
 
         var to = More.GetValue("to");
-        to.ThrowIfBlank(nameof(to));
+        ArgumentNullException.ThrowIfNull(to);
 
         var cc = More.GetValue("cc");
         var bcc = More.GetValue("bcc");
@@ -35,13 +34,9 @@ public class SendMyEmailAction : BaseAction
         var attachment = More.GetValue("attachment");
         var attachments = More.GetValue("attachments");
 
-        await LogHelper.LogDebugAsync(nameof(SendMyEmailAction), new { jobId = JobId, to, cc, bcc, subject, body = ShortStr(body, 200), attachment, attachments }, cancellationToken);
+        await LogHelper.LogDebugAsync(nameof(SendEmailAction), new { jobId = JobId, to, cc, bcc, subject, body = ShortStr(body, 200), attachment, attachments }, cancellationToken);
 
-        if (Guid.TryParse(body, out var guidBody))
-        {
-            var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", body, cancellationToken: cancellationToken);
-            if (file?.FileContent != null) body = Encoding.UTF8.GetString(file.FileContent);
-        }
+        if (Guid.TryParse(body, out var guidBody)) body = await WJbFileHelper.GetAsync(body, cancellationToken);
 
         MailMessage message = new(from, to, subject, body)
         {
@@ -56,9 +51,9 @@ public class SendMyEmailAction : BaseAction
         {
             if (Guid.TryParse(attachment, out var guidAttach))
             {
-                var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", attachment, cancellationToken: cancellationToken);
-                if (file?.FileContent != null)
-                    message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
+                var file = await WJbFileHelper.GetAsync(guidAttach, cancellationToken);
+
+                if (file?.FileContent != null) message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
             }
             else
             {
@@ -69,16 +64,17 @@ public class SendMyEmailAction : BaseAction
         {
             foreach (var fileName in JsonSerializer.Deserialize<object[]>(attachments) ?? Enumerable.Empty<object>())
             {
-                var fileNameStr = Convert.ToString(fileName);
-                if (Guid.TryParse(fileNameStr, out var guidAttach))
+                attachment = Convert.ToString(fileName);
+
+                if (Guid.TryParse(attachment, out var guidAttach))
                 {
-                    var file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", guidAttach, cancellationToken: cancellationToken);
-                    if (file?.FileContent != null)
-                        message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
+                    var file = await WJbFileHelper.GetAsync(guidAttach, cancellationToken);
+
+                    if (file?.FileContent != null) message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
                 }
-                else if (!string.IsNullOrWhiteSpace(fileNameStr))
+                else if (!string.IsNullOrWhiteSpace(attachment))
                 {
-                    message.Attachments.Add(new Attachment(fileNameStr));
+                    message.Attachments.Add(new Attachment(attachment));
                 }
             }
         }
@@ -90,7 +86,7 @@ public class SendMyEmailAction : BaseAction
 
         await smtp.SendMailAsync(message, cancellationToken);
 
-        await LogHelper.LogInformationAsync(nameof(SendMyEmailAction), new { jobId = JobId, result = "OK" }, cancellationToken);
+        await LogHelper.LogInformationAsync(nameof(SendEmailAction), new { jobId = JobId, result = "OK" }, cancellationToken);
 
         return true;
     }

@@ -4,31 +4,30 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
 
-namespace WebJobsDemo.Pages.Actions
+namespace WebJobsDemo.Pages.Actions;
+
+public class EditModel : PageModel
 {
-    public class EditModel : PageModel
+    [BindProperty]
+    public ActionInput Action { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(int? id)
     {
-        [BindProperty]
-        public ActionInput Action { get; set; }
+        if (id == null) return NotFound();
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            if (id == null) return NotFound();
+        Action = await DbHelper.FromProcAsync<ActionInput>("WJbActions_Get_Demo", id);
 
-            Action = await DbHelper.FromProcAsync<ActionInput>("WJbActions_Get_Demo", id);
+        if (Action.ActionId == 0) return NotFound();
 
-            if (Action.ActionId == 0) return NotFound();
+        return Page();
+    }
 
-            return Page();
-        }
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid) return Page();
 
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid) return Page();
+        await DbHelper.ExecProcAsync("WJbActions_Upd_Demo", Action);
 
-            await DbHelper.ExecProcAsync("WJbActions_Upd_Demo", Action);
-
-            return RedirectToPage("./Index");
-        }
+        return RedirectToPage("./Index");
     }
 }

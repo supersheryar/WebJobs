@@ -4,15 +4,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
 
-namespace WebJobsDemo.Pages.Rules
-{
-    public class IndexModel : PageModel
-    {
-        public List<Rule> Rules { get; set; }
+namespace WebJobsDemo.Pages.Rules;
 
-        public async Task OnGetAsync()
-        {
-            Rules = await DbHelper.FromProcAsync<List<Rule>>("WJbRules_Grd_Demo");
-        }
+public class IndexModel : PageModel
+{
+    public List<Rule> Rules { get; set; }
+
+    public async Task OnGetAsync()
+    {
+        Rules = await DbHelper.FromProcAsync<List<Rule>>("WJbRules_Grd_Demo");
     }
 }

@@ -4,31 +4,30 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
 
-namespace WebJobsDemo.Pages.Actions
+namespace WebJobsDemo.Pages.Actions;
+
+public class DeleteModel : PageModel
 {
-    public class DeleteModel : PageModel
+    [BindProperty]
+    public ActionInput Action { get; set; }
+
+    public async Task<IActionResult> OnGetAsync(int? id)
     {
-        [BindProperty]
-        public ActionInput Action { get; set; }
+        if (id == null) return NotFound();
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-        {
-            if (id == null) return NotFound();
+        Action = await DbHelper.FromProcAsync<ActionInput>("WJbActions_Get_Demo", id);
 
-            Action = await DbHelper.FromProcAsync<ActionInput>("WJbActions_Get_Demo", id);
+        if (Action.ActionId == 0) return NotFound();
 
-            if (Action.ActionId == 0) return NotFound();
+        return Page();
+    }
 
-            return Page();
-        }
+    public async Task<IActionResult> OnPostAsync(int? id)
+    {
+        if (id == null) return NotFound();
 
-        public async Task<IActionResult> OnPostAsync(int? id)
-        {
-            if (id == null) return NotFound();
+        await DbHelper.ExecProcAsync("WJbActions_Del_Demo", id);
 
-            await DbHelper.ExecProcAsync("WJbActions_Del_Demo", id);
-
-            return RedirectToPage("./Index");
-        }
+        return RedirectToPage("./Index");
     }
 }

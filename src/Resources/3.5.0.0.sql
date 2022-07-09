@@ -121,6 +121,7 @@ IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[FK_WJb
 	ALTER TABLE [WJbRules] CHECK CONSTRAINT [FK_WJbRules_WJbActions]
 
 SET IDENTITY_INSERT [WJbRules] ON 
+
 IF NOT EXISTS (SELECT 1 FROM [WJbRules] WHERE (RuleId = 1))
 	INSERT [WJbRules] ([RuleId], [RuleName], [RulePriority], [ActionId], [RuleMore], [Disabled]) 
 	VALUES (1, N'RunSqlProc Base', 2, 1, NULL, 0)
@@ -259,6 +260,16 @@ IF NOT EXISTS (SELECT * FROM sys.indexes WHERE object_id = OBJECT_ID(N'[WJbFiles
 		[SHA1] ASC,
 		[FileName] ASC
 	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[DF_WJbFiles_Id]') AND type = 'D')
+BEGIN
+	ALTER TABLE [WJbFiles] ADD  CONSTRAINT [DF_WJbFiles_Id]  DEFAULT (newid()) FOR [Id]
+END
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[DF_WJbFiles_Created]') AND type = 'D')
+BEGIN
+	ALTER TABLE [WJbFiles] ADD  CONSTRAINT [DF_WJbFiles_Created]  DEFAULT (getdate()) FOR [Created]
+END
 END
 
 BEGIN /*** Init WJbLogs ***/
@@ -314,16 +325,6 @@ BEGIN
 		[Name] ASC
 	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-END
-
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[DF_WJbFiles_Id]') AND type = 'D')
-BEGIN
-	ALTER TABLE [WJbFiles] ADD  CONSTRAINT [DF_WJbFiles_Id]  DEFAULT (newid()) FOR [Id]
-END
-
-IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[DF_WJbFiles_Created]') AND type = 'D')
-BEGIN
-	ALTER TABLE [WJbFiles] ADD  CONSTRAINT [DF_WJbFiles_Created]  DEFAULT (getdate()) FOR [Created]
 END
 
 IF NOT EXISTS (SELECT * FROM [dbo].[WJbSettings] WHERE [Name] = 'StmpSettings')

@@ -11,55 +11,56 @@ public static class WJbFileHelper
 {
     public static async Task<string?> GetAsync(string? value, CancellationToken cancellationToken = default)
     {
-        var file = await GetFileAsync(value, cancellationToken);
-
-        if (file?.FileContent != null) return Encoding.UTF8.GetString(file.FileContent);
-
-        return await Task.FromResult(null as string);
-    }
-
-    public static async Task<string?> SetAsync(string? value, CancellationToken cancellationToken = default)
-    {
-        return await SetFileAsync(value, "file.txt", false, cancellationToken);
-    }
-
-    public static async Task DelFileAsync(string? value, CancellationToken cancellationToken = default)
-    {
-        if (value != null && Guid.TryParse(value, out var guidvalue))
+        if (!string.IsNullOrEmpty(value) && Guid.TryParse(value, out Guid guid))
         {
-            await DbHelper.ExecProcAsync("WJbFiles_Del", guidvalue, cancellationToken: cancellationToken);
-        }
-    }
+            var file = await GetAsync(guid, cancellationToken);
 
-    public static async Task<File?> GetFileAsync(string? value, CancellationToken cancellationToken = default)
-    {
-        Data.File? file = null;
+            if (file?.FileContent == null) return null;
 
-        if (value != null && Guid.TryParse(value, out var guidvalue))
-        {
-            file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", guidvalue, cancellationToken: cancellationToken);
-
-            if (file?.FileContent != null) await file.DecompressAsync(cancellationToken);
-        }
-
-        return await Task.FromResult(file);
-    }
-
-    public static async Task<string?> SetFileAsync(string? value, string? filename = default, bool safe = default, CancellationToken cancellationToken = default)
-    {
-        if (value?.Length > 200)
-        {
-            File file = new() { FileName = filename, FileContent = Encoding.UTF8.GetBytes(value), Safe = safe };
-
-            await file.CompressAsync(cancellationToken);
-
-            return await DbHelper.FromProcAsync<string>("WJbFiles_Ins", file, cancellationToken: cancellationToken);
+            return Encoding.UTF8.GetString(file.FileContent);
         }
 
         return await Task.FromResult(value);
     }
 
-    public static async Task CompressAsync(this File file, CancellationToken cancellationToken = default)
+    public static async Task<File?> GetAsync(Guid guid, CancellationToken cancellationToken = default)
+    {
+        Data.File? file = await DbHelper.FromProcAsync<Data.File>("WJbFiles_Get", guid, cancellationToken: cancellationToken);
+
+        await file.DecompressAsync(cancellationToken);
+
+        return file;
+    }
+
+    public static async Task<string?> SetAsync(string? value, string? filename = "file.txt", bool safe = default, CancellationToken cancellationToken = default)
+    {
+        if (value?.Length > 1024)
+        {
+            File file = new() { FileName = filename, FileContent = Encoding.UTF8.GetBytes(value), Safe = safe };
+
+            return await file.SetAsync(cancellationToken);
+        }
+
+        return await Task.FromResult(value);
+    }
+
+    public static async Task<string?> SetAsync(this File file, CancellationToken cancellationToken = default)
+    {
+        if (file?.FileContent == null || file.FileContent.Length == 0) return await Task.FromResult(null as string);
+
+        await file.CompressAsync(cancellationToken);
+
+        return await DbHelper.FromProcAsync<string>("WJbFiles_Ins", file, cancellationToken: cancellationToken);
+    }
+
+    public static async Task DelAsync(string? value, CancellationToken cancellationToken = default)
+    {
+        if (!string.IsNullOrEmpty(value) && Guid.TryParse(value, out Guid guid)) await DelAsync(guid, cancellationToken);
+    }
+
+    public static async Task DelAsync(Guid guid, CancellationToken cancellationToken = default) => await DbHelper.ExecProcAsync("WJbFiles_Del", guid, cancellationToken: cancellationToken);
+
+    public static async Task CompressAsync(this File? file, CancellationToken cancellationToken = default)
     {
         if (file?.FileContent == null || file.FileContent.Length == 0) return;
 
@@ -74,7 +75,7 @@ public static class WJbFileHelper
         file.FileName = $"{file.FileName ?? "file.txt"}.gzip";
     }
 
-    public static async Task DecompressAsync(this File file, CancellationToken cancellationToken = default)
+    public static async Task DecompressAsync(this File? file, CancellationToken cancellationToken = default)
     {
         if (file?.FileName == null || !file.FileName.EndsWith(".gzip")) return;
 

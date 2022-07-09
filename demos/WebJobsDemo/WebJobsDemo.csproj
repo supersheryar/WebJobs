@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
     <UserSecretsId>12dd54be-cd4e-4f6a-9c0b-459b55357aa2</UserSecretsId>
-    <Version>3.4.0</Version>
+    <Version>3.5.0</Version>
     <Authors>Oleksandr Viktor (UkrGuru)</Authors>
     <Company>Oleksandr Viktor (UkrGuru)</Company>
     <Copyright>Oleksandr Viktor (UkrGuru)</Copyright>
@@ -19,15 +19,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Resources\3.4.0.0.sql" />
+    <None Remove="Resources\3.5.0.0.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\3.4.0.0.sql" />
+    <EmbeddedResource Include="Resources\3.5.0.0.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="UkrGuru.WebJobs" Version="3.4.8" />
+    <PackageReference Include="UkrGuru.WebJobs" Version="3.5.0" />
   </ItemGroup>
 
 </Project>

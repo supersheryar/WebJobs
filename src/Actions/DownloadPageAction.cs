@@ -23,11 +23,11 @@ public class DownloadPageAction : BaseAction
             content = await client.GetStringAsync(url, cancellationToken);
         }
 
-        content = await WJbFileHelper.SetFileAsync(content, filename, false, cancellationToken);
+        content = await WJbFileHelper.SetAsync(content, filename, false, cancellationToken);
+
+        await LogHelper.LogInformationAsync(nameof(DownloadPageAction), new { jobId = JobId, result = "OK", content = ShortStr(content, 200) }, cancellationToken);
 
         if (!string.IsNullOrEmpty(result_name)) More[result_name] = content;
-
-        await LogHelper.LogInformationAsync(nameof(DownloadPageAction), new { jobId = JobId, result = "OK", content }, cancellationToken);
 
         return true;
     }

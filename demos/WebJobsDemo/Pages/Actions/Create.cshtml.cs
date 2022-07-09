@@ -4,25 +4,24 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
 
-namespace WebJobsDemo.Pages.Actions
+namespace WebJobsDemo.Pages.Actions;
+
+public class CreateModel : PageModel
 {
-    public class CreateModel : PageModel
+    public IActionResult OnGet()
     {
-        public IActionResult OnGet()
-        {
-            return Page();
-        }
+        return Page();
+    }
 
-        [BindProperty]
-        public ActionInput Action { get; set; }
+    [BindProperty]
+    public ActionInput Action { get; set; }
 
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid) return Page();
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid) return Page();
 
-            await DbHelper.ExecProcAsync("WJbActions_Ins_Demo", Action);
+        await DbHelper.ExecProcAsync("WJbActions_Ins_Demo", Action);
 
-            return RedirectToPage("./Index");
-        }
+        return RedirectToPage("./Index");
     }
 }

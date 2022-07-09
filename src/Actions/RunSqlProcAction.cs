@@ -30,9 +30,9 @@ public class RunSqlProcAction : BaseAction
         {
             var result = await DbHelper.FromProcAsync<string?>($"WJb_{proc}", data, timeout, cancellationToken);
 
-            More[result_name] = result;
-
             await LogHelper.LogInformationAsync(nameof(RunSqlProcAction), new { jobId = JobId, result = ShortStr(result, 200) }, cancellationToken);
+
+            More[result_name] = result;
         }
 
         return true;
