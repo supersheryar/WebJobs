@@ -8,15 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\1.0.0.0.sql" />
+    <Compile Remove="SsrsExportReportAction.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="UkrGuru.WebJobs" Version="3.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\1.0.0.0.sql" />
+    <ProjectReference Include="..\..\src\WebJobs.csproj" />
   </ItemGroup>
 
 </Project>

@@ -76,6 +76,18 @@ IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 5))
 	"result_name": null
 }', 0)
 
+IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 10))
+	INSERT [WJbActions] ([ActionId], [ActionName], [ActionType], [ActionMore], [Disabled]) 
+	VALUES (10, N'SSRS.ExportReport', N'SsrsExportReportAction, UkrGuru.WebJobs', N'{
+	"ssrs_settings_name": "SsrsSettings",
+	"report": "",
+	"data": null,
+	"format": "",
+	"timeout": null,
+	"filename": null,
+	"result_name": null
+}', 0)
+
 SET IDENTITY_INSERT [WJbActions] OFF
 
 END
@@ -141,6 +153,10 @@ IF NOT EXISTS (SELECT 1 FROM [WJbRules] WHERE (RuleId = 4))
 IF NOT EXISTS (SELECT 1 FROM [WJbRules] WHERE (RuleId = 5))
 	INSERT [WJbRules] ([RuleId], [RuleName], [RulePriority], [ActionId], [RuleMore], [Disabled]) 
 	VALUES (5, N'RunApiProc Base', 2, 5, NULL, 0)
+
+IF NOT EXISTS (SELECT * FROM [dbo].[WJbRules] WHERE [RuleId] = 10)
+	INSERT [dbo].[WJbRules] ([RuleId], [RuleName], [RulePriority], [ActionId], [RuleMore], [Disabled]) 
+	VALUES (10, N'SSRS.ExportReport Base', 2, 10, NULL, 0)
 
 IF NOT EXISTS (SELECT 1 FROM [WJbRules] WHERE (RuleId = 999))
 	INSERT [WJbRules] ([RuleId], [RuleName], [RulePriority], [ActionId], [RuleMore], [Disabled]) 
@@ -334,6 +350,13 @@ INSERT [dbo].[WJbSettings] ([Name], [Value]) VALUES (N'StmpSettings', N'{
   "port": 587,
   "enableSsl": true,
   "userName": "test@test.com",
+  "password": "12345"
+}')
+
+IF NOT EXISTS (SELECT * FROM [dbo].[WJbSettings] WHERE [Name] = 'SsrsSettings')
+INSERT [dbo].[WJbSettings] ([Name], [Value]) VALUES (N'SsrsSettings', N'{
+  "url": "https://youwebsite/ReportServer_2019/?{report}&rs:Command=Render&rs:Format={format}",
+  "userName": "test",
   "password": "12345"
 }')
 

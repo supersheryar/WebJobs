@@ -7,7 +7,6 @@ using UkrGuru.WebJobs.Data;
 
 InitWebJobsDb("MyWebJobsTest");
 
-// Add Your Custom Action and Rule
 Assembly.GetExecutingAssembly().InitDb();
 
 try

@@ -10,6 +10,9 @@ Standard Actions:
 - DownloadPage - download the page and save the result to a WJbFiles table for further processing.
 - RunApiProc - run sql server stored procedure throught ApiHole and stored result in a variable for further processing.
 
+SSRS Actions:
+- ExportReport - export SSRS report to a WJbFiles table for further processing.
+
 SshNet Actions:
 - GetFiles - download files from remote directory to local directory.
 - PutFiles - upload files from local directory to remote directory.
