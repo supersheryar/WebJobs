@@ -11,7 +11,7 @@ Assembly.GetExecutingAssembly().InitDb();
 
 try
 {
-    TestRule(1000);
+    TestRule(910);
     Console.WriteLine("Success!");
 }
 catch (Exception ex)

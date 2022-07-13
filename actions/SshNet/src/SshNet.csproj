@@ -5,7 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>UkrGuru.WebJobs.Actions.SshNet</AssemblyName>
     <RootNamespace>UkrGuru.WebJobs.Actions.SshNet</RootNamespace>
-    <Version>3.5.0</Version>
+    <Version>3.6.3</Version>
+    <Copyright>Oleksandr Viktor (UkrGuru)</Copyright>
+    <PackageIcon>ukrguru-logo.jpg</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/UkrGuru/WebJobs/tree/main/actions</RepositoryUrl>
+    <PackageTags>sftp</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -21,16 +26,27 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Resources\3.5.0.0.sql" />
+    <None Remove="Resources\3.6.3.0.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\3.5.0.0.sql" />
+    <EmbeddedResource Include="Resources\3.6.3.0.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\..\ukrguru-logo.jpg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="SSH.NET" Version="2020.0.2" />
-    <PackageReference Include="UkrGuru.WebJobs" Version="3.5.0" />
+    <PackageReference Include="UkrGuru.WebJobs" Version="3.6.3" />
   </ItemGroup>
 
 </Project>

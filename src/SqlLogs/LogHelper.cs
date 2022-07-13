@@ -47,7 +47,10 @@ public static class LogHelper
     {
         if ((byte)logLevel < (byte)MinLogLevel) return;
 
-        try { DbHelper.ExecProc("WJbLogs_Ins", new { LogLevel = logLevel, Title = title, LogMore = more is string ? more : JsonSerializer.Serialize(more) }); }
+        try
+        {
+            DbHelper.ExecProc("WJbLogs_Ins", new { LogLevel = logLevel, Title = title, LogMore = more is string ? more : JsonSerializer.Serialize(more) });
+        }
         catch { }
     }
 }

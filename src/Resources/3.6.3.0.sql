@@ -68,7 +68,7 @@ IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 4))
 IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 5))
 	INSERT [WJbActions] ([ActionId], [ActionName], [ActionType], [ActionMore], [Disabled]) 
 	VALUES (5, N'RunApiProc', N'RunApiProcAction, UkrGuru.WebJobs', N'{
-	"api_settings_name": "",
+	"api_settings_name": "ApiSettings",
 	"proc": "",
 	"data": null,
 	"body": null,
@@ -82,9 +82,8 @@ IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 10))
 	"ssrs_settings_name": "SsrsSettings",
 	"report": "",
 	"data": null,
-	"format": "",
 	"timeout": null,
-	"filename": null,
+	"filename": "",
 	"result_name": null
 }', 0)
 
@@ -343,6 +342,12 @@ BEGIN
 	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 END
 
+IF NOT EXISTS (SELECT * FROM [dbo].[WJbSettings] WHERE [Name] = 'ApiSettings')
+INSERT [dbo].[WJbSettings] ([Name], [Value]) VALUES (N'ApiSettings', N'{
+  "url": "https://youwebsite/",
+  "key": "test"
+}')
+
 IF NOT EXISTS (SELECT * FROM [dbo].[WJbSettings] WHERE [Name] = 'StmpSettings')
 INSERT [dbo].[WJbSettings] ([Name], [Value]) VALUES (N'StmpSettings', N'{
   "from": "test@test.com",
@@ -355,7 +360,7 @@ INSERT [dbo].[WJbSettings] ([Name], [Value]) VALUES (N'StmpSettings', N'{
 
 IF NOT EXISTS (SELECT * FROM [dbo].[WJbSettings] WHERE [Name] = 'SsrsSettings')
 INSERT [dbo].[WJbSettings] ([Name], [Value]) VALUES (N'SsrsSettings', N'{
-  "url": "https://youwebsite/ReportServer_2019/?{report}&rs:Command=Render&rs:Format={format}",
+  "baseUrl": "https://youwebsite/ReportServer_2019/?",
   "userName": "test",
   "password": "12345"
 }')
