@@ -3,16 +3,16 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>UkrGuru.WebJobs.Actions.SshNet</AssemblyName>
-    <RootNamespace>UkrGuru.WebJobs.Actions.SshNet</RootNamespace>
+    <AssemblyName>UkrGuru.WebJobs.Actions.MailKit</AssemblyName>
+    <RootNamespace>UkrGuru.WebJobs.Actions.MailKit</RootNamespace>
     <Version>3.6.3</Version>
     <Copyright>Oleksandr Viktor (UkrGuru)</Copyright>
     <PackageIcon>ukrguru-logo.jpg</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/UkrGuru/WebJobs/tree/main/actions</RepositoryUrl>
-    <PackageTags>ssh scp sftp</PackageTags>
+    <PackageTags>mailkit pop3 mail email net6.0</PackageTags>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <PackageLicenseFile>..\LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -24,15 +24,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="SshNetExtensions.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Resources\3.6.3.0.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\3.6.3.0.sql" />
+    <EmbeddedResource Include="..\..\..\LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +35,9 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -47,7 +45,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SSH.NET" Version="2020.0.2" />
+    <PackageReference Include="MailKit" Version="3.3.0" />
     <PackageReference Include="UkrGuru.WebJobs" Version="3.6.3" />
   </ItemGroup>
 
