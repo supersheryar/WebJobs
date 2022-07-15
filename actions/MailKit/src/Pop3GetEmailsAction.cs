@@ -23,7 +23,7 @@ public class GetEmailsAction : BaseAction
         var pop3_settings = await DbHelper.FromProcAsync<Pop3Settings>("WJbSettings_Get", pop3_settings_name, cancellationToken: cancellationToken);
         ArgumentNullException.ThrowIfNull(pop3_settings?.Host);
 
-        var proc_rule = More.GetValue("proc_rule").ThrowIfBlank("proc_rule");
+        var proc_rule = More.GetValue("proc_rule");
 
         using var client = new Pop3Client();
 
@@ -36,7 +36,7 @@ public class GetEmailsAction : BaseAction
             
             var message = await client.GetMessageAsync(i, cancellationToken: cancellationToken);
 
-            var fileBody = new Data.File() { FileName = message.HtmlBody == null ? "body.txt" : "body.html", 
+            var fileBody = new Data.File() { FileName = $"{pop3_settings_name}-" + message.HtmlBody == null ? "body.txt" : "body.html", 
                 FileContent = Encoding.UTF8.GetBytes(message.TextBody ?? message.HtmlBody) };
 
             var body = await fileBody.SetAsync(cancellationToken);
@@ -49,7 +49,7 @@ public class GetEmailsAction : BaseAction
                     var ms = new MemoryStream();
                     await part.Content.DecodeToAsync(ms, cancellationToken: cancellationToken);
 
-                    var file = new Data.File() { FileName = part.FileName, FileContent = ms.ToArray() };
+                    var file = new Data.File() { FileName = $"{pop3_settings_name}-{part.FileName}", FileContent = ms.ToArray() };
 
                     var fileId = await file.SetAsync(cancellationToken);
 
@@ -59,9 +59,12 @@ public class GetEmailsAction : BaseAction
                 }
             }
 
-            var email_jobId = await DbHelper.FromProcAsync<int?>("WJbQueue_Ins", new
+            if (!string.IsNullOrEmpty(proc_rule))
+            {
+                var email_jobId = await DbHelper.FromProcAsync<int?>("WJbQueue_Ins", new
                 {
-                    Rule = proc_rule, RulePriority = (byte)Priorities.ASAP,
+                    Rule = proc_rule,
+                    RulePriority = (byte)Priorities.ASAP,
                     RuleMore = JsonSerializer.Serialize(new
                     {
                         from = message.From.ToString(),
@@ -72,7 +75,8 @@ public class GetEmailsAction : BaseAction
                     })
                 }, cancellationToken: cancellationToken);
 
-            await LogHelper.LogInformationAsync(funcName, new { jobId, result = $"Added Email Job: {email_jobId}." });
+                await LogHelper.LogInformationAsync(funcName, new { jobId, result = $"Added Email Job: {email_jobId}." });
+            }
 
             await client.DeleteMessageAsync(i, cancellationToken: cancellationToken);
         }
