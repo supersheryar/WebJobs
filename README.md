@@ -7,12 +7,12 @@ Standard Actions:
 - RunSqlProc - run sql server stored procedure and stored result in a variable for further processing.
 - SendEmail - send email via your smtp settings.
 - FillTemplate - fill the template with your variable values and stored result in a variable for further processing.
-- DownloadPage - download the page and save the result to a WJbFiles table for further processing.
+- DownloadPage - download the page and save the result to WJbFiles table for further processing.
 - RunApiProc - run sql server stored procedure throught ApiHole and stored result in a variable for further processing.
 
 SSRS Actions:
-- ExportReport - export SSRS report to a WJbFiles table for further processing.
+- ExportReport - export SSRS report to WJbFiles table for further processing.
 
 SshNet Actions:
-- GetFiles - download files from remote directory to local directory.
-- PutFiles - upload files from local directory to remote directory.
+- GetFiles - download files from remote directory to WJbFiles table for further processing.
+- PutFiles - upload files from WJbFiles to remote directory.

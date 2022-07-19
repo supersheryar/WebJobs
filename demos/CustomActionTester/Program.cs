@@ -2,7 +2,9 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System.Reflection;
+using System.Text;
 using UkrGuru.SqlJson;
+using Data=UkrGuru.WebJobs.Data;
 using UkrGuru.WebJobs.Data;
 
 InitWebJobsDb("MyWebJobsTest");
@@ -11,7 +13,20 @@ Assembly.GetExecutingAssembly().InitDb();
 
 try
 {
-    TestRule(910);
+    var wjbFile = new Data.File() { FileName = "1.txt", FileContent = Encoding.UTF8.GetBytes(new String('1', 4096)) };
+
+    var guidFile = await wjbFile.SetAsync();
+
+    var jobId = await DbHelper.FromProcAsync<int>("WJbQueue_Ins", new
+    {
+        Rule = 2,
+        RulePriority = (byte)Priorities.ASAP,
+        //RuleMore = new { attachments = new[] { guidFile } }
+        RuleMore = new { attachment = guidFile }
+    });
+
+    TestJob(jobId);
+
     Console.WriteLine("Success!");
 }
 catch (Exception ex)
@@ -39,12 +54,12 @@ static bool InitWebJobsDb(string dbName)
     return assembly.InitDb();
 }
 
-static void TestRule(int ruleId)
-{
-    var jobId = DbHelper.FromProc<int>("WJbRules_Test", ruleId);
+//static void TestRule(int ruleId)
+//{
+//    var jobId = DbHelper.FromProc<int>("WJbRules_Test", ruleId);
 
-    TestJob(jobId);
-}
+//    TestJob(jobId);
+//}
 
 static void TestJob(int jobId)
 {

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SshNet", "SshNet\src\SshNet.csproj", "{9C9E6446-75AB-468E-8379-D24581C22D4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SshNet", "src\SshNet.csproj", "{9C9E6446-75AB-468E-8379-D24581C22D4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SshNetTests", "SshNet\tests\SshNetTests.csproj", "{105CEFFC-0A3E-4237-977D-62012FE846C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SshNetTests", "tests\SshNetTests.csproj", "{105CEFFC-0A3E-4237-977D-62012FE846C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

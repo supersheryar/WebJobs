@@ -4,7 +4,7 @@
 using MailKit.Net.Pop3;
 using MimeKit;
 using System.Text;
-using System.Text.Json;
+using System.Text.Json.Serialization;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
 
@@ -12,6 +12,24 @@ namespace UkrGuru.WebJobs.Actions.MailKit;
 
 public class ReceiveEmailsAction : BaseAction
 {
+    public class Pop3Settings
+    {
+        [JsonPropertyName("host")]
+        public string Host { get; set; }
+
+        [JsonPropertyName("port")]
+        public int Port { get; set; }
+
+        [JsonPropertyName("useSsl")]
+        public bool UseSsl { get; set; }
+
+        [JsonPropertyName("userName")]
+        public string UserName { get; set; }
+
+        [JsonPropertyName("password")]
+        public string Password { get; set; }
+    }
+
     public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken = default)
     {
         const string funcName = "MailKit.ReceiveEmails";
@@ -24,6 +42,8 @@ public class ReceiveEmailsAction : BaseAction
         ArgumentNullException.ThrowIfNull(pop3_settings?.Host);
 
         var proc_rule = More.GetValue("proc_rule");
+
+        await LogHelper.LogDebugAsync(funcName, new { jobId, pop3_settings_name, proc_rule }, cancellationToken);
 
         using (var client = new Pop3Client())
         {
@@ -38,11 +58,13 @@ public class ReceiveEmailsAction : BaseAction
 
                 var fileBody = new Data.File()
                 {
-                    FileName = $"{pop3_settings_name}-" + message.HtmlBody == null ? "body.txt" : "body.html",
+                    FileName = GetLocalFileName(message.HtmlBody == null ? "body.txt" : "body.html"),
                     FileContent = Encoding.UTF8.GetBytes(message.TextBody ?? message.HtmlBody)
                 };
 
-                var body = await fileBody.SetAsync(cancellationToken);
+                var guidBody = await fileBody.SetAsync(cancellationToken);
+
+                await LogHelper.LogInformationAsync(funcName, new { jobId, result = $"Added Email Body: {guidBody}." });
 
                 var attachments = new List<string>();
                 foreach (var attachment in message.Attachments)
@@ -52,7 +74,7 @@ public class ReceiveEmailsAction : BaseAction
                         var ms = new MemoryStream();
                         await part.Content.DecodeToAsync(ms, cancellationToken: cancellationToken);
 
-                        var file = new Data.File() { FileName = $"{pop3_settings_name}-{part.FileName}", FileContent = ms.ToArray() };
+                        var file = new Data.File() { FileName = GetLocalFileName(part.FileName), FileContent = ms.ToArray() };
 
                         var fileId = await file.SetAsync(cancellationToken);
 
@@ -68,14 +90,14 @@ public class ReceiveEmailsAction : BaseAction
                     {
                         Rule = proc_rule,
                         RulePriority = (byte)Priorities.ASAP,
-                        RuleMore = JsonSerializer.Serialize(new
+                        RuleMore = new
                         {
                             from = message.From.ToString(),
                             to = message.To.ToString(),
                             subject = message.Subject,
-                            body,
+                            body = guidBody,
                             attachments = attachments.ToArray()
-                        })
+                        }
                     }, cancellationToken: cancellationToken);
 
                     await LogHelper.LogInformationAsync(funcName, new { jobId, result = $"Added Email Job: {email_jobId}." });

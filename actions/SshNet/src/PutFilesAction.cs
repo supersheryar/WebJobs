@@ -13,61 +13,34 @@ public class PutFilesAction : SshNetAction
 
         var jobId = JobId;
 
-        var sshnet_options_name = More.GetValue("sshnet_options_name").ThrowIfBlank("sshnet_options_name");
+        var sshnet_settings_name = More.GetValue("sshnet_settings_name").ThrowIfBlank("sshnet_settings_name");
 
-        var remote_path = More.GetValue("remote_path");
-        if (string.IsNullOrEmpty(remote_path)) remote_path = ".";
+        var remote_path = More.GetValue("remote_path") ?? ".";
 
-        var local_path = More.GetValue("local_path", "");
+        var files = More.GetValue("files", (object[])null);
+        ArgumentNullException.ThrowIfNull(files);
 
-        var local_move_path = More.GetValue("local_move_path");
-        if (local_move_path.Equals("-delete", StringComparison.CurrentCultureIgnoreCase))
-            local_move_path = string.Empty;
-        
-        bool remove = string.IsNullOrEmpty(local_move_path);
+        await LogHelper.LogDebugAsync(funcName, new { jobId, sshnet_settings_name, remote_path, files }, cancellationToken);
 
-        var local_base_path = More.GetValue("local_base_path");
-        if (!string.IsNullOrEmpty(local_base_path))
-        {
-            local_path = Path.Combine(local_base_path, local_path);
-            if (!string.IsNullOrEmpty(local_move_path)) local_move_path = Path.Combine(local_base_path, local_move_path);
-        }
-        local_path ??= ".";
-
-        await LogHelper.LogDebugAsync(funcName, new { jobId, sshnet_options_name, remote_path, local_path, local_base_path, local_move_path }, cancellationToken);
-
-        using var sftp = await CreateSftpClient(sshnet_options_name, cancellationToken);
+        using var sftp = await CreateSftpClient(sshnet_settings_name, cancellationToken);
         {
             sftp.Connect();
 
-            var files = new DirectoryInfo(local_path).GetFiles();
-
-            foreach (var file in files.OrderBy(o => o.LastWriteTime))
+            foreach (var fileName in files)
             {
-                if (cancellationToken.IsCancellationRequested) break;
+                var file = Convert.ToString(fileName);
 
                 try
                 {
-                    string remoteFile = $"{remote_path}/{file.Name}", localFile = Path.Combine(local_path, file.Name);
+                    if (cancellationToken.IsCancellationRequested) throw new Exception($"Сancelled Job: {file}.");
 
-                    await sftp.UploadFileAsync(localFile, remoteFile, cancellationToken);
+                    await sftp.UploadFileAsync(remote_path, file, cancellationToken);
 
-                    await LogHelper.LogInformationAsync(funcName, new { jobId, errMsg = $"Uploaded: {file.Name}" }, cancellationToken);
-
-                    if (!string.IsNullOrEmpty(local_move_path))
-                    {
-                        System.IO.File.Move(file.FullName, Path.Combine(local_move_path, file.Name), true);
-                        await LogHelper.LogDebugAsync(funcName, new { jobId, errMsg = $"Moved: {file.Name}" }, cancellationToken);
-                    }
-                    else
-                    {
-                        System.IO.File.Delete(file.FullName);
-                        await LogHelper.LogDebugAsync(funcName, new { jobId, errMsg = $"Deleted: {file.Name}" }, cancellationToken);
-                    }
+                    await LogHelper.LogInformationAsync(funcName, new { jobId, errMsg = $"Uploaded: {file}." }, cancellationToken);
                 }
                 catch (Exception ex)
                 {
-                    await LogHelper.LogErrorAsync(funcName, new { jobId, errMsg = $"Failed: {file.Name}. Error: {ex.Message}" }, cancellationToken);
+                    await LogHelper.LogErrorAsync(funcName, new { jobId, errMsg = $"Failed: {file}. Error: {ex.Message}." }, cancellationToken);
                     throw;
                 }
             }

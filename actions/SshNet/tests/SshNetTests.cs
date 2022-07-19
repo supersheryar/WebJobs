@@ -1,8 +1,9 @@
 using System.Reflection;
 using UkrGuru.SqlJson;
-using UkrGuru.WebJobs.Data;
 using Xunit;
-using File = System.IO.File;
+using System.Text;
+using Data=UkrGuru.WebJobs.Data;
+using UkrGuru.WebJobs.Data;
 
 namespace SshNetTests;
 
@@ -16,19 +17,14 @@ public class SshNetTests
 
         var connectionString = $"Server=(localdb)\\mssqllocaldb;Database={dbName};Trusted_Connection=True";
 
-        //var dbInitScript = $"IF DB_ID('{dbName}') IS NOT NULL BEGIN " +
-        //    $"  ALTER DATABASE {dbName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE; " +
-        //    $"  DROP DATABASE {dbName}; " +
-        //    $"END " +
-        //    $"CREATE DATABASE {dbName};";
+        DbHelper.ConnectionString = connectionString.Replace(dbName, "master");
 
-        //DbHelper.ConnectionString = connectionString.Replace(dbName, "master");
-        //DbHelper.ExecCommand(dbInitScript);
+        DbHelper.ExecCommand($"IF DB_ID('{dbName}') IS NULL CREATE DATABASE {dbName};");
 
         DbHelper.ConnectionString = connectionString;
 
         if (dbOK) return;
-        
+
         var assembly1 = Assembly.GetAssembly(typeof(UkrGuru.WebJobs.Actions.BaseAction));
         ArgumentNullException.ThrowIfNull(assembly1);
         dbOK = assembly1.InitDb();
@@ -40,8 +36,6 @@ public class SshNetTests
         var assembly3 = Assembly.GetAssembly(typeof(SshNetTests));
         ArgumentNullException.ThrowIfNull(assembly3);
         dbOK &= assembly3.InitDb();
-
-        //dbOK = true;
     }
 
     [Fact]
@@ -51,27 +45,30 @@ public class SshNetTests
     }
 
     [Fact]
-    public void SshNetTest()
+    public async Task SshNetTest()
     {
-        string filename = @"test\\1.txt";
+        var wjbFile = new Data.File() { FileName = "1.txt", FileContent = Encoding.UTF8.GetBytes(new String('1', 4096)) };
 
-        if (!Directory.Exists("test")) Directory.CreateDirectory("Test");
+        var guidFile = await wjbFile.SetAsync();
 
-        File.WriteAllText(filename, new String('1', 4096));
+        Assert.NotNull(guidFile);
 
-        Assert.True(File.Exists(filename));
+        var jobId = await DbHelper.FromProcAsync<int>("WJbQueue_Ins", new
+        {
+            Rule = 21,
+            RulePriority = (byte)Priorities.ASAP,
+            RuleMore = new { files = new[] { guidFile } }
+        });
 
-        TestRule(101);
+        TestJob(jobId);
 
-        Assert.False(File.Exists(filename));
+        TestRule(20);
 
-        TestRule(100);
+        //Assert.True(File.Exists(filename));
 
-        Assert.True(File.Exists(filename));
+        //var text = File.ReadAllText(filename);
 
-        var text = File.ReadAllText(filename);
-
-        Assert.Equal(text, new String('1', 4096));
+        //Assert.Equal(text, new String('1', 4096));
     }
 
     static void TestRule(int ruleId)

@@ -3,36 +3,38 @@
 
 using System.Net;
 using System.Net.Mail;
-using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using UkrGuru.SqlJson;
 using UkrGuru.WebJobs.Data;
 
 namespace UkrGuru.WebJobs.Actions;
 
-public class SmtpSettings
-{
-    [JsonPropertyName("from")]
-    public string? From { get; set; }
-
-    [JsonPropertyName("host")]
-    public string? Host { get; set; }
-
-    [JsonPropertyName("port")]
-    public int Port { get; set; }
-
-    [JsonPropertyName("enableSsl")]
-    public bool EnableSsl { get; set; }
-
-    [JsonPropertyName("userName")]
-    public string? UserName { get; set; }
-
-    [JsonPropertyName("password")]
-    public string? Password { get; set; }
-}
-
 public class SendEmailAction : BaseAction
 {
+    public class SmtpSettings
+    {
+        [JsonPropertyName("from")]
+        public string? From { get; set; }
+
+        [JsonPropertyName("host")]
+        public string? Host { get; set; }
+
+        [JsonPropertyName("port")]
+        public int Port { get; set; }
+
+        [JsonPropertyName("enableSsl")]
+        public bool EnableSsl { get; set; }
+
+        [JsonPropertyName("userName")]
+        public string? UserName { get; set; }
+
+        [JsonPropertyName("password")]
+        public string? Password { get; set; }
+    }
+
+    public static bool IsHtmlBody(string? body) => body != null && Regex.IsMatch(body, @"<\s*([^ >]+)[^>]*>.*?<\s*/\s*\1\s*>");  // or @"<[^>]+>"
+
     public override async Task<bool> ExecuteAsync(CancellationToken cancellationToken = default)
     {
         var smtp_settings_name = More.GetValue("smtp_settings_name").ThrowIfBlank("smtp_settings_name");
@@ -54,51 +56,40 @@ public class SendEmailAction : BaseAction
         var body = More.GetValue("body");
 
         var attachment = More.GetValue("attachment");
-        var attachments = More.GetValue("attachments");
+        var attachments = More.GetValue("attachments", (object[]?)null);
+        if (attachments == null && !string.IsNullOrEmpty(attachment)) attachments = new[] { attachment };
 
         await LogHelper.LogDebugAsync(nameof(SendEmailAction), new { jobId = JobId, to, cc, bcc, subject, 
-            body = ShortStr(body, 200), attachment, attachments }, cancellationToken);
+            body = ShortStr(body, 200), attachments }, cancellationToken);
 
         if (Guid.TryParse(body, out var guidBody))
             body = await WJbFileHelper.GetAsync(body, cancellationToken);
 
         MailMessage message = new(from, to, subject, body)
         {
-            IsBodyHtml = Utility.IsHtmlBody(body)
+            IsBodyHtml = IsHtmlBody(body)
         };
 
         if (!string.IsNullOrEmpty(cc)) message.CC.Add(cc);
 
         if (!string.IsNullOrEmpty(bcc)) message.Bcc.Add(bcc);
 
-        if (!string.IsNullOrEmpty(attachment))
+        if (attachments != null && attachments.Length > 0)
         {
-            if (Guid.TryParse(attachment, out var guidAttach))
-            {
-                var file = await WJbFileHelper.GetAsync(guidAttach, cancellationToken);
-
-                if (file?.FileContent != null)
-                    message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
-            }
-            else 
-            {
-                message.Attachments.Add(new Attachment(attachment));
-            }
-        }
-        else if (!string.IsNullOrEmpty(attachments))
-        {
-            foreach (var fileName in JsonSerializer.Deserialize<object[]>(attachments) ?? Enumerable.Empty<object>())
+            foreach (var fileName in attachments)
             {
                 attachment = Convert.ToString(fileName);
+                ArgumentNullException.ThrowIfNull(attachment);
 
                 if (Guid.TryParse(attachment, out var guidAttach))
                 {
                     var file = await WJbFileHelper.GetAsync(guidAttach, cancellationToken);
+                    ArgumentNullException.ThrowIfNull(file);
+                    ArgumentNullException.ThrowIfNull(file?.FileContent);
 
-                    if (file?.FileContent != null)
-                        message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
+                    message.Attachments.Add(new Attachment(new MemoryStream(file.FileContent), file.FileName));
                 }
-                else if (!string.IsNullOrWhiteSpace(attachment))
+                else 
                 {
                     message.Attachments.Add(new Attachment(attachment));
                 }

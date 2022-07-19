@@ -19,15 +19,24 @@ public static class MoreExtensions
             more.Add(item.Key, item.Value);
     }
 
-    public static string? GetValue(this More more, string name, string? defaultValue = default) => 
-        more.TryGetValue(name, out var value) ? value == null ? null : Convert.ToString(value) : defaultValue;
+    public static string? GetValue(this More more, string name) => more.TryGetValue(name, out var value) && value != null ? Convert.ToString(value) : null;
 
-    public static bool? GetValue(this More more, string name, bool? defaultValue) => 
-        bool.TryParse(more.GetValue(name), out bool value) ? value : defaultValue;
+    public static bool? GetValue(this More more, string name, bool? defaultValue) => bool.TryParse(more.GetValue(name), out bool value) ? value : defaultValue;
 
-    public static int? GetValue(this More more, string name, int? defaultValue) => 
-        (int.TryParse(more.GetValue(name), out int value)) ? value : defaultValue;
+    public static int? GetValue(this More more, string name, int? defaultValue) => int.TryParse(more.GetValue(name), out int value) ? value : defaultValue;
 
-    public static double? GetValue(this More more, string name, double? defaultValue) => 
-        (double.TryParse(more.GetValue(name), out double value)) ? value : defaultValue;
+    public static double? GetValue(this More more, string name, double? defaultValue) => double.TryParse(more.GetValue(name), out double value) ? value : defaultValue;
+
+    public static object[]? GetValue(this More more, string name, object[]? defaultValue)
+    {
+        try { 
+            var value = more.GetValue(name);
+            ArgumentNullException.ThrowIfNull(value);
+
+            return JsonSerializer.Deserialize<object[]?>(value);
+        }
+        catch { 
+            return defaultValue; 
+        }
+    }
 }

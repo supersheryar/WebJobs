@@ -23,7 +23,7 @@ public class SsrsExportReportAction : BaseAction
         public string? Password { get; set; }
     }
 
-    private string GetReportFormat(string? filename)
+    private static string GetReportFormat(string? filename)
     {
         return (Path.GetExtension(filename)?.ToLower()) switch
         {

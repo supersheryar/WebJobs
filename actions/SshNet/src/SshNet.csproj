@@ -5,22 +5,21 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>UkrGuru.WebJobs.Actions.SshNet</AssemblyName>
     <RootNamespace>UkrGuru.WebJobs.Actions.SshNet</RootNamespace>
-    <Version>3.6.3</Version>
+    <Version>3.6.5</Version>
     <Copyright>Oleksandr Viktor (UkrGuru)</Copyright>
-    <PackageIcon>ukrguru-logo.jpg</PackageIcon>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/UkrGuru/WebJobs/tree/main/actions</RepositoryUrl>
     <PackageTags>ssh scp sftp</PackageTags>
-    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <PackageLicenseFile>..\LICENSE.txt</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageIcon>ukrguru-logo.jpg</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>portable</DebugType>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>portable</DebugType>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,27 +27,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Resources\3.6.3.0.sql" />
+    <None Remove="Resources\3.6.5.0.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\3.6.3.0.sql" />
+    <EmbeddedResource Include="Resources\3.6.5.0.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\..\..\ukrguru-logo.jpg">
+    <EmbeddedResource Include="..\LICENSE.txt">
       <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
+      <PackagePath></PackagePath>
     </EmbeddedResource>
     <EmbeddedResource Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\ukrguru-logo.jpg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </EmbeddedResource>
   </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="SSH.NET" Version="2020.0.2" />
-    <PackageReference Include="UkrGuru.WebJobs" Version="3.6.3" />
+    <PackageReference Include="UkrGuru.WebJobs" Version="3.6.5" />
   </ItemGroup>
 
 </Project>

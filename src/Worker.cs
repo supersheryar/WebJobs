@@ -45,7 +45,7 @@ public class Worker : BackgroundService
                     {
                         exec_result = false;
 
-                        //_logger.LogError(ex, $"Job #{jobId} crashed.", nameof(ExecuteAsync));
+                        _logger.LogError(ex, $"Job #{jobId} crashed.", nameof(ExecuteAsync));
                         await LogHelper.LogErrorAsync($"Job #{jobId} crashed.", new { jobId, errMsg = ex.Message }, stoppingToken);
                     }
                     finally

@@ -107,7 +107,7 @@ public class WebJobsTest
         {
             await action.ExecuteAsync();
 
-            proc_result = ((More)action.More).GetValue("proc_result", null as string);
+            proc_result = ((More)action.More).GetValue("proc_result");
         }
 
         Assert.Equal("DATA", proc_result);
@@ -129,7 +129,7 @@ public class WebJobsTest
         {
             await action.ExecuteAsync();
 
-            proc_result = ((More)action.More).GetValue("proc_result", null as string);
+            proc_result = ((More)action.More).GetValue("proc_result");
         }
 
         Assert.Equal("OK", proc_result);

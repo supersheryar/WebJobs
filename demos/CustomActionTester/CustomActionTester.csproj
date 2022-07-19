@@ -14,6 +14,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\1.1.0.0.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\1.1.0.0.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="3.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\WebJobs.csproj" />
   </ItemGroup>
 

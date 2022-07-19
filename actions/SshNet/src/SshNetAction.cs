@@ -3,34 +3,58 @@
 
 using Renci.SshNet;
 using Renci.SshNet.Common;
+using System.Text.Json.Serialization;
 using UkrGuru.SqlJson;
 
 namespace UkrGuru.WebJobs.Actions.SshNet;
 
 public class SshNetAction : BaseAction
 {
-    public async Task<SftpClient> CreateSftpClient(string sshnet_options_name, CancellationToken cancellationToken = default)
+    public class SshNetSettings
+    {
+        [JsonPropertyName("host")]
+        public string Host { get; set; }
+
+        [JsonPropertyName("port")]
+        public int Port { get; set; } = 22;
+
+        [JsonPropertyName("userName")]
+        public string UserName { get; set; }
+
+        [JsonPropertyName("password")]
+        public string Password { get; set; }
+
+        [JsonPropertyName("keyFiles")]
+        public PrivateKeyFile[] KeyFiles { get; set; }
+
+        [JsonPropertyName("fingerPrint")]
+        public string FingerPrint { get; set; }
+    }
+
+    public static string CombinateRemoteFullName(string path, string fileName) => $"{path}/{fileName}";
+
+    public async Task<SftpClient> CreateSftpClient(string sshnet_settings_name, CancellationToken cancellationToken = default)
     {
         SftpClient sftp = null;
 
-        var sshnet_options = await DbHelper.FromProcAsync<SshNetOptions>("WJbSettings_Get", sshnet_options_name.ThrowIfBlank("sshnet_options_name"), cancellationToken: cancellationToken);
-        ArgumentNullException.ThrowIfNull(sshnet_options);
+        var sshnet_settings = await DbHelper.FromProcAsync<SshNetSettings>("WJbSettings_Get", sshnet_settings_name.ThrowIfBlank("sshnet_settings_name"), cancellationToken: cancellationToken);
+        ArgumentNullException.ThrowIfNull(sshnet_settings);
 
-        if (sshnet_options.KeyFiles?.Length > 0)
+        if (sshnet_settings.KeyFiles?.Length > 0)
         {
-            sftp = new SftpClient(sshnet_options.Host, sshnet_options.Port, sshnet_options.UserName, sshnet_options.KeyFiles);
+            sftp = new SftpClient(sshnet_settings.Host, sshnet_settings.Port, sshnet_settings.UserName, sshnet_settings.KeyFiles);
         }
         else
         {
-            sftp = new SftpClient(sshnet_options.Host, sshnet_options.Port, sshnet_options.UserName, sshnet_options.Password);
+            sftp = new SftpClient(sshnet_settings.Host, sshnet_settings.Port, sshnet_settings.UserName, sshnet_settings.Password);
         }
 
-        if (!string.IsNullOrEmpty(sshnet_options.FingerPrint))
+        if (!string.IsNullOrEmpty(sshnet_settings.FingerPrint))
         {
             // string hexFingerPrint;
             sftp.HostKeyReceived += delegate (object sender, HostKeyEventArgs e)
             {
-                var bytes = sshnet_options.FingerPrint.Split(':').Select(s => Convert.ToByte(s, 16)).ToArray();
+                var bytes = sshnet_settings.FingerPrint.Split(':').Select(s => Convert.ToByte(s, 16)).ToArray();
                 if (e.FingerPrint.SequenceEqual(bytes))
                     e.CanTrust = true;
                 else

@@ -17,10 +17,7 @@ public class BaseAction
     public int JobId { get; set; }
     public More More { get; set; }
 
-    public BaseAction()
-    {
-        More = new More();
-    }
+    public BaseAction() => More = new More();
 
     public virtual void Init(Job job)
     {
@@ -65,4 +62,6 @@ public class BaseAction
 
     public static string? ShortStr(string? text, int maxLength) => (!string.IsNullOrEmpty(text)
         && text.Length > maxLength) ? string.Concat(text.AsSpan(0, maxLength), "...") : text;
+
+    public virtual string GetLocalFileName(string fileName) => $"#{this.JobId}-{fileName}";
 }
