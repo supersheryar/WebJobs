@@ -1,4 +1,5 @@
 # UkrGuru.WebJobs
+[![Nuget](https://img.shields.io/nuget/v/UkrGuru.WebJobs)](https://www.nuget.org/packages/UkrGuru.WebJobs/)
 
 UkrGuru.WebJobs package is a scheduler and worker for any of your background jobs under any type of .NET 6 applications. 
 Supports cron in the Rules. Provides extensibility for any Custom Actions. Uses UkrGuru.SqlJson for database connection.
