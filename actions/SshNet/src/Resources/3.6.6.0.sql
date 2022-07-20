@@ -50,7 +50,7 @@ END
 
 BEGIN /*** Init SshNet Settings ***/
 
-IF NOT EXISTS (SELECT * FROM [dbo].[WJbSettings] WHERE [Name] = N'SshNet1')
+IF NOT EXISTS (SELECT * FROM [dbo].[WJbSettings] WHERE [Name] = N'Sftp1')
 	INSERT [dbo].[WJbSettings] ([Name], [Value]) VALUES (N'Sftp1', N'{
 	"host": "domain.com",
 	"port": 22,

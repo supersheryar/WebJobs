@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvHelper", "src\CsvHelper.csproj", "{677235AE-33C1-4CDE-B454-B69D4228C257}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvHelperTests", "tests\CsvHelperTests.csproj", "{F29C34CB-6161-4410-851D-9DA4685D74BD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{677235AE-33C1-4CDE-B454-B69D4228C257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{677235AE-33C1-4CDE-B454-B69D4228C257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{677235AE-33C1-4CDE-B454-B69D4228C257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{677235AE-33C1-4CDE-B454-B69D4228C257}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F29C34CB-6161-4410-851D-9DA4685D74BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F29C34CB-6161-4410-851D-9DA4685D74BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F29C34CB-6161-4410-851D-9DA4685D74BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F29C34CB-6161-4410-851D-9DA4685D74BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {163D9972-7A35-4A3C-B0FD-DF5FA30EBDAD}
+	EndGlobalSection
+EndGlobal

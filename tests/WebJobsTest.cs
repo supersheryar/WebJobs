@@ -14,7 +14,7 @@ public class WebJobsTest
 
     public WebJobsTest()
     {
-        var dbName = "WebJobsTest";
+        var dbName = "WebJobsTest2";
 
         var connectionString = $"Server=(localdb)\\mssqllocaldb;Database={dbName};Trusted_Connection=True";
 

@@ -76,6 +76,15 @@ IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 5))
 	"result_name": null
 }', 0)
 
+IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 6))
+	INSERT [WJbActions] ([ActionId], [ActionName], [ActionType], [ActionMore], [Disabled]) 
+	VALUES (6, N'ProcItems', N'ProcItemsAction, UkrGuru.WebJobs', N'{
+	"fileId": "00000000-0000-0000-0000-000000000000",
+	"itemNo": null,
+	"proc": "",
+	"timeout": null
+}', 0)
+
 IF NOT EXISTS (SELECT 1 FROM [WJbActions] WHERE (ActionId = 10))
 	INSERT [WJbActions] ([ActionId], [ActionName], [ActionType], [ActionMore], [Disabled]) 
 	VALUES (10, N'SSRS.ExportReport', N'SsrsExportReportAction, UkrGuru.WebJobs', N'{
@@ -152,6 +161,10 @@ IF NOT EXISTS (SELECT 1 FROM [WJbRules] WHERE (RuleId = 4))
 IF NOT EXISTS (SELECT 1 FROM [WJbRules] WHERE (RuleId = 5))
 	INSERT [WJbRules] ([RuleId], [RuleName], [RulePriority], [ActionId], [RuleMore], [Disabled]) 
 	VALUES (5, N'RunApiProc Base', 2, 5, NULL, 0)
+
+IF NOT EXISTS (SELECT 1 FROM [WJbRules] WHERE (RuleId = 6))
+	INSERT [WJbRules] ([RuleId], [RuleName], [RulePriority], [ActionId], [RuleMore], [Disabled]) 
+	VALUES (6, N'ProcItems Base', 2, 6, NULL, 0)
 
 IF NOT EXISTS (SELECT * FROM [dbo].[WJbRules] WHERE [RuleId] = 10)
 	INSERT [dbo].[WJbRules] ([RuleId], [RuleName], [RulePriority], [ActionId], [RuleMore], [Disabled]) 
@@ -284,6 +297,24 @@ END
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[DF_WJbFiles_Created]') AND type = 'D')
 BEGIN
 	ALTER TABLE [WJbFiles] ADD  CONSTRAINT [DF_WJbFiles_Created]  DEFAULT (getdate()) FOR [Created]
+END
+END
+
+BEGIN /*** Init WJbItems ***/
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[WJbItems]') AND type in (N'U'))
+BEGIN
+	CREATE TABLE [WJbItems](
+		[FileId] [uniqueidentifier] NOT NULL,
+		[ItemNo] [int] NOT NULL,
+		[ItemMore] [nvarchar](1000) NOT NULL,
+		[Processed] [datetime] NULL,
+		[Result] int NULL
+	 CONSTRAINT [PK_WJbItems] PRIMARY KEY CLUSTERED 
+	(
+		[FileId] ASC,
+		[ItemNo] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+	) ON [PRIMARY]
 END
 END
 
@@ -576,6 +607,59 @@ CREATE OR ALTER PROCEDURE [WJbFiles_Del]
 AS
 DELETE WJbFiles
 WHERE Id = @Data
+';
+END
+
+BEGIN /*** WJbItems Procs ***/
+EXEC dbo.sp_executesql @statement = N'
+CREATE OR ALTER PROCEDURE [WJbItems_Del_File]
+	@Data uniqueidentifier
+AS
+DELETE FROM WJbItems
+WHERE FileId = @Data
+';
+EXEC dbo.sp_executesql @statement = N'
+CREATE OR ALTER PROCEDURE [WJbItems_Get]
+	@Data varchar(200)
+AS
+SELECT I.*
+FROM WJbItems I
+INNER JOIN (SELECT * FROM OPENJSON(@Data) 
+	WITH (FileId uniqueidentifier, ItemNo int)) D ON I.FileId = D.FileId AND I.ItemNo = D.ItemNo
+FOR JSON PATH
+';
+EXEC dbo.sp_executesql @statement = N'
+CREATE OR ALTER PROCEDURE [WJbItems_Get_More]
+	@Data varchar(200)
+AS
+SELECT JSON_MODIFY(JSON_MODIFY(ItemMore, ''$.WJbFileId'', CAST(I.FileId AS varchar(50))), ''$.WJbItemNo'', I.ItemNo) More  
+FROM WJbItems AS I
+INNER JOIN (SELECT * FROM OPENJSON(@Data) 
+	WITH (FileId uniqueidentifier, ItemNo int)) D ON I.FileId = D.FileId AND I.ItemNo = D.ItemNo
+';
+EXEC dbo.sp_executesql @statement = N'
+CREATE OR ALTER PROCEDURE [WJbItems_Ins]
+	@Data nvarchar(max)
+AS
+IF NOT EXISTS (SELECT 1 FROM WJbItems I
+	INNER JOIN (SELECT * FROM OPENJSON(@Data) 
+		WITH (FileId uniqueidentifier, ItemNo int)) D ON I.FileId = D.FileId AND I.ItemNo = D.ItemNo)
+BEGIN
+    INSERT INTO WJbItems (FileId, ItemNo, ItemMore) 
+	SELECT FileId, ItemNo, JSON_QUERY(@Data, ''$.ItemMore'') ItemMore
+	FROM OPENJSON(@Data) 
+		WITH (FileId uniqueidentifier, ItemNo int)
+END
+';
+EXEC dbo.sp_executesql @statement = N'
+CREATE OR ALTER PROCEDURE [WJbItems_Set_Result]
+	@Data varchar(200)
+AS
+UPDATE I
+SET I.Processed = GETDATE(), I.Result = D.Result 
+FROM WJbItems AS I
+INNER JOIN (SELECT * FROM OPENJSON(@Data) 
+	WITH (FileId uniqueidentifier, ItemNo int, Result int)) D ON I.FileId = D.FileId AND I.ItemNo = D.ItemNo
 ';
 END
 
