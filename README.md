@@ -1,8 +1,5 @@
-# UkrGuru.WebJobs
-[![Nuget](https://img.shields.io/nuget/v/UkrGuru.WebJobs)](https://www.nuget.org/packages/UkrGuru.WebJobs/)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-yellow.svg)](https://www.paypal.com/donate/?hosted_button_id=BPUF3H86X96YN)
-
-The UkrGuru.WebJobs package is a Scheduler and N-Workers for any base( or custom) Actions in .NET apps. 
+# WebJobs
+WebJobs package is a Scheduler and N-Workers for any base( or custom) Actions in .NET apps. 
 Supports CRON expressions in Rules. Supports polymorphism for Action/Rule/Job parameters and 
 transferring the result of the Job to the next Job, based on the results of the current Job. 
 Uses UkrGuru.SqlJson to quickly run stored procedures on sql server.
